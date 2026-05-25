@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Metas{% endblock %}
+{% block content %}
+<div class="px-4 md:px-6 py-5">
+    <div class="flex items-center justify-between mb-6">
+        <h2 class="text-lg md:text-xl font-bold text-chele-text">🐷 Metas</h2>
+        <a href="{% url 'goal_create' %}" class="btn-primary text-xs md:text-sm">+ Nueva meta</a>
+    </div>
+    <div class="space-y-3">
+        {% for goal in goals %}
+        <div class="bg-white rounded-lg border border-chele-border p-4 flex items-center justify-between gap-2">
+            <div>
+                <p class="font-semibold text-sm text-chele-text">{{ goal.category.name }}</p>
+                <p class="text-xs text-chele-text-secondary">{{ goal.get_goal_type_display }} — ${{ goal.amount }}</p>
+            </div>
+            <div class="flex gap-3 shrink-0">
+                <a href="{% url 'goal_edit' goal.id %}" class="text-xs text-chele-gold hover:text-chele-gold-dark">Editar</a>
+                <form method="post" action="{% url 'goal_delete' goal.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="text-xs text-chele-danger hover:text-red-700">Eliminar</button>
+                </form>
+            </div>
+        </div>
+        {% empty %}
+        <div class="text-center py-12 text-chele-text-secondary">
+            <p class="text-4xl mb-2">🐷</p>
+            <p class="text-sm">No hay metas configuradas.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

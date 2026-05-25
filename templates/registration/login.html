@@ -1,0 +1,50 @@
+{% load static %}<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chele 🐷 — Acceder</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    chele: { gold: '#F59E0B', 'gold-dark': '#D97706', cream: '#FFFBEB', dark: '#1C1917', text: '#1C1917', 'text-secondary': '#78716C', border: '#E7E5E4' }
+                }
+            }
+        }
+    }
+    </script>
+    <link rel="icon" href="{% static 'img/cerdito.svg' %}">
+</head>
+<body class="bg-chele-cream flex items-center justify-center min-h-screen p-4">
+    <div class="w-full max-w-sm">
+        <div class="text-center mb-8">
+            <img src="{% static 'img/cerdito.svg' %}" alt="Cerdito Chele" class="w-24 h-24 mx-auto">
+            <h1 class="text-3xl font-bold text-chele-dark mt-3">Chele</h1>
+            <p class="text-chele-text-secondary mt-1">Tomá el control de tu dinero</p>
+        </div>
+        <div class="bg-white rounded-xl border border-chele-border p-6">
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-chele-dark mb-1">Email</label>
+                    <input type="email" name="username" required class="w-full border border-chele-border rounded-lg px-3 py-2.5 text-sm focus:border-chele-gold focus:ring-1 focus:ring-chele-gold">
+                </div>
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-chele-dark mb-1">Contraseña</label>
+                    <input type="password" name="password" required class="w-full border border-chele-border rounded-lg px-3 py-2.5 text-sm focus:border-chele-gold focus:ring-1 focus:ring-chele-gold">
+                </div>
+                {% if form.errors %}
+                <div class="mb-4 p-3 bg-red-50 text-chele-danger rounded-lg text-sm border border-red-200">🐷 Email o contraseña incorrectos.</div>
+                {% endif %}
+                <button type="submit" class="w-full bg-chele-gold text-white rounded-lg py-2.5 text-sm font-medium hover:bg-chele-gold-dark transition">Acceder</button>
+            </form>
+            <p class="mt-4 text-sm text-center text-chele-text-secondary">
+                ¿No tenés cuenta? <a href="{% url 'register' %}" class="text-chele-gold hover:text-chele-gold-dark font-medium">Registrate</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

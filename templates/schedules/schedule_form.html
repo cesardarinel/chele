@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% block title %}{% if schedule %}Editar{% else %}Nueva{% endif %} programación{% endblock %}
+{% block content %}
+<div class="px-4 md:px-6 py-5 max-w-lg mx-auto">
+    <h2 class="text-lg md:text-xl font-bold text-chele-text mb-6">🐷 {% if schedule %}Editar{% else %}Nueva{% endif %} programación</h2>
+    <form method="post" class="bg-white rounded-lg border border-chele-border p-4 md:p-6 space-y-4">
+        {% csrf_token %}
+        <div>
+            <label class="block text-sm font-medium text-chele-text mb-1">Beneficiario</label>
+            <select name="payee_id" class="w-full border border-chele-border rounded-lg px-3 py-2 text-sm">
+                <option value="">—</option>
+                {% for p in active_budget.payees.all %}
+                <option value="{{ p.id }}" {% if schedule.payee_id == p.id %}selected{% endif %}>{{ p.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label class="block text-sm font-medium text-chele-text mb-1">Categoría</label>
+            <select name="category_id" class="w-full border border-chele-border rounded-lg px-3 py-2 text-sm">
+                <option value="">—</option>
+                {% for cat in active_budget.categories.all %}
+                <option value="{{ cat.id }}" {% if schedule.category_id == cat.id %}selected{% endif %}>{{ cat.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label class="block text-sm font-medium text-chele-text mb-1">Cuenta</label>
+            <select name="account_id" required class="w-full border border-chele-border rounded-lg px-3 py-2 text-sm">
+                {% for a in active_budget.accounts.all %}
+                <option value="{{ a.id }}" {% if schedule.account_id == a.id %}selected{% endif %}>{{ a.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+            <div>
+                <label class="block text-sm font-medium text-chele-text mb-1">Monto</label>
+                <input type="number" step="0.01" name="amount" value="{{ schedule.amount|default:'' }}" required class="w-full border border-chele-border rounded-lg px-3 py-2 text-sm">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-chele-text mb-1">Frecuencia</label>
+                <select name="frequency" class="w-full border border-chele-border rounded-lg px-3 py-2 text-sm">
+                    <option value="weekly">Semanal</option>
+                    <option value="biweekly">Quincenal</option>
+                    <option value="monthly">Mensual</option>
+                    <option value="quarterly">Trimestral</option>
+                    <option value="yearly">Anual</option>
+                </select>
+            </div>
+        </div>
+        <div>
+            <label class="block text-sm font-medium text-chele-text mb-1">Próxima fecha</label>
+            <input type="date" name="next_date" value="{{ schedule.next_date|date:'Y-m-d'|default:'' }}" required class="w-full border border-chele-border rounded-lg px-3 py-2 text-sm">
+        </div>
+        <div>
+            <label class="block text-sm font-medium text-chele-text mb-1">Notas</label>
+            <textarea name="notes" rows="2" class="w-full border border-chele-border rounded-lg px-3 py-2 text-sm">{{ schedule.notes|default:'' }}</textarea>
+        </div>
+        <div>
+            <label class="flex items-center gap-2 text-sm">
+                <input type="checkbox" name="skip_weekends" {% if schedule.skip_weekends %}checked{% endif %} class="text-chele-gold">
+                <span>Saltar fines de semana (pasar al lunes siguiente)</span>
+            </label>
+        </div>
+        <button type="submit" class="btn-primary w-full text-center py-2.5">🐷 Guardar</button>
+    </form>
+</div>
+{% endblock %}

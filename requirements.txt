@@ -1,0 +1,8 @@
+django>=6.0
+django-environ
+django-compressor
+django-cors-headers
+pillow
+whitenoise
+gunicorn
+python-dateutil

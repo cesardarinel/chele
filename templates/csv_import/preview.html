@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}Vista previa CSV{% endblock %}
+{% block content %}
+<div class="px-4 md:px-6 py-5">
+    <h2 class="text-lg md:text-xl font-bold text-chele-text mb-2">🐷 Vista previa</h2>
+    <p class="text-sm text-chele-text-secondary mb-4">{{ total }} filas encontradas. Mostrando primeras {{ rows|length }}.</p>
+    <div class="bg-white rounded-lg border border-chele-border overflow-hidden mb-6">
+        <div class="table-scroll">
+        <table class="w-full min-w-[400px] text-sm">
+            <thead>
+                <tr class="border-b border-chele-border bg-gray-50/50">
+                    {% for col in columns %}
+                    <th class="px-3 py-2 text-left text-xs font-semibold text-chele-text-secondary">{{ col }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in rows %}
+                <tr class="border-b border-gray-50">
+                    {% for col in columns %}
+                    <td class="px-3 py-2 text-sm text-chele-text">{{ row|get_item:col }}</td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        </div>
+    </div>
+    <form method="post" action="{% url 'csv_confirm' %}">
+        {% csrf_token %}
+        <button type="submit" class="btn-primary">🐷 Confirmar importación</button>
+        <a href="{% url 'csv_import' %}" class="ml-3 text-sm text-chele-gold hover:text-chele-gold-dark">Volver</a>
+    </form>
+</div>
+{% endblock %}

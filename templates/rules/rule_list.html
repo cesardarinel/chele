@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}Reglas{% endblock %}
+{% block content %}
+<div class="px-4 md:px-6 py-5">
+    <div class="flex items-center justify-between mb-6">
+        <h2 class="text-lg md:text-xl font-bold text-chele-text">🐷 Reglas</h2>
+        <a href="{% url 'rule_create' %}" class="btn-primary text-xs md:text-sm">+ Nueva regla</a>
+    </div>
+    <div class="space-y-3">
+        {% for rule in rules %}
+        <div class="bg-white rounded-lg border border-chele-border p-4 hover:shadow-sm transition">
+            <div class="flex items-start justify-between gap-2">
+                <div class="min-w-0">
+                    <p class="font-semibold text-sm text-chele-text">{{ rule.name }}</p>
+                    <p class="text-xs text-chele-text-secondary mt-1">
+                        Si <strong>{{ rule.get_condition_field_display }}</strong>
+                        {{ rule.get_condition_operator_display }}
+                        "<strong>{{ rule.condition_value }}</strong>"
+                        {% if rule.action_category %} → {{ rule.action_category.name }}{% endif %}
+                    </p>
+                </div>
+                <a href="{% url 'rule_edit' rule.id %}" class="text-xs text-chele-gold hover:text-chele-gold-dark shrink-0 whitespace-nowrap">Editar</a>
+            </div>
+        </div>
+        {% empty %}
+        <div class="text-center py-12 text-chele-text-secondary">
+            <p class="text-4xl mb-2">🐷</p>
+            <p class="text-sm">No hay reglas configuradas.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

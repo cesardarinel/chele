@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}Reportes{% endblock %}
+{% block content %}
+<div class="px-4 md:px-6 py-5">
+    <h2 class="text-lg md:text-xl font-bold text-chele-text mb-6">🐷 Reportes</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+        <a href="{% url 'net_worth_report' %}" class="block bg-white rounded-lg border border-chele-border p-4 md:p-6 card-hover">
+            <h3 class="text-base md:text-lg font-semibold text-chele-text mb-2">Patrimonio Neto</h3>
+            <p class="text-xs md:text-sm text-chele-text-secondary">Activos vs pasivos</p>
+        </a>
+        <a href="{% url 'cash_flow_report' %}" class="block bg-white rounded-lg border border-chele-border p-4 md:p-6 card-hover">
+            <h3 class="text-base md:text-lg font-semibold text-chele-text mb-2">Cash Flow</h3>
+            <p class="text-xs md:text-sm text-chele-text-secondary">Ingresos y gastos</p>
+        </a>
+        <a href="{% url 'budget_vs_reality' %}" class="block bg-white rounded-lg border border-chele-border p-4 md:p-6 card-hover">
+            <h3 class="text-base md:text-lg font-semibold text-chele-text mb-2">Budget vs Reality</h3>
+            <p class="text-xs md:text-sm text-chele-text-secondary">Presupuestado vs gastado</p>
+        </a>
+    </div>
+</div>
+{% endblock %}

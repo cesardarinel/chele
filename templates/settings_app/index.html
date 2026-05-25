@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}Configuración{% endblock %}
+{% block content %}
+<div class="px-4 md:px-6 py-5">
+    <h2 class="text-lg md:text-xl font-bold text-chele-text mb-6">🐷 Configuración</h2>
+    <div class="space-y-4 max-w-lg">
+        <a href="{% url 'settings_profile' %}" class="block bg-white rounded-lg border border-chele-border p-4 hover:shadow-sm transition">
+            <h3 class="font-semibold text-chele-text">Perfil</h3>
+            <p class="text-sm text-chele-text-secondary">Nombre, email, contraseña</p>
+        </a>
+        <a href="{% url 'settings_budget' %}" class="block bg-white rounded-lg border border-chele-border p-4 hover:shadow-sm transition">
+            <h3 class="font-semibold text-chele-text">Presupuesto</h3>
+            <p class="text-sm text-chele-text-secondary">Nombre, miembros, descripción</p>
+        </a>
+        <a href="{% url 'rules_list' %}" class="block bg-white rounded-lg border border-chele-border p-4 hover:shadow-sm transition">
+            <h3 class="font-semibold text-chele-text">Reglas</h3>
+            <p class="text-sm text-chele-text-secondary">Automatizar categorización de transacciones</p>
+        </a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block title %}Configuración del presupuesto{% endblock %}
+{% block content %}
+<div class="px-4 md:px-6 py-5">
+    <h2 class="text-lg md:text-xl font-bold text-chele-text mb-6">🐷 {{ budget.name }}</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl">
+        <div class="bg-white rounded-lg border border-chele-border p-4 md:p-6">
+            <h3 class="font-semibold text-chele-text mb-4">Información</h3>
+            <form method="post" class="space-y-4">
+                {% csrf_token %}
+                <div>
+                    <label class="block text-sm font-medium text-chele-text mb-1">Nombre</label>
+                    <input type="text" name="name" value="{{ budget.name }}" class="w-full border border-chele-border rounded-lg px-3 py-2 text-sm">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-chele-text mb-1">Descripción</label>
+                    <textarea name="description" rows="3" class="w-full border border-chele-border rounded-lg px-3 py-2 text-sm">{{ budget.description }}</textarea>
+                </div>
+                <button type="submit" class="btn-primary w-full text-center py-2.5">🐷 Guardar</button>
+            </form>
+        </div>
+        <div class="space-y-4">
+            <div class="bg-white rounded-lg border border-chele-border p-4 md:p-6">
+                <h3 class="font-semibold text-chele-text mb-4">👥 Miembros</h3>
+                <form method="post" action="{% url 'settings_invite' %}" class="flex items-center gap-2 mb-4">
+                    {% csrf_token %}
+                    <input type="email" name="email" placeholder="Email del usuario" required class="flex-1 border border-chele-border rounded-lg px-3 py-2 text-sm">
+                    <button type="submit" class="btn-primary whitespace-nowrap">+ Invitar</button>
+                </form>
+                <ul class="divide-y divide-gray-100">
+                    {% for m in members %}
+                    <li class="py-2 flex items-center justify-between text-sm">
+                        <div class="flex items-center gap-2">
+                            <span class="text-chele-text">{{ m.user.email }}</span>
+                            {% if m.role == 'owner' %}
+                            <span class="text-xs bg-chele-gold/10 text-chele-gold-dark px-2 py-0.5 rounded font-medium">Dueño</span>
+                            {% endif %}
+                        </div>
+                        <span class="text-xs bg-gray-100 px-2 py-1 rounded text-chele-text-secondary">{{ m.get_role_display }}</span>
+                    </li>
+                    {% empty %}
+                    <li class="py-4 text-center text-sm text-chele-text-secondary">🐷 Sin miembros aún.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

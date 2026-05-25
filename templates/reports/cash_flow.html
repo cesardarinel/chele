@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}Cash Flow{% endblock %}
+{% block content %}
+<div class="px-4 md:px-6 py-5">
+    <h2 class="text-lg md:text-xl font-bold text-chele-text mb-6">🐷 Cash Flow</h2>
+    <div class="bg-white rounded-lg border border-chele-border overflow-hidden">
+        <div class="table-scroll">
+        <table class="w-full min-w-[400px] text-sm">
+            <thead>
+                <tr class="border-b border-chele-border bg-gray-50/50">
+                    <th class="text-left px-4 py-3 text-xs font-semibold text-chele-text-secondary">Mes</th>
+                    <th class="text-right px-4 py-3 text-xs font-semibold text-chele-success">Ingresos</th>
+                    <th class="text-right px-4 py-3 text-xs font-semibold text-chele-danger">Gastos</th>
+                    <th class="text-right px-4 py-3 text-xs font-semibold text-chele-text-secondary">Neto</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for m in months %}
+                <tr class="border-b border-gray-50 hover:bg-gray-50/30 transition">
+                    <td class="px-4 py-3 text-sm">{{ m.month }}</td>
+                    <td class="px-4 py-3 text-sm text-right text-chele-success">${{ m.income|floatformat:2 }}</td>
+                    <td class="px-4 py-3 text-sm text-right text-chele-danger">${{ m.expenses|floatformat:2 }}</td>
+                    <td class="px-4 py-3 text-sm text-right {% if m.net >= 0 %}text-chele-success{% else %}text-chele-danger{% endif %}">
+                        ${{ m.net|floatformat:2 }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
