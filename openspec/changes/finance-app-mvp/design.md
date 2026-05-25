@@ -208,24 +208,31 @@ Cada presupuesto es completamente independiente.
 | Campo | Descripción |
 |---|---|
 | `type` | `personal`, `hipotecario`, `automotor`, `estudiantil`, `otros` |
+| `status` | `active` (activo), `completed` (finalizado) |
 | `total_amount` | Monto total del préstamo |
-| `interest_rate` | Tasa de interés mensual |
-| `remaining_balance` | Saldo pendiente |
+| `interest_rate` | Tasa de interés **anual** |
+| `remaining_balance` | Saldo pendiente actual |
 | `total_installments` | Total de cuotas |
 | `paid_installments` | Cuotas pagadas |
+| `installment_amount` | Valor de cada cuota |
 | `start_date` | Fecha de inicio |
 | `next_due_date` | Próximo vencimiento |
+| `account` | Cuenta de pago (FK) — las cuotas pagadas generan transacciones en esta cuenta |
 
 **Comportamiento:**
 - Se registra como pasivo (off-budget)
 - Cada cuota tiene: número, monto, fecha_vencimiento, pagada
 - Si no se paga a tiempo, se calcula interés diario sobre el saldo pendiente
-- Las cuotas se pueden programar automáticamente como transacciones recurrentes
+- **Al pagar una cuota**: si tiene `account` asignada, crea una transacción de gasto en esa cuenta y reduce el saldo (visible en el presupuesto)
+- **Al saldar** (`remaining_balance <= 0`): cambia `status` a `completed` y pasa a la sección "Historial"
+- **Edición**: permite cambiar saldo actual, cuotas pagadas, valor cuota, total cuotas (agrega/elimina registros automáticamente)
+- **Eliminación**: solo si no tiene transacciones asociadas
 
 ### Intereses (core/interest.py)
 ```
-calcular_interes_diario(saldo, tasa_mensual, dias_desde_vencimiento)
-  → interés = saldo * (tasa_mensual / 30) * dias_desde_vencimiento
+calcular_interes_diario(saldo, tasa_anual, dias_desde_vencimiento)
+  → tasa_diaria = tasa_anual / 12 / 30
+  → interés = saldo * tasa_diaria * dias
 
 aplicar_interes(tarjeta_o_prestamo)
   → crea transacción automática por el interés acumulado
