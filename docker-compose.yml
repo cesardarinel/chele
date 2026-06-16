@@ -10,6 +10,7 @@ services:
     env_file:
       - .env
     environment:
+      - DEBUG=${DEBUG:-True}
       - WORKERS=${WORKERS:-3}
     volumes:
       - ./db:/app/db
