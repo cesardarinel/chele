@@ -2,79 +2,79 @@
 {% block title %}Presupuesto{% endblock %}
 {% block content %}
 <div id="budgetPage">
-    <div class="px-4 md:px-6 pt-4 pb-3 border-b border-gray-200 bg-white">
+    <div class="px-4 md:px-6 pt-4 pb-3 border-b border-chele-border bg-chele-surface">
         <div class="flex flex-wrap items-center justify-between gap-2">
             <div class="flex items-center gap-3">
-                <h2 class="text-xl font-bold text-[#141A26]">{{ active_budget.name }}</h2>
-                <button onclick="openModal('editBudgetModal')" class="text-sm text-chele-gold hover:text-chele-gold-dark border border-chele-gold rounded px-3 py-1">✎ Editar</button>
+                <h2 class="text-xl font-bold text-chele-text">{{ active_budget.name }}</h2>
+                <button onclick="openModal('editBudgetModal')" class="text-sm text-chele-primary hover:text-chele-primary-dark border border-chele-primary rounded px-3 py-1">✎ Editar</button>
             </div>
             <div class="flex items-center gap-3 flex-wrap">
-                <button onclick="togglePrivate()" id="privateBtn" class="text-gray-400 hover:text-gray-600 p-1" title="Ocultar montos">
+                <button onclick="togglePrivate()" id="privateBtn" class="text-chele-text-muted hover:text-chele-text-secondary p-1" title="Ocultar montos">
                     <svg class="w-5 h-5" id="eyeIcon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                 </button>
                 <div class="flex items-center gap-1">
-                    <a href="?mes={{ current_month|add:'-1' }}&anio={{ current_year }}&rango={{ request.GET.rango|default:'0' }}" class="px-2 py-1.5 text-gray-400 hover:text-gray-600 text-lg leading-none">‹</a>
-                    <span class="px-4 py-1.5 text-sm font-semibold bg-[#2563EB] text-white rounded whitespace-nowrap">
+                    <a href="?mes={{ current_month|add:'-1' }}&anio={{ current_year }}&rango={{ request.GET.rango|default:'0' }}" class="px-2 py-1.5 text-chele-text-muted hover:text-chele-text-secondary text-lg leading-none">‹</a>
+                    <span class="px-4 py-1.5 text-sm font-semibold bg-chele-primary text-white rounded whitespace-nowrap">
                         {% for m in months %}{% if m.active %}{{ m.label }}{% endif %}{% endfor %}
                     </span>
-                    <a href="?mes={{ current_month|add:'1' }}&anio={{ current_year }}&rango={{ request.GET.rango|default:'0' }}" class="px-2 py-1.5 text-gray-400 hover:text-gray-600 text-lg leading-none">›</a>
+                    <a href="?mes={{ current_month|add:'1' }}&anio={{ current_year }}&rango={{ request.GET.rango|default:'0' }}" class="px-2 py-1.5 text-chele-text-muted hover:text-chele-text-secondary text-lg leading-none">›</a>
                 </div>
-                <div class="flex gap-1 border-l border-gray-200 pl-3">
-                    <a href="?rango=0&mes={{ current_month }}&anio={{ current_year }}" class="px-2 py-1 text-xs rounded {% if months|length == 1 %}bg-gray-200 text-gray-700{% else %}text-gray-400 hover:text-gray-600{% endif %}">1m</a>
-                    <a href="?rango=1&mes={{ current_month }}&anio={{ current_year }}" class="px-2 py-1 text-xs rounded {% if months|length == 3 %}bg-gray-200 text-gray-700{% else %}text-gray-400 hover:text-gray-600{% endif %}">3m</a>
-                    <a href="?rango=2&mes={{ current_month }}&anio={{ current_year }}" class="px-2 py-1 text-xs rounded {% if months|length == 5 %}bg-gray-200 text-gray-700{% else %}text-gray-400 hover:text-gray-600{% endif %}">5m</a>
+                <div class="flex gap-1 border-l border-chele-border pl-3">
+                    <a href="?rango=0&mes={{ current_month }}&anio={{ current_year }}" class="px-2 py-1 text-xs rounded {% if months|length == 1 %}bg-chele-bg-tertiary text-chele-text{% else %}text-chele-text-muted hover:text-chele-text-secondary{% endif %}">1m</a>
+                    <a href="?rango=1&mes={{ current_month }}&anio={{ current_year }}" class="px-2 py-1 text-xs rounded {% if months|length == 3 %}bg-chele-bg-tertiary text-chele-text{% else %}text-chele-text-muted hover:text-chele-text-secondary{% endif %}">3m</a>
+                    <a href="?rango=2&mes={{ current_month }}&anio={{ current_year }}" class="px-2 py-1 text-xs rounded {% if months|length == 5 %}bg-chele-bg-tertiary text-chele-text{% else %}text-chele-text-muted hover:text-chele-text-secondary{% endif %}">5m</a>
                 </div>
                 <div class="relative" id="budgetMenu">
-                    <button onclick="document.getElementById('budgetMenuDropdown').classList.toggle('hidden')" class="text-gray-400 hover:text-gray-600 p-1">
+                    <button onclick="document.getElementById('budgetMenuDropdown').classList.toggle('hidden')" class="text-chele-text-muted hover:text-chele-text-secondary p-1">
                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"/></svg>
                     </button>
-                    <div id="budgetMenuDropdown" class="hidden absolute right-0 mt-1 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-10 py-1">
+                    <div id="budgetMenuDropdown" class="hidden absolute right-0 mt-1 w-48 bg-chele-surface border border-chele-border rounded-lg shadow-lg z-10 py-1">
                         <form method="post" action="{% url 'copy_budget' %}">
                             {% csrf_token %}
                             <input type="hidden" name="from_month" value="{{ current_month|add:'-1' }}">
                             <input type="hidden" name="from_year" value="{{ current_year }}">
                             <input type="hidden" name="to_month" value="{{ current_month }}">
                             <input type="hidden" name="to_year" value="{{ current_year }}">
-                            <button type="submit" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Copiar del mes anterior</button>
+                            <button type="submit" class="w-full text-left px-4 py-2 text-sm text-chele-text hover:bg-chele-bg-tertiary">Copiar del mes anterior</button>
                         </form>
-                        <button class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Promedio 3 meses</button>
-                        <button class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Promedio 6 meses</button>
+                        <button class="w-full text-left px-4 py-2 text-sm text-chele-text hover:bg-chele-bg-tertiary">Promedio 3 meses</button>
+                        <button class="w-full text-left px-4 py-2 text-sm text-chele-text hover:bg-chele-bg-tertiary">Promedio 6 meses</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="bg-white border-b border-gray-200">
+    <div class="bg-chele-surface border-b border-chele-border">
         <div class="flex px-4 md:px-6 py-4" style="min-width: 700px;">
             <div class="w-56 shrink-0"></div>
             {% for m in months %}
-            <div class="flex-1 text-center border-l border-gray-100 px-3 {% if m.active %}bg-blue-50/30{% endif %}">
+            <div class="flex-1 text-center border-l border-chele-border px-3 {% if m.active %}bg-chele-primary/10{% endif %}">
                 <div class="flex items-center justify-center gap-2 mb-2">
-                    <button class="text-gray-300 hover:text-gray-500 text-sm">▼</button>
-                    <span class="text-sm font-bold {% if m.active %}text-[#2563EB]{% else %}text-gray-700{% endif %}">{{ m.label }}</span>
-                    <button class="text-gray-300 hover:text-gray-500 text-sm">📄</button>
+                    <button class="text-chele-text-muted hover:text-chele-text-secondary text-sm">▼</button>
+                    <span class="text-sm font-bold {% if m.active %}text-chele-primary{% else %}text-chele-text-secondary{% endif %}">{{ m.label }}</span>
+                    <button class="text-chele-text-muted hover:text-chele-text-secondary text-sm">📄</button>
                 </div>
                 <div class="text-right space-y-1.5">
                     <div class="flex justify-between text-sm">
-                        <span class="text-gray-500">Fondos disponibles</span>
-                        <span class="font-semibold text-gray-800 amount">${{ m.available_funds|floatformat:2 }}</span>
+                        <span class="text-chele-text-muted">Fondos disponibles</span>
+                        <span class="font-semibold text-chele-text amount">${{ m.available_funds|floatformat:2 }}</span>
                     </div>
                     <div class="flex justify-between text-sm">
-                        <span class="text-gray-500">Sobregasto anterior</span>
-                        <span class="font-semibold amount {% if m.overspent_prev > 0 %}text-chele-danger{% else %}text-gray-800{% endif %}">{% if m.overspent_prev > 0 %}-{% endif %}${{ m.overspent_prev|floatformat:2 }}</span>
+                        <span class="text-chele-text-muted">Sobregasto anterior</span>
+                        <span class="font-semibold amount {% if m.overspent_prev > 0 %}text-chele-danger{% else %}text-chele-text{% endif %}">{% if m.overspent_prev > 0 %}-{% endif %}${{ m.overspent_prev|floatformat:2 }}</span>
                     </div>
                     <div class="flex justify-between text-sm">
-                        <span class="text-gray-500">Presupuestado</span>
-                        <span class="font-semibold text-gray-800 amount">${{ m.total_budgeted|floatformat:2 }}</span>
+                        <span class="text-chele-text-muted">Presupuestado</span>
+                        <span class="font-semibold text-chele-text amount">${{ m.total_budgeted|floatformat:2 }}</span>
                     </div>
                     <div class="flex justify-between text-sm">
-                        <span class="text-gray-500">Para el próximo mes</span>
-                        <span class="font-semibold amount {% if m.for_next_month > 0 %}text-chele-success{% else %}text-gray-800{% endif %}">${{ m.for_next_month|floatformat:2 }}</span>
+                        <span class="text-chele-text-muted">Para el próximo mes</span>
+                        <span class="font-semibold amount {% if m.for_next_month > 0 %}text-chele-success{% else %}text-chele-text{% endif %}">${{ m.for_next_month|floatformat:2 }}</span>
                     </div>
                 </div>
-                <div class="mt-3 pt-3 border-t border-gray-100 text-right">
-                    <span class="text-sm text-gray-500">A presupuestar:</span>
+                <div class="mt-3 pt-3 border-t border-chele-border text-right">
+                    <span class="text-sm text-chele-text-muted">A presupuestar:</span>
                     <div class="text-xl font-bold amount {% if m.for_next_month >= 0 %}text-chele-success{% else %}text-chele-danger{% endif %}">
                         ${{ m.for_next_month|floatformat:2 }}
                     </div>
@@ -85,34 +85,34 @@
     </div>
 
     <div class="px-4 md:px-6 py-5">
-        <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
+        <div class="bg-chele-surface rounded-lg border border-chele-border overflow-hidden">
             <div class="table-scroll">
             <table class="w-full min-w-[700px]">
                 <thead>
-                    <tr class="border-b border-gray-200 bg-gray-50/80">
-                        <th class="text-left px-4 py-3 text-sm font-semibold text-gray-600 uppercase sticky left-0 bg-gray-50/80" style="width:200px">Categoría</th>
+                    <tr class="border-b border-chele-border bg-chele-bg-secondary/80">
+                        <th class="text-left px-4 py-3 text-sm font-semibold text-chele-text-secondary uppercase sticky left-0 bg-chele-bg-secondary/80" style="width:200px">Categoría</th>
                         {% for m in months %}
-                        <th class="text-right px-2 py-3 text-sm font-semibold text-gray-600 uppercase" style="width:90px">Presupuestado</th>
-                        <th class="text-right px-2 py-3 text-sm font-semibold text-gray-600 uppercase" style="width:90px">Actividad</th>
-                        <th class="text-right px-2 py-3 text-sm font-semibold text-gray-600 uppercase" style="width:90px">Disponible</th>
+                        <th class="text-right px-2 py-3 text-sm font-semibold text-chele-text-secondary uppercase" style="width:90px">Presupuestado</th>
+                        <th class="text-right px-2 py-3 text-sm font-semibold text-chele-text-secondary uppercase" style="width:90px">Actividad</th>
+                        <th class="text-right px-2 py-3 text-sm font-semibold text-chele-text-secondary uppercase" style="width:90px">Disponible</th>
                         {% endfor %}
                     </tr>
                 </thead>
                 <tbody>
                     {% for group in groups %}
                     {% if not group.group.is_income %}
-                    <tr class="border-b border-gray-100">
-                        <td class="px-4 py-3 text-sm font-semibold text-gray-700 sticky left-0 bg-white" colspan="100">{{ group.group.name }}</td>
+                    <tr class="border-b border-chele-border">
+                        <td class="px-4 py-3 text-sm font-semibold text-chele-text-secondary sticky left-0 bg-chele-surface" colspan="100">{{ group.group.name }}</td>
                     </tr>
                     {% for cat in group.categories %}
-                    <tr class="border-b border-gray-50 hover:bg-gray-50/30 transition group">
-                        <td class="px-4 py-3 text-sm text-gray-800 sticky left-0 bg-white">
+                    <tr class="border-b border-chele-border hover:bg-chele-bg-tertiary/30 transition group">
+                        <td class="px-4 py-3 text-sm text-chele-text sticky left-0 bg-chele-surface">
                             <div class="flex items-center gap-2">
                                 <span>{{ cat.category.name }}</span>
                                 {% if cat.can_delete %}
                                 <form method="post" action="{% url 'category_delete' cat.category.id %}" class="inline hidden group-hover:inline" onsubmit="return confirm('¿Eliminar {{ cat.category.name }}?')">
                                     {% csrf_token %}
-                                    <button type="submit" class="text-xs text-chele-danger hover:text-red-700" title="Eliminar categoría">✕</button>
+                                    <button type="submit" class="text-xs text-chele-danger hover:text-red-400" title="Eliminar categoría">✕</button>
                                 </form>
                                 {% endif %}
                             </div>
@@ -125,7 +125,7 @@
                                 <input type="hidden" name="month" value="{{ cm.month }}">
                                 <input type="hidden" name="year" value="{{ cm.year }}">
                                 <input type="number" step="0.01" name="amount" value="{{ cm.budgeted|floatformat:2 }}"
-                                       class="w-20 text-right border-0 border-b border-transparent focus:border-chele-gold focus:ring-0 bg-transparent px-1 py-0.5 text-sm hover:border-gray-300"
+                                       class="w-20 text-right border-0 border-b border-transparent focus:border-chele-primary focus:ring-0 bg-transparent px-1 py-0.5 text-sm hover:border-chele-border text-chele-text"
                                        onchange="this.form.submit()">
                             </form>
                         </td>
@@ -142,18 +142,18 @@
                     {% endfor %}
                     {% for group in groups %}
                     {% if group.group.is_income %}
-                    <tr class="border-t-2 border-gray-300">
-                        <td class="px-4 py-3 text-sm font-bold text-chele-success sticky left-0 bg-white" colspan="100">💰 {{ group.group.name }}</td>
+                    <tr class="border-t-2 border-chele-border">
+                        <td class="px-4 py-3 text-sm font-bold text-chele-success sticky left-0 bg-chele-surface" colspan="100">💰 {{ group.group.name }}</td>
                     </tr>
                     {% for cat in group.categories %}
-                    <tr class="border-b border-gray-50 hover:bg-gray-50/30 transition group">
-                        <td class="px-4 py-3 text-sm text-chele-success sticky left-0 bg-white">
+                    <tr class="border-b border-chele-border hover:bg-chele-bg-tertiary/30 transition group">
+                        <td class="px-4 py-3 text-sm text-chele-success sticky left-0 bg-chele-surface">
                             <div class="flex items-center gap-2">
                                 <span>+ {{ cat.category.name }}</span>
                                 {% if cat.can_delete %}
                                 <form method="post" action="{% url 'category_delete' cat.category.id %}" class="inline hidden group-hover:inline" onsubmit="return confirm('¿Eliminar {{ cat.category.name }}?')">
                                     {% csrf_token %}
-                                    <button type="submit" class="text-xs text-chele-danger hover:text-red-700" title="Eliminar categoría">✕</button>
+                                    <button type="submit" class="text-xs text-chele-danger hover:text-red-400" title="Eliminar categoría">✕</button>
                                 </form>
                                 {% endif %}
                             </div>
@@ -172,73 +172,73 @@
             </div>
         </div>
 
-        <div class="mt-4 flex items-center gap-4 text-sm text-gray-500">
-            <button onclick="openModal('transferModal')" class="text-chele-gold hover:text-chele-gold-dark font-medium">Mover dinero</button>
+        <div class="mt-4 flex items-center gap-4 text-sm text-chele-text-muted">
+            <button onclick="openModal('transferModal')" class="text-chele-primary hover:text-chele-primary-dark font-medium">Mover dinero</button>
             <form method="post" action="{% url 'hold_for_next_month' %}" class="inline">
                 {% csrf_token %}
-                <button type="submit" class="text-chele-gold hover:text-chele-gold-dark font-medium">Reservar para próximo mes</button>
+                <button type="submit" class="text-chele-primary hover:text-chele-primary-dark font-medium">Reservar para próximo mes</button>
             </form>
         </div>
     </div>
 
-    <div id="editBudgetModal" class="hidden fixed inset-0 bg-black/30 z-50 flex items-start justify-center pt-10 md:pt-20 overflow-y-auto" onclick="if(event.target===this)closeModal('editBudgetModal')">
-        <div class="bg-white rounded-xl shadow-xl w-full max-w-lg mx-4 mb-10">
-            <div class="flex items-center justify-between p-5 md:p-6 border-b border-gray-200">
+    <div id="editBudgetModal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-start justify-center pt-10 md:pt-20 overflow-y-auto" onclick="if(event.target===this)closeModal('editBudgetModal')">
+        <div class="bg-chele-surface rounded-xl shadow-xl w-full max-w-lg mx-4 mb-10">
+            <div class="flex items-center justify-between p-5 md:p-6 border-b border-chele-border">
                 <h3 class="text-lg font-bold text-chele-text flex items-center gap-2">🐷 Editar categorías</h3>
-                <button onclick="closeModal('editBudgetModal')" class="text-gray-400 hover:text-gray-600 text-2xl">✕</button>
+                <button onclick="closeModal('editBudgetModal')" class="text-chele-text-muted hover:text-chele-text-secondary text-2xl">✕</button>
             </div>
             <div class="p-5 md:p-6 space-y-6">
-                <form method="post" action="{% url 'category_group_create' %}" class="flex items-center gap-2 bg-gray-50 rounded-lg p-3 border border-dashed border-gray-300">
+                <form method="post" action="{% url 'category_group_create' %}" class="flex items-center gap-2 bg-chele-bg-secondary rounded-lg p-3 border border-dashed border-chele-border">
                     {% csrf_token %}
-                    <input type="text" name="name" placeholder="Nombre del nuevo grupo" required class="flex-1 border border-chele-border rounded px-3 py-2 text-sm">
-                    <button type="submit" class="bg-chele-gold text-white px-4 py-2 rounded text-sm font-medium hover:bg-chele-gold-dark whitespace-nowrap">+ Grupo</button>
+                    <input type="text" name="name" placeholder="Nombre del nuevo grupo" required class="flex-1 bg-chele-bg border border-chele-border rounded px-3 py-2 text-sm text-chele-text">
+                    <button type="submit" class="bg-chele-primary text-white px-4 py-2 rounded text-sm font-medium hover:bg-chele-primary-dark whitespace-nowrap">+ Grupo</button>
                 </form>
                 {% for group in groups %}
-                <div class="bg-gray-50 rounded-lg p-4">
+                <div class="bg-chele-bg-secondary rounded-lg p-4">
                     <div class="flex items-center justify-between mb-3">
                         <h4 class="text-base font-bold text-chele-text">{{ group.group.name }}</h4>
                         {% if not group.group.is_income %}
                         <div class="flex items-center gap-2">
                             <button onclick="document.getElementById('ecg{{ forloop.counter }}').classList.toggle('hidden')"
-                                    class="inline-flex items-center gap-1.5 text-sm font-medium text-chele-gold hover:text-chele-gold-dark bg-amber-50 border border-chele-gold/30 rounded-lg px-4 py-2">
+                                    class="inline-flex items-center gap-1.5 text-sm font-medium text-chele-primary hover:text-chele-primary-dark bg-chele-primary/10 border border-chele-primary/30 rounded-lg px-4 py-2">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                                 Agregar
                             </button>
                             <form method="post" action="{% url 'category_group_edit' group.group.id %}" class="inline-flex items-center gap-1">
                                 {% csrf_token %}
                                 <input type="text" name="name" value="{{ group.group.name }}" required
-                                       class="hidden border border-chele-border rounded px-2 py-0.5 text-sm w-32 group-edit-input" 
+                                       class="hidden bg-chele-bg border border-chele-border rounded px-2 py-0.5 text-sm w-32 text-chele-text group-edit-input" 
                                        onblur="this.closest('form').submit()">
                             </form>
                             <button onclick="var i=this.closest('div').querySelector('.group-edit-input');i.classList.toggle('hidden');i.focus()" 
-                                    class="text-xs text-chele-gold hover:text-chele-gold-dark">✏️</button>
+                                    class="text-xs text-chele-primary hover:text-chele-primary-dark">✏️</button>
                             <form method="post" action="{% url 'category_group_delete' group.group.id %}" class="inline" onsubmit="return confirm('¿Eliminar grupo {{ group.group.name }} y todas sus categorías?')">
                                 {% csrf_token %}
-                                <button type="submit" class="text-xs text-chele-danger hover:text-red-700">🗑️</button>
+                                <button type="submit" class="text-xs text-chele-danger hover:text-red-400">🗑️</button>
                             </form>
                         </div>
                         {% endif %}
                     </div>
-                    <form id="ecg{{ forloop.counter }}" method="post" action="{% url 'category_create' %}" class="hidden mb-3 flex items-center gap-2 bg-white rounded-lg border border-chele-border p-3">
+                    <form id="ecg{{ forloop.counter }}" method="post" action="{% url 'category_create' %}" class="hidden mb-3 flex items-center gap-2 bg-chele-bg-secondary rounded-lg border border-chele-border p-3">
                         {% csrf_token %}
                         <input type="hidden" name="group_id" value="{{ group.group.id }}">
-                        <input type="text" name="name" placeholder="Nombre de la nueva categoría" required class="flex-1 border border-chele-border rounded px-3 py-2 text-sm">
-                        <button type="submit" class="bg-chele-gold text-white px-4 py-2 rounded text-sm font-medium hover:bg-chele-gold-dark">Crear</button>
+                        <input type="text" name="name" placeholder="Nombre de la nueva categoría" required class="flex-1 bg-chele-bg border border-chele-border rounded px-3 py-2 text-sm text-chele-text">
+                        <button type="submit" class="bg-chele-primary text-white px-4 py-2 rounded text-sm font-medium hover:bg-chele-primary-dark">Crear</button>
                         <button type="button" onclick="this.closest('form').classList.add('hidden')" class="text-chele-danger text-lg px-2">✕</button>
                     </form>
                     <div class="space-y-1">
                         {% for cat in group.categories %}
-                        <div class="flex items-center justify-between py-2 px-3 rounded-lg bg-white border border-gray-100 hover:border-chele-border">
+                        <div class="flex items-center justify-between py-2 px-3 rounded-lg bg-chele-bg border border-chele-border hover:border-chele-border-light">
                             <span class="text-sm font-medium text-chele-text">{{ cat.category.name }}</span>
                             {% if not group.group.is_income %}
                             <div class="flex gap-2">
                                 <form method="post" action="{% url 'category_edit' cat.category.id %}" class="flex items-center gap-1">
                                     {% csrf_token %}
-                                    <input type="text" name="name" value="{{ cat.category.name }}" required class="border border-chele-border rounded px-2 py-1 text-sm w-24">
+                                    <input type="text" name="name" value="{{ cat.category.name }}" required class="bg-chele-bg border border-chele-border rounded px-2 py-1 text-sm w-24 text-chele-text">
                                 </form>
                                 <form method="post" action="{% url 'category_delete' cat.category.id %}" class="inline" onsubmit="return confirm('¿Eliminar {{ cat.category.name }}?')">
                                     {% csrf_token %}
-                                    <button type="submit" class="text-chele-danger hover:text-red-700 p-1">
+                                    <button type="submit" class="text-chele-danger hover:text-red-400 p-1">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                                     </button>
                                 </form>
@@ -253,19 +253,19 @@
         </div>
     </div>
 
-    <div id="transferModal" class="hidden fixed inset-0 bg-black/30 z-50 flex items-center justify-center" onclick="if(event.target===this)closeModal('transferModal')">
-        <div class="bg-white rounded-xl shadow-xl w-full max-w-md mx-4 p-6">
+    <div id="transferModal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center" onclick="if(event.target===this)closeModal('transferModal')">
+        <div class="bg-chele-surface rounded-xl shadow-xl w-full max-w-md mx-4 p-6">
             <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-bold text-gray-900">Mover dinero</h3>
-                <button onclick="closeModal('transferModal')" class="text-gray-400 hover:text-gray-600 text-xl">✕</button>
+                <h3 class="text-lg font-bold text-chele-text">Mover dinero</h3>
+                <button onclick="closeModal('transferModal')" class="text-chele-text-muted hover:text-chele-text-secondary text-xl">✕</button>
             </div>
             <form method="post" action="{% url 'move_funds' %}">
                 {% csrf_token %}
                 <input type="hidden" name="month" value="{{ current_month }}">
                 <input type="hidden" name="year" value="{{ current_year }}">
                 <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">De</label>
-                    <select name="from_category" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" required>
+                    <label class="block text-sm font-medium text-chele-text-secondary mb-1">De</label>
+                    <select name="from_category" class="w-full bg-chele-bg border border-chele-border rounded-lg px-3 py-2 text-sm text-chele-text" required>
                         <option value="">Seleccionar categoría</option>
                         {% for g in groups %}{% for cat in g.categories %}
                         <option value="{{ cat.category.id }}">{{ cat.category.name }}</option>
@@ -273,8 +273,8 @@
                     </select>
                 </div>
                 <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Para</label>
-                    <select name="to_category" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" required>
+                    <label class="block text-sm font-medium text-chele-text-secondary mb-1">Para</label>
+                    <select name="to_category" class="w-full bg-chele-bg border border-chele-border rounded-lg px-3 py-2 text-sm text-chele-text" required>
                         <option value="">Seleccionar categoría</option>
                         {% for g in groups %}{% for cat in g.categories %}
                         <option value="{{ cat.category.id }}">{{ cat.category.name }}</option>
@@ -282,12 +282,12 @@
                     </select>
                 </div>
                 <div class="mb-6">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Monto</label>
-                    <input type="number" step="0.01" name="amount" required class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                    <label class="block text-sm font-medium text-chele-text-secondary mb-1">Monto</label>
+                    <input type="number" step="0.01" name="amount" required class="w-full bg-chele-bg border border-chele-border rounded-lg px-3 py-2 text-sm text-chele-text">
                 </div>
                 <div class="flex justify-end gap-3">
-                    <button type="button" onclick="closeModal('transferModal')" class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800">Cancelar</button>
-                    <button type="submit" class="px-4 py-2 text-sm bg-[#2563EB] text-white rounded-lg hover:bg-blue-700">Mover</button>
+                    <button type="button" onclick="closeModal('transferModal')" class="px-4 py-2 text-sm text-chele-text-secondary hover:text-chele-text">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 text-sm bg-chele-primary text-white rounded-lg hover:bg-chele-primary-dark">Mover</button>
                 </div>
             </form>
         </div>
