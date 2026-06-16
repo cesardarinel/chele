@@ -23,4 +23,4 @@
 ## 5. Finalize
 
 - [x] 5.1 Run full test suite
-- [ ] 5.2 Commit and push all changes
+- [x] 5.2 Commit and push all changes
