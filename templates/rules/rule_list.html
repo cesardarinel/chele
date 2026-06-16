@@ -19,7 +19,7 @@
                         {% if rule.action_category %} → {{ rule.action_category.name }}{% endif %}
                     </p>
                 </div>
-                <a href="{% url 'rule_edit' rule.id %}" class="text-xs text-chele-primary hover:text-chele-primary-dark shrink-0 whitespace-nowrap">Editar</a>
+                <a href="{% url 'rule_edit' rule.id %}" class="text-xs text-amber-400 hover:text-amber-300 shrink-0 whitespace-nowrap">Editar</a>
             </div>
         </div>
         {% empty %}

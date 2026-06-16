@@ -14,7 +14,7 @@
                 <p class="text-xs text-chele-text-secondary">{{ goal.get_goal_type_display }} — ${{ goal.amount }}</p>
             </div>
             <div class="flex gap-3 shrink-0">
-                <a href="{% url 'goal_edit' goal.id %}" class="text-xs text-chele-primary hover:text-chele-primary-dark">Editar</a>
+                <a href="{% url 'goal_edit' goal.id %}" class="text-xs text-amber-400 hover:text-amber-300">Editar</a>
                 <form method="post" action="{% url 'goal_delete' goal.id %}">
                     {% csrf_token %}
                     <button type="submit" class="text-xs text-chele-danger hover:text-red-400">Eliminar</button>

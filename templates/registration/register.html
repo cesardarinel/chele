@@ -30,20 +30,20 @@
                 {% csrf_token %}
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-chele-text mb-1">Nombre</label>
-                    <input type="text" name="name" required class="w-full bg-chele-bg border border-chele-border rounded-lg px-3 py-2.5 text-sm focus:border-chele-primary focus:ring-1 focus:ring-chele-primary text-chele-text">
+                    <input type="text" name="name" required class="w-full bg-chele-bg border border-chele-border rounded-lg px-3 py-2.5 text-sm focus:border-amber-400 focus:ring-1 focus:ring-amber-400 text-chele-text">
                 </div>
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-chele-text mb-1">Email</label>
-                    <input type="email" name="email" required class="w-full bg-chele-bg border border-chele-border rounded-lg px-3 py-2.5 text-sm focus:border-chele-primary focus:ring-1 focus:ring-chele-primary text-chele-text">
+                    <input type="email" name="email" required class="w-full bg-chele-bg border border-chele-border rounded-lg px-3 py-2.5 text-sm focus:border-amber-400 focus:ring-1 focus:ring-amber-400 text-chele-text">
                 </div>
                 <div class="mb-6">
                     <label class="block text-sm font-medium text-chele-text mb-1">Contraseña</label>
-                    <input type="password" name="password" required class="w-full bg-chele-bg border border-chele-border rounded-lg px-3 py-2.5 text-sm focus:border-chele-primary focus:ring-1 focus:ring-chele-primary text-chele-text">
+                    <input type="password" name="password" required class="w-full bg-chele-bg border border-chele-border rounded-lg px-3 py-2.5 text-sm focus:border-amber-400 focus:ring-1 focus:ring-amber-400 text-chele-text">
                 </div>
                 <button type="submit" class="w-full bg-chele-primary text-white rounded-lg py-2.5 text-sm font-medium hover:bg-chele-primary-dark transition">Crear cuenta</button>
             </form>
             <p class="mt-4 text-sm text-center text-chele-text-secondary">
-                ¿Ya tenés cuenta? <a href="{% url 'login' %}" class="text-chele-primary hover:text-chele-primary-dark font-medium">Accedé</a>
+                ¿Ya tenés cuenta? <a href="{% url 'login' %}" class="text-amber-400 hover:text-amber-300 font-medium">Accedé</a>
             </p>
         </div>
     </div>

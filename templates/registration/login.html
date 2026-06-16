@@ -30,11 +30,11 @@
                 {% csrf_token %}
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-chele-text mb-1">Email</label>
-                    <input type="email" name="username" required class="w-full bg-chele-bg border border-chele-border rounded-lg px-3 py-2.5 text-sm focus:border-chele-primary focus:ring-1 focus:ring-chele-primary text-chele-text">
+                    <input type="email" name="username" required class="w-full bg-chele-bg border border-chele-border rounded-lg px-3 py-2.5 text-sm focus:border-amber-400 focus:ring-1 focus:ring-amber-400 text-chele-text">
                 </div>
                 <div class="mb-6">
                     <label class="block text-sm font-medium text-chele-text mb-1">Contraseña</label>
-                    <input type="password" name="password" required class="w-full bg-chele-bg border border-chele-border rounded-lg px-3 py-2.5 text-sm focus:border-chele-primary focus:ring-1 focus:ring-chele-primary text-chele-text">
+                    <input type="password" name="password" required class="w-full bg-chele-bg border border-chele-border rounded-lg px-3 py-2.5 text-sm focus:border-amber-400 focus:ring-1 focus:ring-amber-400 text-chele-text">
                 </div>
                 {% if form.errors %}
                 <div class="mb-4 p-3 bg-red-900/20 text-chele-danger rounded-lg text-sm border border-red-900/30">Email o contraseña incorrectos.</div>
@@ -42,7 +42,7 @@
                 <button type="submit" class="w-full bg-chele-primary text-white rounded-lg py-2.5 text-sm font-medium hover:bg-chele-primary-dark transition">Acceder</button>
             </form>
             <p class="mt-4 text-sm text-center text-chele-text-secondary">
-                ¿No tenés cuenta? <a href="{% url 'register' %}" class="text-chele-primary hover:text-chele-primary-dark font-medium">Registrate</a>
+                ¿No tenés cuenta? <a href="{% url 'register' %}" class="text-amber-400 hover:text-amber-300 font-medium">Registrate</a>
             </p>
         </div>
     </div>

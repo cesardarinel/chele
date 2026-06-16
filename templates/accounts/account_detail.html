@@ -56,7 +56,7 @@
     <div class="bg-chele-surface rounded-xl shadow-xl w-full max-w-lg mx-4 mb-10">
         <div class="flex items-center justify-between p-5 border-b border-chele-border">
             <h3 class="text-lg font-bold text-chele-text flex items-center gap-2">Nueva transacción</h3>
-            <button onclick="closeModal('txModal')" class="text-chele-text-muted hover:text-chele-text-secondary text-2xl">✕</button>
+            <button onclick="closeModal('txModal')" class="text-gray-400 hover:text-gray-300 text-2xl">✕</button>
         </div>
         <form method="post" action="{% url 'transaction_create' %}" class="p-5 space-y-4">
             {% csrf_token %}
@@ -64,11 +64,11 @@
                 <label class="block text-sm font-medium text-chele-text mb-1">Tipo</label>
                 <div class="flex gap-4">
                     <label class="flex items-center gap-2 text-sm cursor-pointer">
-                        <input type="radio" name="direction" value="expense" checked class="text-chele-primary">
+                        <input type="radio" name="direction" value="expense" checked class="text-amber-400">
                         <span>💸 Gasto</span>
                     </label>
                     <label class="flex items-center gap-2 text-sm cursor-pointer">
-                        <input type="radio" name="direction" value="income" class="text-chele-primary">
+                        <input type="radio" name="direction" value="income" class="text-amber-400">
                         <span>💰 Ingreso</span>
                     </label>
                 </div>

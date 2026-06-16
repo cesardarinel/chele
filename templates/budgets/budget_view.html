@@ -6,26 +6,26 @@
         <div class="flex flex-wrap items-center justify-between gap-2">
             <div class="flex items-center gap-3">
                 <h2 class="text-xl font-bold text-chele-text">{{ active_budget.name }}</h2>
-                <button onclick="openModal('editBudgetModal')" class="text-sm text-chele-primary hover:text-chele-primary-dark border border-chele-primary rounded px-3 py-1">✎ Editar</button>
+                <button onclick="openModal('editBudgetModal')" class="text-sm text-amber-400 hover:text-amber-300 border border-amber-400/50 rounded px-3 py-1">✎ Editar</button>
             </div>
             <div class="flex items-center gap-3 flex-wrap">
-                <button onclick="togglePrivate()" id="privateBtn" class="text-chele-text-muted hover:text-chele-text-secondary p-1" title="Ocultar montos">
+                <button onclick="togglePrivate()" id="privateBtn" class="text-gray-400 hover:text-gray-300 p-1" title="Ocultar montos">
                     <svg class="w-5 h-5" id="eyeIcon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                 </button>
                 <div class="flex items-center gap-1">
-                    <a href="?mes={{ current_month|add:'-1' }}&anio={{ current_year }}&rango={{ request.GET.rango|default:'0' }}" class="px-2 py-1.5 text-chele-text-muted hover:text-chele-text-secondary text-lg leading-none">‹</a>
+                    <a href="?mes={{ current_month|add:'-1' }}&anio={{ current_year }}&rango={{ request.GET.rango|default:'0' }}" class="px-2 py-1.5 text-gray-400 hover:text-gray-300 text-lg leading-none">‹</a>
                     <span class="px-4 py-1.5 text-sm font-semibold bg-chele-primary text-white rounded whitespace-nowrap">
                         {% for m in months %}{% if m.active %}{{ m.label }}{% endif %}{% endfor %}
                     </span>
-                    <a href="?mes={{ current_month|add:'1' }}&anio={{ current_year }}&rango={{ request.GET.rango|default:'0' }}" class="px-2 py-1.5 text-chele-text-muted hover:text-chele-text-secondary text-lg leading-none">›</a>
+                    <a href="?mes={{ current_month|add:'1' }}&anio={{ current_year }}&rango={{ request.GET.rango|default:'0' }}" class="px-2 py-1.5 text-gray-400 hover:text-gray-300 text-lg leading-none">›</a>
                 </div>
                 <div class="flex gap-1 border-l border-chele-border pl-3">
-                    <a href="?rango=0&mes={{ current_month }}&anio={{ current_year }}" class="px-2 py-1 text-xs rounded {% if months|length == 1 %}bg-chele-bg-tertiary text-chele-text{% else %}text-chele-text-muted hover:text-chele-text-secondary{% endif %}">1m</a>
-                    <a href="?rango=1&mes={{ current_month }}&anio={{ current_year }}" class="px-2 py-1 text-xs rounded {% if months|length == 3 %}bg-chele-bg-tertiary text-chele-text{% else %}text-chele-text-muted hover:text-chele-text-secondary{% endif %}">3m</a>
-                    <a href="?rango=2&mes={{ current_month }}&anio={{ current_year }}" class="px-2 py-1 text-xs rounded {% if months|length == 5 %}bg-chele-bg-tertiary text-chele-text{% else %}text-chele-text-muted hover:text-chele-text-secondary{% endif %}">5m</a>
+                    <a href="?rango=0&mes={{ current_month }}&anio={{ current_year }}" class="px-2 py-1 text-xs rounded {% if months|length == 1 %}bg-chele-bg-tertiary text-chele-text{% else %}text-gray-400 hover:text-gray-300{% endif %}">1m</a>
+                    <a href="?rango=1&mes={{ current_month }}&anio={{ current_year }}" class="px-2 py-1 text-xs rounded {% if months|length == 3 %}bg-chele-bg-tertiary text-chele-text{% else %}text-gray-400 hover:text-gray-300{% endif %}">3m</a>
+                    <a href="?rango=2&mes={{ current_month }}&anio={{ current_year }}" class="px-2 py-1 text-xs rounded {% if months|length == 5 %}bg-chele-bg-tertiary text-chele-text{% else %}text-gray-400 hover:text-gray-300{% endif %}">5m</a>
                 </div>
                 <div class="relative" id="budgetMenu">
-                    <button onclick="document.getElementById('budgetMenuDropdown').classList.toggle('hidden')" class="text-chele-text-muted hover:text-chele-text-secondary p-1">
+                    <button onclick="document.getElementById('budgetMenuDropdown').classList.toggle('hidden')" class="text-gray-400 hover:text-gray-300 p-1">
                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"/></svg>
                     </button>
                     <div id="budgetMenuDropdown" class="hidden absolute right-0 mt-1 w-48 bg-chele-surface border border-chele-border rounded-lg shadow-lg z-10 py-1">
@@ -49,32 +49,32 @@
         <div class="flex px-4 md:px-6 py-4" style="min-width: 700px;">
             <div class="w-56 shrink-0"></div>
             {% for m in months %}
-            <div class="flex-1 text-center border-l border-chele-border px-3 {% if m.active %}bg-chele-primary/10{% endif %}">
+            <div class="flex-1 text-center border-l border-chele-border px-3 {% if m.active %}bg-white/5{% endif %}">
                 <div class="flex items-center justify-center gap-2 mb-2">
-                    <button class="text-chele-text-muted hover:text-chele-text-secondary text-sm">▼</button>
-                    <span class="text-sm font-bold {% if m.active %}text-chele-primary{% else %}text-chele-text-secondary{% endif %}">{{ m.label }}</span>
-                    <button class="text-chele-text-muted hover:text-chele-text-secondary text-sm">📄</button>
+                    <button class="text-gray-400 hover:text-gray-300 text-sm">▼</button>
+                    <span class="text-sm font-bold {% if m.active %}text-amber-400{% else %}text-gray-400{% endif %}">{{ m.label }}</span>
+                    <button class="text-gray-400 hover:text-gray-300 text-sm">📄</button>
                 </div>
                 <div class="text-right space-y-1.5">
                     <div class="flex justify-between text-sm">
-                        <span class="text-chele-text-muted">Fondos disponibles</span>
+                        <span class="text-gray-400">Fondos disponibles</span>
                         <span class="font-semibold text-chele-text amount">${{ m.available_funds|floatformat:2 }}</span>
                     </div>
                     <div class="flex justify-between text-sm">
-                        <span class="text-chele-text-muted">Sobregasto anterior</span>
+                        <span class="text-gray-400">Sobregasto anterior</span>
                         <span class="font-semibold amount {% if m.overspent_prev > 0 %}text-chele-danger{% else %}text-chele-text{% endif %}">{% if m.overspent_prev > 0 %}-{% endif %}${{ m.overspent_prev|floatformat:2 }}</span>
                     </div>
                     <div class="flex justify-between text-sm">
-                        <span class="text-chele-text-muted">Presupuestado</span>
+                        <span class="text-gray-400">Presupuestado</span>
                         <span class="font-semibold text-chele-text amount">${{ m.total_budgeted|floatformat:2 }}</span>
                     </div>
                     <div class="flex justify-between text-sm">
-                        <span class="text-chele-text-muted">Para el próximo mes</span>
+                        <span class="text-gray-400">Para el próximo mes</span>
                         <span class="font-semibold amount {% if m.for_next_month > 0 %}text-chele-success{% else %}text-chele-text{% endif %}">${{ m.for_next_month|floatformat:2 }}</span>
                     </div>
                 </div>
                 <div class="mt-3 pt-3 border-t border-chele-border text-right">
-                    <span class="text-sm text-chele-text-muted">A presupuestar:</span>
+                    <span class="text-sm text-gray-400">A presupuestar:</span>
                     <div class="text-xl font-bold amount {% if m.for_next_month >= 0 %}text-chele-success{% else %}text-chele-danger{% endif %}">
                         ${{ m.for_next_month|floatformat:2 }}
                     </div>
@@ -125,7 +125,7 @@
                                 <input type="hidden" name="month" value="{{ cm.month }}">
                                 <input type="hidden" name="year" value="{{ cm.year }}">
                                 <input type="number" step="0.01" name="amount" value="{{ cm.budgeted|floatformat:2 }}"
-                                       class="w-20 text-right border-0 border-b border-transparent focus:border-chele-primary focus:ring-0 bg-transparent px-1 py-0.5 text-sm hover:border-chele-border text-chele-text"
+                                       class="w-20 text-right border-0 border-b border-transparent focus:border-amber-400 focus:ring-0 bg-transparent px-1 py-0.5 text-sm hover:border-chele-border text-chele-text"
                                        onchange="this.form.submit()">
                             </form>
                         </td>
@@ -172,11 +172,11 @@
             </div>
         </div>
 
-        <div class="mt-4 flex items-center gap-4 text-sm text-chele-text-muted">
-            <button onclick="openModal('transferModal')" class="text-chele-primary hover:text-chele-primary-dark font-medium">Mover dinero</button>
+        <div class="mt-4 flex items-center gap-4 text-sm text-gray-400">
+            <button onclick="openModal('transferModal')" class="text-amber-400 hover:text-amber-300 font-medium">Mover dinero</button>
             <form method="post" action="{% url 'hold_for_next_month' %}" class="inline">
                 {% csrf_token %}
-                <button type="submit" class="text-chele-primary hover:text-chele-primary-dark font-medium">Reservar para próximo mes</button>
+                <button type="submit" class="text-amber-400 hover:text-amber-300 font-medium">Reservar para próximo mes</button>
             </form>
         </div>
     </div>
@@ -185,7 +185,7 @@
         <div class="bg-chele-surface rounded-xl shadow-xl w-full max-w-lg mx-4 mb-10">
             <div class="flex items-center justify-between p-5 md:p-6 border-b border-chele-border">
                 <h3 class="text-lg font-bold text-chele-text flex items-center gap-2">Editar categorías</h3>
-                <button onclick="closeModal('editBudgetModal')" class="text-chele-text-muted hover:text-chele-text-secondary text-2xl">✕</button>
+                <button onclick="closeModal('editBudgetModal')" class="text-gray-400 hover:text-gray-300 text-2xl">✕</button>
             </div>
             <div class="p-5 md:p-6 space-y-6">
                 <form method="post" action="{% url 'category_group_create' %}" class="flex items-center gap-2 bg-chele-bg-secondary rounded-lg p-3 border border-dashed border-chele-border">
@@ -200,7 +200,7 @@
                         {% if not group.group.is_income %}
                         <div class="flex items-center gap-2">
                             <button onclick="document.getElementById('ecg{{ forloop.counter }}').classList.toggle('hidden')"
-                                    class="inline-flex items-center gap-1.5 text-sm font-medium text-chele-primary hover:text-chele-primary-dark bg-chele-primary/10 border border-chele-primary/30 rounded-lg px-4 py-2">
+                                    class="inline-flex items-center gap-1.5 text-sm font-medium text-amber-400 hover:text-amber-300 bg-white/5 border border-amber-400/20 rounded-lg px-4 py-2">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                                 Agregar
                             </button>
@@ -211,7 +211,7 @@
                                        onblur="this.closest('form').submit()">
                             </form>
                             <button onclick="var i=this.closest('div').querySelector('.group-edit-input');i.classList.toggle('hidden');i.focus()" 
-                                    class="text-xs text-chele-primary hover:text-chele-primary-dark">✏️</button>
+                                    class="text-xs text-amber-400 hover:text-amber-300">✏️</button>
                             <form method="post" action="{% url 'category_group_delete' group.group.id %}" class="inline" onsubmit="return confirm('¿Eliminar grupo {{ group.group.name }} y todas sus categorías?')">
                                 {% csrf_token %}
                                 <button type="submit" class="text-xs text-chele-danger hover:text-red-400">🗑️</button>
@@ -257,7 +257,7 @@
         <div class="bg-chele-surface rounded-xl shadow-xl w-full max-w-md mx-4 p-6">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-lg font-bold text-chele-text">Mover dinero</h3>
-                <button onclick="closeModal('transferModal')" class="text-chele-text-muted hover:text-chele-text-secondary text-xl">✕</button>
+                <button onclick="closeModal('transferModal')" class="text-gray-400 hover:text-gray-300 text-xl">✕</button>
             </div>
             <form method="post" action="{% url 'move_funds' %}">
                 {% csrf_token %}

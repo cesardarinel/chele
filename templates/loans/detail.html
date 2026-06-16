@@ -14,13 +14,13 @@
         </div>
         <div class="flex items-center gap-2">
             {% if loan.status == 'active' %}
-            <a href="{% url 'loan_edit' loan.id %}" class="text-sm text-chele-primary hover:text-chele-primary-dark border border-chele-primary rounded px-3 py-1">✎ Editar</a>
+            <a href="{% url 'loan_edit' loan.id %}" class="text-sm text-amber-400 hover:text-amber-300 border border-amber-400/50 rounded px-3 py-1">✎ Editar</a>
             {% endif %}
             <form method="post" action="{% url 'loan_delete' loan.id %}" class="inline" onsubmit="return confirm('¿Eliminar préstamo {{ loan.name }}?')">
                 {% csrf_token %}
                 <button type="submit" class="text-sm text-chele-danger hover:text-red-400 border border-chele-danger rounded px-3 py-1">🗑️</button>
             </form>
-            <a href="{% url 'loan_list' %}" class="text-sm text-chele-text-muted hover:text-chele-text-secondary">← Volver</a>
+            <a href="{% url 'loan_list' %}" class="text-sm text-gray-400 hover:text-gray-300">← Volver</a>
         </div>
     </div>
 
@@ -82,7 +82,7 @@
                         <form method="post" action="{% url 'loan_pay_installment' loan.id %}" class="inline">
                             {% csrf_token %}
                             <input type="hidden" name="installment_id" value="{{ inst.id }}">
-                            <button type="submit" class="inline-flex items-center gap-1 text-chele-primary hover:text-chele-primary-dark font-medium text-xs px-3 py-1 rounded border border-chele-primary/30 hover:bg-amber-900/20 transition">
+                            <button type="submit" class="inline-flex items-center gap-1 text-amber-400 hover:text-amber-300 font-medium text-xs px-3 py-1 rounded border border-amber-400/20 hover:bg-amber-900/20 transition">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
                                 Pagar ahora
                             </button>

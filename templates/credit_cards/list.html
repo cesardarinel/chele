@@ -15,12 +15,12 @@
                 </div>
                 <div class="text-right">
                     <p class="text-sm font-bold text-chele-danger">${{ card.balance|floatformat:2 }}</p>
-                    <p class="text-xs text-chele-text-muted">{{ card.interest_rate|floatformat:2 }}% anual</p>
+                    <p class="text-xs text-gray-400">{{ card.interest_rate|floatformat:2 }}% anual</p>
                 </div>
             </div>
         </a>
         {% empty %}
-        <div class="text-center py-12 text-chele-text-muted">
+        <div class="text-center py-12 text-gray-400">
             <p class="text-4xl mb-2"></p>
             <p class="text-sm">No hay tarjetas de crédito registradas.</p>
         </div>

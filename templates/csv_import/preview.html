@@ -29,7 +29,7 @@
     <form method="post" action="{% url 'csv_confirm' %}">
         {% csrf_token %}
         <button type="submit" class="btn-primary">Confirmar importación</button>
-        <a href="{% url 'csv_import' %}" class="ml-3 text-sm text-chele-primary hover:text-chele-primary-dark">Volver</a>
+        <a href="{% url 'csv_import' %}" class="ml-3 text-sm text-amber-400 hover:text-amber-300">Volver</a>
     </form>
 </div>
 {% endblock %}
