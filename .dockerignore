@@ -1,6 +1,8 @@
 venv/
 .venv/
 .git/
+.gitignore
+.gitattributes
 __pycache__/
 *.pyc
 .env
@@ -9,3 +11,12 @@ db.sqlite3
 staticfiles/
 media/
 .DS_Store
+node_modules/
+*.md
+*.log
+.opencode/
+.gemini/
+openspec/
+.dockerignore
+docker-compose*.yml
+CHILE_GUIA_DE_USO.md

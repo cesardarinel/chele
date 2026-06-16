@@ -17,6 +17,7 @@ class Loan(models.Model):
     ]
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     budget = models.ForeignKey('budgets.Budget', on_delete=models.CASCADE, related_name='loans', verbose_name='presupuesto')
+    account = models.ForeignKey('accounts.Account', on_delete=models.SET_NULL, null=True, blank=True, related_name='loans', verbose_name='cuenta de pago')
     type = models.CharField(max_length=20, choices=LOAN_TYPES, verbose_name='tipo')
     name = models.CharField(max_length=200, verbose_name='nombre')
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='active', verbose_name='estado')

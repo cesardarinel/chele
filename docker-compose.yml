@@ -1,15 +1,36 @@
 services:
   web:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: chele:latest
+    container_name: chele-web
     ports:
-      - "8000:8000"
+      - "${PORT:-8000}:8000"
     env_file:
       - .env
+    environment:
+      - WORKERS=${WORKERS:-3}
     volumes:
       - sqlite_data:/app/db
       - static_volume:/app/staticfiles
     restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8000/')\""]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
 volumes:
   sqlite_data:
+    name: chele_sqlite_data
   static_volume:
+    name: chele_static_volume
