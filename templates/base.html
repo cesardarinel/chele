@@ -11,13 +11,16 @@
             extend: {
                 colors: {
                     chele: {
-                        gold: '#F59E0B', 'gold-dark': '#D97706', 'gold-light': '#FDE68A',
-                        pink: '#EC4899', 'pink-dark': '#DB2777',
-                        cream: '#FFFBEB',
-                        dark: '#1C1917', 'dark-hover': 'rgba(255,255,255,0.08)',
-                        success: '#10B981', danger: '#EF4444',
-                        text: '#1C1917', 'text-secondary': '#78716C', 'text-muted': '#A8A29E',
-                        border: '#E7E5E4',
+                        primary: '#164E63', 'primary-dark': '#0F3A48', 'primary-light': '#1A6B84',
+                        success: '#16A34A',
+                        warning: '#D97706',
+                        danger: '#DC2626',
+                        neutral: '#9CA3AF',
+                        bg: '#0F172A', 'bg-secondary': '#1E293B', 'bg-tertiary': '#334155',
+                        sidebar: '#0B1121', 'sidebar-hover': 'rgba(255,255,255,0.08)',
+                        surface: '#1E293B', 'surface-hover': '#334155',
+                        text: '#F1F5F9', 'text-secondary': '#94A3B8', 'text-muted': '#64748B',
+                        border: '#334155', 'border-light': '#475569',
                     }
                 },
                 animation: {
@@ -51,16 +54,16 @@
     <link rel="stylesheet" href="{% static 'css/chele.css' %}">
     <link rel="icon" href="{% static 'img/cerdito.svg' %}">
 </head>
-<body class="bg-chele-cream text-chele-text">
+<body class="bg-chele-bg text-chele-text">
     <div class="h-screen overflow-hidden flex flex-col md:flex-row" id="app">
         {% if user.is_authenticated %}
 
         <div id="sidebarOverlay" onclick="toggleSidebar()" class="sidebar-overlay fixed inset-0 z-40 hidden md:hidden"></div>
 
-        <aside id="sidebar" class="fixed md:static inset-y-0 left-0 z-50 w-72 md:w-64 bg-gradient-to-b from-chele-dark to-stone-800 flex flex-col h-full -translate-x-full md:translate-x-0 transition-transform duration-300">
+        <aside id="sidebar" class="fixed md:static inset-y-0 left-0 z-50 w-72 md:w-64 bg-gradient-to-b from-chele-sidebar to-[#060a14] flex flex-col h-full -translate-x-full md:translate-x-0 transition-transform duration-300">
             <div class="flex items-center justify-between px-3 md:px-4 py-3 border-b border-white/10">
                 <a href="{% url 'budget_view' %}" class="flex items-center gap-2 group">
-                    <svg class="w-6 h-6 md:w-7 md:h-7 text-chele-gold group-hover:animate-bounce-slow" viewBox="0 0 32 32" fill="currentColor">
+                    <svg class="w-6 h-6 md:w-7 md:h-7 text-chele-primary group-hover:animate-bounce-slow" viewBox="0 0 32 32" fill="currentColor">
                         <path d="M16 2C8.268 2 2 8.268 2 16s6.268 14 14 14 14-6.268 14-14S23.732 2 16 2zm0 4a2 2 0 012 2v.76A3.985 3.985 0 0120 8a4 4 0 010 8 3.985 3.985 0 01-2-.76V18h2a1 1 0 010 2h-2v2a1 1 0 01-2 0v-2h-2a1 1 0 010-2h2v-2.76A3.985 3.985 0 0112 16a4 4 0 014-4 2 2 0 100-4 2 2 0 00-2-2 1 1 0 010-2 4.002 4.002 0 013.874 2.76A2 2 0 0116 6zm0 2a2 2 0 100 4 2 2 0 000-4z"/>
                     </svg>
                     <span class="text-base md:text-lg font-bold text-white">Chele</span>
@@ -77,14 +80,14 @@
                         {% endfor %}
                     </select>
                 </form>
-                <a href="{% url 'budget_create' %}" class="inline-flex items-center gap-1 text-[10px] md:text-xs text-chele-gold hover:text-chele-gold-dark bg-white/5 rounded px-2 py-1 mt-2">
+                <a href="{% url 'budget_create' %}" class="inline-flex items-center gap-1 text-[10px] md:text-xs text-chele-primary hover:text-chele-primary-dark bg-white/5 rounded px-2 py-1 mt-2">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                     Nuevo presupuesto
                 </a>
             </div>
 
             <nav class="flex-1 overflow-y-auto px-3 md:px-4 py-2 space-y-1.5 sidebar-scroll">
-                <a href="{% url 'budget_view' %}" class="flex items-center gap-3 px-3 py-2 rounded text-xs md:text-sm text-gray-300 hover:bg-white/10 hover:text-white transition-all duration-150 {% if request.resolver_match.url_name == 'budget_view' %}bg-white/10 text-chele-gold{% endif %}">
+                <a href="{% url 'budget_view' %}" class="flex items-center gap-3 px-3 py-2 rounded text-xs md:text-sm text-gray-300 hover:bg-white/10 hover:text-white transition-all duration-150 {% if request.resolver_match.url_name == 'budget_view' %}bg-white/10 text-chele-primary{% endif %}">
                     <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
                     Presupuesto
                 </a>
@@ -101,13 +104,13 @@
                     <div class="px-3 mb-3">
                         <p class="text-xs md:text-sm text-chele-text-muted uppercase tracking-wider font-semibold mb-2">Finanzas</p>
                         <div class="flex flex-wrap gap-2">
-                            <a href="{% url 'account_create' %}" class="inline-flex items-center gap-1 text-xs text-chele-gold hover:text-chele-gold-dark bg-white/5 rounded px-2 py-1">
+                            <a href="{% url 'account_create' %}" class="inline-flex items-center gap-1 text-xs text-chele-primary hover:text-chele-primary-dark bg-white/5 rounded px-2 py-1">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11m16-11v11M8 14v3m4-3v3m4-3v3"/></svg> Cuenta
                             </a>
-                            <a href="{% url 'cc_create' %}" class="inline-flex items-center gap-1 text-xs text-chele-gold hover:text-chele-gold-dark bg-white/5 rounded px-2 py-1">
+                            <a href="{% url 'cc_create' %}" class="inline-flex items-center gap-1 text-xs text-chele-primary hover:text-chele-primary-dark bg-white/5 rounded px-2 py-1">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> TC
                             </a>
-                            <a href="{% url 'loan_create' %}" class="inline-flex items-center gap-1 text-xs text-chele-gold hover:text-chele-gold-dark bg-white/5 rounded px-2 py-1">
+                            <a href="{% url 'loan_create' %}" class="inline-flex items-center gap-1 text-xs text-chele-primary hover:text-chele-primary-dark bg-white/5 rounded px-2 py-1">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg> Préstamo
                             </a>
                         </div>
@@ -159,14 +162,14 @@
             </div>
         </aside>
 
-        <header class="md:hidden flex items-center gap-2 px-3 py-2 bg-white border-b border-chele-border shrink-0">
+        <header class="md:hidden flex items-center gap-2 px-3 py-2 bg-chele-bg-secondary border-b border-chele-border shrink-0">
             <button onclick="toggleSidebar()" class="text-chele-text text-xl p-1">☰</button>
             <img src="{% static 'img/cerdito.svg' %}" alt="🐷" class="w-5 h-5">
             <span class="text-sm font-bold text-chele-text">Chele</span>
             <div class="flex-1"></div>
             <form method="post" action="{% url 'switch_budget' %}" class="max-w-[140px]">
                 {% csrf_token %}
-                <select name="budget_id" onchange="this.form.submit()" class="text-xs bg-gray-50 border border-gray-200 rounded px-2 py-1">
+                <select name="budget_id" onchange="this.form.submit()" class="text-xs bg-chele-bg-secondary border-chele-border rounded px-2 py-1">
                     {% for b in user_budgets %}
                     <option value="{{ b.id }}" {% if b.id == active_budget.id %}selected{% endif %}>{{ b.name|truncatechars:12 }}</option>
                     {% endfor %}
@@ -179,7 +182,7 @@
             {% if messages %}
             <div class="px-3 md:px-6 pt-2 md:pt-4">
             {% for message in messages %}
-            <div class="mb-2 px-3 py-2 md:px-4 md:py-2.5 rounded-lg text-xs md:text-sm border animate-slide-up {% if message.tags == 'error' %}bg-red-50 text-chele-danger border-red-200{% else %}bg-emerald-50 text-chele-success border-emerald-200{% endif %}">
+            <div class="mb-2 px-3 py-2 md:px-4 md:py-2.5 rounded-lg text-xs md:text-sm border animate-slide-up {% if message.tags == 'error' %}bg-red-900/20 text-chele-danger border-red-900/30{% else %}bg-emerald-900/20 text-chele-success border-emerald-900/30{% endif %}">
                 <span class="flex items-center gap-1.5">
                     <span>🐷</span> {{ message }}
                 </span>
