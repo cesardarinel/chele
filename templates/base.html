@@ -121,7 +121,7 @@
                         <svg class="w-3.5 h-3.5 md:w-4 md:h-4 shrink-0 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11m16-11v11M8 14v3m4-3v3m4-3v3"/></svg>
                         <span class="truncate flex-1 ml-1.5">{{ account.name }}</span>
                         <span class="text-[10px] md:text-xs shrink-0 ml-1 {% if account.balance >= 0 %}text-chele-success{% else %}text-chele-danger{% endif %}">
-                            ${{ account.balance|floatformat:0 }}
+                            ${{ account.balance|floatformat:2 }}
                         </span>
                     </a>
                     {% endfor %}
