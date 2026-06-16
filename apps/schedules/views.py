@@ -37,15 +37,20 @@ def process_due_schedules(budget_id, budget):
     count = 0
     for s in due.select_related('account'):
         actual_date = _skip_weekend(s.next_date) if s.skip_weekends else s.next_date
-        amount = float(s.amount)
+        raw = float(s.amount)
         account = s.account
+        if s.direction == 'income':
+            amount = abs(raw)
+            account.balance = float(account.balance) + amount
+        else:
+            amount = -abs(raw)
+            account.balance = float(account.balance) - abs(raw)
         Transaction.objects.create(
             budget_id=budget_id, account=account,
-            date=actual_date, amount=-abs(amount),
+            date=actual_date, amount=amount,
             payee=s.payee, category=s.category,
             notes=s.notes or '',
         )
-        account.balance = float(account.balance) - abs(amount)
         account.save()
         s.next_date = _advance_date(s)
         s.save()
@@ -83,6 +88,7 @@ def schedule_create(request):
             next_date=next_date,
             notes=request.POST.get('notes', ''),
             skip_weekends=skip,
+            direction=request.POST.get('direction', 'expense'),
         )
         messages.success(request, 'Programación creada.')
         return redirect('schedules_list')
@@ -98,6 +104,7 @@ def schedule_edit(request, id):
         schedule.next_date = request.POST.get('next_date')
         schedule.notes = request.POST.get('notes', '')
         schedule.skip_weekends = request.POST.get('skip_weekends') == 'on'
+        schedule.direction = request.POST.get('direction', 'expense')
         schedule.save()
         messages.success(request, 'Programación actualizada.')
         return redirect('schedules_list')

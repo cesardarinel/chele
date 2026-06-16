@@ -1,7 +1,9 @@
+from datetime import date, timedelta
 import pytest
 from django.urls import reverse
 from apps.schedules.models import Schedule
 from apps.accounts.models import Account
+from apps.transactions.models import Transaction
 
 
 @pytest.mark.django_db
@@ -52,3 +54,52 @@ class TestSchedules:
         response = logged_client.post(reverse('schedule_delete', args=[s.id]))
         assert response.status_code == 302
         assert not Schedule.objects.filter(id=s.id).exists()
+
+    def test_create_income_schedule(self, logged_client, budget_with_categories):
+        account = Account.objects.create(budget=budget_with_categories, name='Caja')
+        session = logged_client.session
+        session['active_budget_id'] = str(budget_with_categories.id)
+        session.save()
+        response = logged_client.post(reverse('schedule_create'), {
+            'account_id': account.id,
+            'amount': 10000,
+            'frequency': 'monthly',
+            'next_date': '2026-07-01',
+            'direction': 'income',
+            'notes': 'Sueldo',
+        })
+        assert response.status_code == 302
+        s = Schedule.objects.get(amount=10000)
+        assert s.direction == 'income'
+
+    def test_income_schedule_execution(self, logged_client, budget_with_categories):
+        account = Account.objects.create(budget=budget_with_categories, name='Caja', balance=5000)
+        Schedule.objects.create(budget=budget_with_categories, account=account,
+            amount=2000, frequency='monthly', direction='income',
+            next_date=date.today() - timedelta(days=1))
+        session = logged_client.session
+        session['active_budget_id'] = str(budget_with_categories.id)
+        session.save()
+        response = logged_client.get(reverse('schedules_list'))
+        assert response.status_code == 200
+        txn = Transaction.objects.filter(account=account).first()
+        assert txn is not None
+        assert float(txn.amount) > 0
+        account.refresh_from_db()
+        assert float(account.balance) == 7000
+
+    def test_expense_schedule_execution(self, logged_client, budget_with_categories):
+        account = Account.objects.create(budget=budget_with_categories, name='Caja', balance=5000)
+        Schedule.objects.create(budget=budget_with_categories, account=account,
+            amount=1500, frequency='monthly', direction='expense',
+            next_date=date.today() - timedelta(days=1))
+        session = logged_client.session
+        session['active_budget_id'] = str(budget_with_categories.id)
+        session.save()
+        response = logged_client.get(reverse('schedules_list'))
+        assert response.status_code == 200
+        txn = Transaction.objects.filter(account=account).first()
+        assert txn is not None
+        assert float(txn.amount) < 0
+        account.refresh_from_db()
+        assert float(account.balance) == 3500

@@ -10,6 +10,10 @@ class Schedule(models.Model):
         ('quarterly', 'Trimestral'),
         ('yearly', 'Anual'),
     ]
+    DIRECTION_CHOICES = [
+        ('expense', 'Gasto'),
+        ('income', 'Ingreso'),
+    ]
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     budget = models.ForeignKey('budgets.Budget', on_delete=models.CASCADE, related_name='schedules', verbose_name='presupuesto')
     payee = models.ForeignKey('payees.Payee', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='beneficiario')
@@ -21,6 +25,7 @@ class Schedule(models.Model):
     notes = models.TextField(blank=True, verbose_name='notas')
     skip_weekends = models.BooleanField(default=False, verbose_name='saltar fines de semana')
     is_active = models.BooleanField(default=True, verbose_name='activo')
+    direction = models.CharField(max_length=10, choices=DIRECTION_CHOICES, default='expense', verbose_name='dirección')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
