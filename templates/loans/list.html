@@ -3,7 +3,7 @@
 {% block content %}
 <div class="px-4 md:px-6 py-5">
     <div class="flex items-center justify-between mb-6">
-        <h2 class="text-xl font-bold text-chele-text flex items-center gap-2">🐷 Préstamos</h2>
+        <h2 class="text-xl font-bold text-chele-text flex items-center gap-2">Préstamos</h2>
         <a href="{% url 'loan_create' %}" class="bg-chele-primary text-white px-4 py-2 rounded-lg text-sm hover:bg-chele-primary-dark">Nuevo préstamo</a>
     </div>
 
@@ -44,7 +44,7 @@
     {% endfor %}
     {% else %}
     <div class="text-center py-12 text-chele-text-muted">
-        <p class="text-4xl mb-2">🐷</p>
+        <p class="text-4xl mb-2"></p>
         <p class="text-sm">No hay préstamos registrados.</p>
     </div>
     {% endif %}

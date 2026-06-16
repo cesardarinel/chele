@@ -1,6 +1,6 @@
 ## Context
 
-**chele** — Aplicación Django + SQLite que implementa la metodología completa de YNAB (4 reglas). Multi-usuario, múltiples presupuestos independientes con switch entre ellos. La app está representada por **Cerdito** (una mascota tipo alcancía) que guía al usuario. Toda la interfaz está 100% en español, responsive (mobile-first). Frontend con Django Templates + HTMX + Tailwind CSS.
+**chele** — Aplicación Django + SQLite que implementa la metodología completa de YNAB (4 reglas). Multi-usuario, múltiples presupuestos independientes con switch entre ellos. La app usa una moneda como logo representando el dinero. Toda la interfaz está 100% en español, responsive (mobile-first). Frontend con Django Templates + HTMX + Tailwind CSS.
 
 ---
 
@@ -80,7 +80,7 @@ chele/
 │   └── helpers.py          # Helpers: get_active_budget, current_month_year
 ├── static/
 │   ├── css/chele.css
-│   └── img/cerdito.svg
+│   └── img/logo.svg
 ├── templates/
 │   ├── base.html           # Base responsive con sidebar colapsable
 │   ├── registration/
@@ -126,7 +126,7 @@ chele/
 - **Préstamos** como entidad separada con tasa de interés, cuotas, saldo pendiente
 - **Tarjetas de crédito** con cálculo de intereses por falta de pago
 - **Intereses acumulados diarios** para TC y préstamos
-- **Cerdito** como mascota/guía de la aplicación (logo, mensajes, animaciones)
+- **Moneda** como logo de la aplicación (identidad de marca)
 - **Responsive** mobile-first
 - Sync manual pull-to-refresh con last-write-wins
 - Importación CSV
@@ -288,9 +288,9 @@ aplicar_interes(tarjeta_o_prestamo)
 | TC con interés | Modelo separado CreditCard + InterestCharge | Account con tipo credit_card + interés | Separación clara de responsabilidades, cálculo de interés diario |
 | Préstamos | App `loans` separada con modelo Loan + Installment + Interest | Cuenta tipo loan | Los préstamos tienen comportamiento distinto (cuotas, amortización, interés) |
 | Intereses | `core/interest.py` reutilizable | Lógica duplicada en cada app | Single source of truth para cálculo financiero |
-| Mascota | **Cerdito** como logo + mensajes + animaciones | Sin mascota | Identidad de marca, hace la app más amigable |
+| Mascota | Chele branding (moneda como logo) | Sin mascota | Identidad de marca, hace la app más amigable |
 | UI Layout | Sidebar oscuro YNAB + responsive | Sidebar fijo | YNAB look & feel, adaptable a mobile |
-| Estilo visual | YNAB palette + Cerdito branding | Indigo | Consistencia con metodología |
+| Estilo visual | YNAB dark palette + Chele branding | Indigo | Consistencia con metodología |
 | Terminología | YNAB español: "Por asignar", "Actividad", "Disponible" | ActualBudget | Matching YNAB UX |
 | Idioma | 100% español hardcodeado en templates | Django i18n | MVP simple; post-MVP se puede migrar a i18n |
 | CSS Framework | Tailwind CSS | Bootstrap, vanilla | Tailwind moderno y fácil de mantener |
@@ -311,7 +311,7 @@ aplicar_interes(tarjeta_o_prestamo)
 │ ● Presup │  │Comida    │ 500  │ -300   │ 200  │ │
 │ ● Report │  └──────────┴──────┴────────┴──────┘ │
 │ ● Prog.  │                                      │
-│ ● Benef. │  [Cerdito te dice: "¡Vas bien!"]     │
+│ ● Benef. │  [💰 Todo en orden]                  │
 │ ● Reglas │                                      │
 │ ──────── │                                      │
 │ Cuentas  │                                      │
@@ -337,7 +337,7 @@ aplicar_interes(tarjeta_o_prestamo)
 │ Transporte │ 200 │-50 │  150     │
 │ ...                                │
 ├──────────────────────────────────┤
-│ 🐷 ¡Bien ahí!                    │  ← Cerdito mensaje
+│ 💰 Todo en orden                 │  ← Mensaje de saldo
 └──────────────────────────────────┘
 ```
 
@@ -359,96 +359,28 @@ Sidebar colapsable con overlay en mobile. Se abre con ☰, se cierra con ✕ o t
 
 ---
 
-## Paleta de Colores — Chele Cerdito
+## Paleta de Colores — Chele
 
-### Nueva paleta unificada
+Basada en YNAB dark mode. Definida como `chele-*` en Tailwind config.
 
-```
-CHILE COLOR SYSTEM v2
-═══════════════════════════════════════════════════
-
-Primary (Cerdito Gold):     #F59E0B
-Primary Dark:               #D97706
-Primary Light:              #FDE68A
-
-Secondary (Cerdito Pink):   #EC4899
-Secondary Dark:             #DB2777
-
-Dark (Sidebar):             #1C1917  (warm dark, reemplaza #141A26)
-Dark Text:                  #F5F5F4
-Dark Hover:                 rgba(255,255,255,0.08)
-
-Background:                 #FFFBEB  (warm cream, reemplaza #F7F8FA)
-Surface (cards):            #FFFFFF
-Border:                     #E7E5E4
-
-Success:                    #10B981  (emerald)
-Danger:                     #EF4444  (red)
-Warning:                    #F59E0B  (amber)
-
-Text Primary:               #1C1917
-Text Secondary:             #78716C
-Text Muted:                 #A8A29E
-
-Gradients:
-  Sidebar: linear-gradient(180deg, #1C1917 0%, #292524 100%)
-  Hero:    linear-gradient(135deg, #F59E0B 0%, #EC4899 100%)
-```
-
-### Mapeo de roles
-
-| Rol | Color | Hex | Uso |
-|---|---|---|---|
-| Sidebar bg | Warm Dark | `#1C1917` | Barra lateral, fondo oscuro |
-| Sidebar hover | White 8% | `rgba(255,255,255,0.08)` | Hover items sidebar |
-| Primary | Gold | `#F59E0B` | Botones principales, links, acentos |
-| Primary hover | Dark Gold | `#D97706` | Hover de botones primarios |
-| Secondary | Pink | `#EC4899` | Acentos secundarios, badges |
-| Background | Warm Cream | `#FFFBEB` | Fondo general de la app |
-| Success | Emerald | `#10B981` | Montos positivos, disponible |
-| Danger | Red | `#EF4444` | Montos negativos, deudas, intereses |
-| Warning | Amber | `#F59E0B` | Alertas, Cerdito mensajes |
-
----
-
-## Cerdito — Mascota de la App
-
-### Sistema de iconos
-
-```
-Logo oficial: SVG personalizado (no emoji)
-═══════════════════════════════════════════════════
-
-Cerdito Feliz    😊 🐷 → SVG con sonrisa, mejillas rosadas
-  Uso: login, onboarding, saldo positivo, empty states
-  Animación: bounce suave
-
-Cerdito Preocupado 😟 🐷 → SVG con ceño fruncido
-  Uso: alertas, deudas, gasto excesivo
-  Animación: wobble/temblor
-
-Cerdito Ahorrando  🪙 🐷 → SVG con moneda en la mano
-  Uso: metas de ahorro, true expenses
-  Animación: coin drop
-
-Cerdito Dormido    😴 🐷 → SVG con burbuja Zzz
-  Uso: empty states, "sin actividad"
-  Animación: respiración suave
-```
-
-### Presencia en la app
-
-| Lugar | Icono | Mensaje |
-|---|---|---|
-| Login | Cerdito Feliz + logo | "Tomá el control de tu dinero" |
-| Sidebar | Cerdito Feliz + "Chele" | Logo siempre visible |
-| Empty states | Cerdito Dormido | "🐷 No hay transacciones todavía" |
-| Por asignar > 0 | Cerdito Feliz | "🐷 ¡Tenés dinero por asignar!" |
-| Deuda/Interés | Cerdito Preocupado | "🐷 Cuidado con los intereses" |
-| Meta cumplida | Cerdito Ahorrando | "🐷 ¡Meta alcanzada!" |
-| 404 | Cerdito Preocupado | "🐷 Esta página no existe" |
-| Error | Cerdito Preocupado | "🐷 Algo salió mal" |
-| Loading/Sync | Cerdito (spinning) | "🐷 Sincronizando..." |
+| Token | Color | Uso |
+|-------|-------|-----|
+| primary | `#164E63` | Azul oscuro — botones, acciones, enlaces |
+| primary-dark | `#0F3A48` | Hover de botones |
+| success | `#16A34A` | Verde — saldo positivo |
+| warning | `#D97706` | Ámbar — precaución |
+| danger | `#DC2626` | Rojo — sobregiro |
+| neutral | `#9CA3AF` | Gris — inactivo |
+| bg | `#0F172A` | Fondo principal |
+| bg-secondary | `#1E293B` | Cards, paneles |
+| bg-tertiary | `#334155` | Inputs, hover |
+| sidebar | `#0B1121` | Fondo del sidebar |
+| surface | `#1E293B` | Superficie de tarjetas |
+| text | `#F1F5F9` | Texto principal |
+| text-secondary | `#94A3B8` | Texto secundario |
+| text-muted | `#64748B` | Texto muted |
+| border | `#334155` | Bordes |
+| border-light | `#475569` | Bordes sutiles |
 
 ---
 
@@ -461,14 +393,14 @@ ANIMATION SYSTEM
 Transiciones de página:   fade-in + slide-up (300ms)
 Sidebar mobile:           slide-left/right (300ms ease)
 Modal:                    fade-in + scale (200ms)
-Cerdito:                  bounce (1s infinite)
+Logo:                     bounce (1s infinite)
 Números/balances:         count-up (500ms)
 Hover cards:              shadow + translateY (-2px)
 Hover botones:            scale (1.02) + shadow
 Loading:                  skeleton screens + spin coin
 
 CSS Classes:
-  animate-bounce-slow     → 2s bounce (Cerdito)
+  animate-bounce-slow     → 2s bounce (logo)
   animate-fade-in         → 300ms fade
   animate-slide-up        → 300ms slide + fade
   animate-count-up        → number animation
@@ -480,8 +412,8 @@ CSS Classes:
 
 | Elemento | Animación | Duración | Trigger |
 |---|---|---|---|
-| Cerdito logo | Bounce | 2s | Page load |
-| Cerdito mensajes | Slide up + fade | 300ms | Aparece en DOM |
+| Logo | Bounce | 2s | Page load |
+| Mensajes | Slide up + fade | 300ms | Aparece en DOM |
 | Sidebar mobile | Translate X | 300ms | Click hamburguesa |
 | Modal | Scale + fade | 200ms | Open/close |
 | Números | Count up | 500ms | Page load / update |

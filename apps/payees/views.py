@@ -27,10 +27,10 @@ def payee_create(request):
                 budget_id = str(first.id)
                 request.session['active_budget_id'] = budget_id
         if not budget_id:
-            messages.error(request, '🐷 Primero creá un presupuesto antes de agregar beneficiarios.')
+            messages.error(request, 'Primero creá un presupuesto antes de agregar beneficiarios.')
             return redirect('budget_create')
         Payee.objects.create(budget_id=budget_id, name=request.POST.get('name'))
-        messages.success(request, '🐷 Beneficiario creado.')
+        messages.success(request, 'Beneficiario creado.')
         return redirect('payees_list')
     return render(request, 'payees/payee_form.html')
 

@@ -84,7 +84,7 @@ def schedule_create(request):
             notes=request.POST.get('notes', ''),
             skip_weekends=skip,
         )
-        messages.success(request, '🐷 Programación creada.')
+        messages.success(request, 'Programación creada.')
         return redirect('schedules_list')
     return render(request, 'schedules/schedule_form.html')
 
@@ -99,7 +99,7 @@ def schedule_edit(request, id):
         schedule.notes = request.POST.get('notes', '')
         schedule.skip_weekends = request.POST.get('skip_weekends') == 'on'
         schedule.save()
-        messages.success(request, '🐷 Programación actualizada.')
+        messages.success(request, 'Programación actualizada.')
         return redirect('schedules_list')
     return render(request, 'schedules/schedule_form.html', {'schedule': schedule})
 

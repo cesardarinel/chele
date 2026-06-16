@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chele 🐷 — {% block title %}Presupuesto{% endblock %}</title>
+    <title>Chele — {% block title %}Presupuesto{% endblock %}</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
     tailwind.config = {
@@ -52,7 +52,7 @@
     }
     </script>
     <link rel="stylesheet" href="{% static 'css/chele.css' %}">
-    <link rel="icon" href="{% static 'img/cerdito.svg' %}">
+    <link rel="icon" href="{% static 'img/logo.svg' %}">
 </head>
 <body class="bg-chele-bg text-chele-text">
     <div class="h-screen overflow-hidden flex flex-col md:flex-row" id="app">
@@ -164,7 +164,7 @@
 
         <header class="md:hidden flex items-center gap-2 px-3 py-2 bg-chele-bg-secondary border-b border-chele-border shrink-0">
             <button onclick="toggleSidebar()" class="text-chele-text text-xl p-1">☰</button>
-            <img src="{% static 'img/cerdito.svg' %}" alt="🐷" class="w-5 h-5">
+            <img src="{% static 'img/logo.svg' %}" alt="Chele" class="w-5 h-5">
             <span class="text-sm font-bold text-chele-text">Chele</span>
             <div class="flex-1"></div>
             <form method="post" action="{% url 'switch_budget' %}" class="max-w-[140px]">
@@ -184,7 +184,7 @@
             {% for message in messages %}
             <div class="mb-2 px-3 py-2 md:px-4 md:py-2.5 rounded-lg text-xs md:text-sm border animate-slide-up {% if message.tags == 'error' %}bg-red-900/20 text-chele-danger border-red-900/30{% else %}bg-emerald-900/20 text-chele-success border-emerald-900/30{% endif %}">
                 <span class="flex items-center gap-1.5">
-                    <span>🐷</span> {{ message }}
+                    {{ message }}
                 </span>
             </div>
             {% endfor %}

@@ -3,7 +3,7 @@
 {% block content %}
 <div class="px-4 md:px-6 py-5">
     <div class="flex items-center justify-between mb-6">
-        <h2 class="text-lg md:text-xl font-bold text-chele-text">🐷 Beneficiarios</h2>
+        <h2 class="text-lg md:text-xl font-bold text-chele-text">Beneficiarios</h2>
         <a href="{% url 'payee_create' %}" class="btn-primary text-xs md:text-sm">+ Nuevo</a>
     </div>
     <div class="bg-chele-surface rounded-lg border border-chele-border overflow-hidden">
@@ -24,7 +24,7 @@
                     </td>
                 </tr>
                 {% empty %}
-                <tr><td colspan="2" class="px-4 py-8 text-center text-chele-text-secondary text-sm">🐷 No hay beneficiarios.</td></tr>
+                <tr><td colspan="2" class="px-4 py-8 text-center text-chele-text-secondary text-sm">No hay beneficiarios.</td></tr>
                 {% endfor %}
             </tbody>
         </table>

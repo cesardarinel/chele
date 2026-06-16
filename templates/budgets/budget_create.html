@@ -2,7 +2,7 @@
 {% block title %}Nuevo Presupuesto{% endblock %}
 {% block content %}
 <div class="px-4 md:px-6 py-5 max-w-lg mx-auto">
-    <h2 class="text-xl md:text-2xl font-bold text-chele-text mb-6">🐷 Crear nuevo presupuesto</h2>
+    <h2 class="text-xl md:text-2xl font-bold text-chele-text mb-6">Crear nuevo presupuesto</h2>
     <form method="post" class="bg-chele-surface rounded-lg border border-chele-border p-4 md:p-6 space-y-4">
         {% csrf_token %}
         <div>
@@ -10,7 +10,7 @@
             <input type="text" name="name" required class="w-full border border-chele-border rounded-lg px-3 py-2 text-sm bg-chele-bg text-chele-text" placeholder="Ej: Familia, Negocio, Viaje...">
         </div>
         <p class="text-xs md:text-sm text-chele-text-secondary">Se crearán categorías por defecto que podés personalizar después.</p>
-        <button type="submit" class="btn-primary w-full text-center py-2.5">🐷 Crear presupuesto</button>
+        <button type="submit" class="btn-primary w-full text-center py-2.5">Crear presupuesto</button>
     </form>
 </div>
 {% endblock %}

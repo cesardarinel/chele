@@ -3,11 +3,11 @@
 {% block content %}
 <div class="px-4 md:px-6 py-5 max-w-lg mx-auto">
     <h2 class="text-xl font-bold text-chele-text mb-6 flex items-center gap-2">
-        <span>🐷</span> {% if editing %}Editar{% else %}Nuevo{% endif %} préstamo
+        <span></span> {% if editing %}Editar{% else %}Nuevo{% endif %} préstamo
     </h2>
     {% if editing %}
     <div class="bg-amber-900/20 border border-amber-900/30 rounded-lg p-4 mb-6 text-sm text-chele-warning">
-        🐷 Editá los campos que necesites. El saldo actual y cuotas pagadas se actualizan automáticamente al pagar cuotas.
+        Editá los campos que necesites. El saldo actual y cuotas pagadas se actualizan automáticamente al pagar cuotas.
     </div>
     {% endif %}
     <form method="post" class="bg-chele-surface rounded-lg border border-chele-border p-6 space-y-4">
@@ -78,7 +78,7 @@
             <textarea name="notes" rows="2" class="w-full border border-chele-border rounded-lg px-3 py-2 text-sm bg-chele-bg text-chele-text">{{ loan.notes|default:'' }}</textarea>
         </div>
         <button type="submit" class="w-full bg-chele-primary text-white py-2.5 rounded-lg text-sm font-medium hover:bg-chele-primary-dark transition">
-            🐷 {% if editing %}Guardar cambios{% else %}Registrar préstamo{% endif %}
+            {% if editing %}Guardar cambios{% else %}Registrar préstamo{% endif %}
         </button>
     </form>
 </div>

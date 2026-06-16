@@ -61,7 +61,7 @@ def loan_create(request):
                 amount=request.POST.get('total_amount'),
                 notes=f'Préstamo {loan.name} - {loan.get_type_display()}',
             )
-        messages.success(request, f'🐷 Préstamo "{loan.name}" registrado.')
+        messages.success(request, f'Préstamo "{loan.name}" registrado.')
         return redirect('loan_list')
     return render(request, 'loans/form.html')
 
@@ -137,7 +137,7 @@ def loan_edit(request, id):
             if changed:
                 inst.save()
 
-        messages.success(request, f'🐷 Préstamo "{loan.name}" actualizado.')
+        messages.success(request, f'Préstamo "{loan.name}" actualizado.')
         return redirect('loan_detail', id=id)
     ctx = {'loan': loan, 'editing': True}
     ctx['f_total_amount'] = float(loan.total_amount)
@@ -154,7 +154,7 @@ def loan_delete(request, id):
     if request.method == 'POST':
         name = loan.name
         loan.delete()
-        messages.success(request, f'🐷 Préstamo "{name}" eliminado.')
+        messages.success(request, f'Préstamo "{name}" eliminado.')
         return redirect('loan_list')
     return redirect('loan_detail', id=id)
 
@@ -189,12 +189,12 @@ def loan_pay_installment(request, id):
         if loan.remaining_balance <= 0:
             loan.next_due_date = None
             loan.status = 'completed'
-            messages.success(request, f'🐷 ¡Préstamo "{loan.name}" completamente pagado!')
+            messages.success(request, f'¡Préstamo "{loan.name}" completamente pagado!')
         else:
             if loan.paid_installments < loan.total_installments:
                 next_inst = Installment.objects.filter(loan=loan, paid=False).order_by('number').first()
                 if next_inst:
                     loan.next_due_date = next_inst.due_date
-            messages.success(request, f'🐷 Cuota {installment.number} pagada.')
+            messages.success(request, f'Cuota {installment.number} pagada.')
         loan.save()
     return redirect('loan_detail', id=id)

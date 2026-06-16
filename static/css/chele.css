@@ -1,14 +1,14 @@
 [x-cloak] { display: none !important; }
 
-/* ─── Cerdito Animations ─── */
-.cerdito-bounce {
-    animation: cerdito-bounce 2s ease-in-out infinite;
+/* ─── Chele Animations ─── */
+.chele-bounce {
+    animation: chele-bounce 2s ease-in-out infinite;
 }
-@keyframes cerdito-bounce {
+@keyframes chele-bounce {
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-8px); }
 }
-.cerdito-wiggle:hover {
+.chele-wiggle:hover {
     animation: wiggle 0.4s ease-in-out;
 }
 @keyframes wiggle {
@@ -17,7 +17,7 @@
     50% { transform: rotate(8deg); }
     75% { transform: rotate(-4deg); }
 }
-.cerdito-shake {
+.chele-shake {
     animation: shake 0.3s ease-in-out;
 }
 @keyframes shake {

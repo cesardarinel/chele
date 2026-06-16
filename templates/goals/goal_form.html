@@ -2,7 +2,7 @@
 {% block title %}Nueva Meta{% endblock %}
 {% block content %}
 <div class="px-4 md:px-6 py-5 max-w-lg mx-auto">
-    <h2 class="text-lg md:text-xl font-bold text-chele-text mb-6">🐷 {% if goal %}Editar{% else %}Nueva{% endif %} meta</h2>
+    <h2 class="text-lg md:text-xl font-bold text-chele-text mb-6">{% if goal %}Editar{% else %}Nueva{% endif %} meta</h2>
     <form method="post" class="bg-chele-surface rounded-lg border border-chele-border p-4 md:p-6 space-y-4">
         {% csrf_token %}
         <div>
@@ -32,7 +32,7 @@
                 <input type="date" name="target_date" value="{{ goal.target_date|date:'Y-m-d'|default:'' }}" class="w-full border border-chele-border rounded-lg px-3 py-2 text-sm bg-chele-bg text-chele-text">
             </div>
         </div>
-        <button type="submit" class="btn-primary w-full text-center py-2.5">🐷 Guardar meta</button>
+        <button type="submit" class="btn-primary w-full text-center py-2.5">Guardar meta</button>
     </form>
 </div>
 {% endblock %}

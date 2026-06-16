@@ -30,7 +30,7 @@
 
     {% if interes_calculado > 0 %}
     <div class="mb-6 p-4 bg-red-900/20 border border-red-900/30 rounded-lg text-sm text-chele-danger">
-        🐷 <strong>Interés acumulado:</strong> ${{ interes_calculado|floatformat:2 }} por saldo impago.
+        <strong>Interés acumulado:</strong> ${{ interes_calculado|floatformat:2 }} por saldo impago.
         <a href="{% url 'cc_pay' %}" class="underline ml-2">Pagar ahora</a>
     </div>
     {% endif %}

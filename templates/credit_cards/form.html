@@ -3,7 +3,7 @@
 {% block content %}
 <div class="px-4 md:px-6 py-5 max-w-lg mx-auto">
     <h2 class="text-xl font-bold mb-6 flex items-center gap-2 text-chele-text">
-        <span>🐷</span> Nueva tarjeta de crédito
+        <span></span> Nueva tarjeta de crédito
     </h2>
     <form method="post" class="bg-chele-surface rounded-lg border border-chele-border p-6 space-y-4">
         {% csrf_token %}
@@ -39,7 +39,7 @@
             <label class="block text-sm font-medium text-chele-text mb-1">Notas</label>
             <textarea name="notes" rows="2" class="w-full border border-chele-border rounded-lg px-3 py-2 text-sm bg-chele-bg text-chele-text"></textarea>
         </div>
-        <button type="submit" class="btn-primary w-full text-center py-2.5">🐷 Crear tarjeta</button>
+        <button type="submit" class="btn-primary w-full text-center py-2.5">Crear tarjeta</button>
     </form>
 </div>
 {% endblock %}

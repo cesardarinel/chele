@@ -293,7 +293,7 @@ def category_create(request):
             group_id=group_id,
             name=name,
         )
-        messages.success(request, '🐷 Categoría creada.')
+        messages.success(request, 'Categoría creada.')
     return redirect(reverse('budget_view') + '?editar=1')
 
 
@@ -303,7 +303,7 @@ def category_edit(request, id):
     if request.method == 'POST':
         cat.name = request.POST.get('name')
         cat.save()
-        messages.success(request, '🐷 Categoría actualizada.')
+        messages.success(request, 'Categoría actualizada.')
     return redirect(reverse('budget_view') + '?editar=1')
 
 
@@ -315,10 +315,10 @@ def category_delete(request, id):
         if has_txns:
             cat.is_hidden = True
             cat.save()
-            messages.success(request, f'🐷 Categoría "{cat.name}" oculta.')
+            messages.success(request, f'Categoría "{cat.name}" oculta.')
         else:
             cat.delete()
-            messages.success(request, f'🐷 Categoría "{cat.name}" eliminada.')
+            messages.success(request, f'Categoría "{cat.name}" eliminada.')
     return redirect(reverse('budget_view') + '?editar=1')
 
 
@@ -329,7 +329,7 @@ def category_group_create(request):
         budget_id = request.session.get('active_budget_id')
         name = request.POST.get('name')
         CategoryGroup.objects.create(budget_id=budget_id, name=name)
-        messages.success(request, '🐷 Grupo creado.')
+        messages.success(request, 'Grupo creado.')
     return redirect(reverse('budget_view') + '?editar=1')
 
 
@@ -339,7 +339,7 @@ def category_group_edit(request, id):
     if request.method == 'POST':
         group.name = request.POST.get('name', group.name)
         group.save()
-        messages.success(request, f'🐷 Grupo renombrado a "{group.name}".')
+        messages.success(request, f'Grupo renombrado a "{group.name}".')
     return redirect(reverse('budget_view') + '?editar=1')
 
 
@@ -348,19 +348,19 @@ def category_group_delete(request, id):
     group = get_object_or_404(CategoryGroup, id=id)
     if request.method == 'POST':
         if group.is_income:
-            messages.error(request, '🐷 No se puede eliminar el grupo de Ingresos.')
+            messages.error(request, 'No se puede eliminar el grupo de Ingresos.')
             return redirect(reverse('budget_view') + '?editar=1')
         has_cats = Category.objects.filter(group=group).exists()
         has_txns = Transaction.objects.filter(category__group=group).exists()
         if has_txns:
-            messages.error(request, f'🐷 No se puede eliminar "{group.name}" porque tiene categorías con transacciones.')
+            messages.error(request, f'No se puede eliminar "{group.name}" porque tiene categorías con transacciones.')
         elif has_cats:
             Category.objects.filter(group=group).delete()
             group.delete()
-            messages.success(request, f'🐷 Grupo "{group.name}" y sus categorías eliminados.')
+            messages.success(request, f'Grupo "{group.name}" y sus categorías eliminados.')
         else:
             group.delete()
-            messages.success(request, f'🐷 Grupo "{group.name}" eliminado.')
+            messages.success(request, f'Grupo "{group.name}" eliminado.')
     return redirect(reverse('budget_view') + '?editar=1')
 
 

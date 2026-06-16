@@ -1,4 +1,4 @@
-# Chele 🐷
+# Chele
 
 **Personal finance app implementing the YNAB (You Need A Budget) methodology.**  
 Multi-user, multi-budget, zero-sum envelope budgeting with credit cards, loans, goals, CSV import, and collaboration.
@@ -114,7 +114,7 @@ chele/
 ├── openspec/               # Design documentation
 ├── static/
 │   ├── css/chele.css
-│   └── img/cerdito.svg     # 🐷 mascot
+│   └── img/logo.svg        # brand logo
 └── templates/              # All Django HTML templates (36 files)
 ```
 

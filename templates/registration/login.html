@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chele 🐷 — Acceder</title>
+    <title>Chele — Acceder</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
     tailwind.config = {
@@ -16,12 +16,12 @@
         }
     }
     </script>
-    <link rel="icon" href="{% static 'img/cerdito.svg' %}">
+    <link rel="icon" href="{% static 'img/logo.svg' %}">
 </head>
 <body class="bg-chele-bg flex items-center justify-center min-h-screen p-4">
     <div class="w-full max-w-sm">
         <div class="text-center mb-8">
-            <img src="{% static 'img/cerdito.svg' %}" alt="Cerdito Chele" class="w-24 h-24 mx-auto">
+            <img src="{% static 'img/logo.svg' %}" alt="Chele" class="w-20 h-20 mx-auto">
             <h1 class="text-3xl font-bold text-chele-text mt-3">Chele</h1>
             <p class="text-chele-text-secondary mt-1">Tomá el control de tu dinero</p>
         </div>
@@ -37,7 +37,7 @@
                     <input type="password" name="password" required class="w-full bg-chele-bg border border-chele-border rounded-lg px-3 py-2.5 text-sm focus:border-chele-primary focus:ring-1 focus:ring-chele-primary text-chele-text">
                 </div>
                 {% if form.errors %}
-                <div class="mb-4 p-3 bg-red-900/20 text-chele-danger rounded-lg text-sm border border-red-900/30">🐷 Email o contraseña incorrectos.</div>
+                <div class="mb-4 p-3 bg-red-900/20 text-chele-danger rounded-lg text-sm border border-red-900/30">Email o contraseña incorrectos.</div>
                 {% endif %}
                 <button type="submit" class="w-full bg-chele-primary text-white rounded-lg py-2.5 text-sm font-medium hover:bg-chele-primary-dark transition">Acceder</button>
             </form>

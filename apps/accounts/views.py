@@ -31,7 +31,7 @@ def account_create(request):
                 date=start_date or date.today(),
                 amount=balance, notes='Saldo inicial',
             )
-        messages.success(request, f'🐷 Cuenta "{name}" creada.')
+        messages.success(request, f'Cuenta "{name}" creada.')
         return redirect('budget_view')
     return render(request, 'accounts/account_form.html')
 

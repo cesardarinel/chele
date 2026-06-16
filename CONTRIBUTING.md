@@ -1,4 +1,4 @@
-# Contributing to Chele 🐷
+# Contributing to Chele
 
 Thanks for your interest in contributing!
 

@@ -36,7 +36,7 @@ def cc_pay(request):
         from_acct.balance = float(from_acct.balance) - amount
         from_acct.save()
 
-        messages.success(request, f'🐷 Pago a {cc.name} registrado.')
+        messages.success(request, f'Pago a {cc.name} registrado.')
     return redirect('budget_view')
 
 
@@ -45,7 +45,7 @@ def cc_create(request):
     if request.method == 'POST':
         budget_id = request.session.get('active_budget_id')
         if not budget_id:
-            messages.error(request, '🐷 Primero creá un presupuesto.')
+            messages.error(request, 'Primero creá un presupuesto.')
             return redirect('budget_create')
         cc = CreditCard.objects.create(
             budget_id=budget_id,
@@ -57,7 +57,7 @@ def cc_create(request):
             due_day=request.POST.get('due_day', 5),
             notes=request.POST.get('notes', ''),
         )
-        messages.success(request, f'🐷 Tarjeta "{cc.name}" creada.')
+        messages.success(request, f'Tarjeta "{cc.name}" creada.')
         return redirect('cc_list')
     return render(request, 'credit_cards/form.html')
 

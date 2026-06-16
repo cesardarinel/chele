@@ -2,7 +2,7 @@
 {% block title %}Vista previa CSV{% endblock %}
 {% block content %}
 <div class="px-4 md:px-6 py-5">
-    <h2 class="text-lg md:text-xl font-bold text-chele-text mb-2">🐷 Vista previa</h2>
+    <h2 class="text-lg md:text-xl font-bold text-chele-text mb-2">Vista previa</h2>
     <p class="text-sm text-chele-text-secondary mb-4">{{ total }} filas encontradas. Mostrando primeras {{ rows|length }}.</p>
     <div class="bg-chele-surface rounded-lg border border-chele-border overflow-hidden mb-6">
         <div class="table-scroll">
@@ -28,7 +28,7 @@
     </div>
     <form method="post" action="{% url 'csv_confirm' %}">
         {% csrf_token %}
-        <button type="submit" class="btn-primary">🐷 Confirmar importación</button>
+        <button type="submit" class="btn-primary">Confirmar importación</button>
         <a href="{% url 'csv_import' %}" class="ml-3 text-sm text-chele-primary hover:text-chele-primary-dark">Volver</a>
     </form>
 </div>
