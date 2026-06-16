@@ -63,9 +63,7 @@
         <aside id="sidebar" class="fixed md:static inset-y-0 left-0 z-50 w-72 md:w-64 bg-gradient-to-b from-chele-sidebar to-[#060a14] flex flex-col h-full -translate-x-full md:translate-x-0 transition-transform duration-300">
             <div class="flex items-center justify-between px-3 md:px-4 py-3 border-b border-white/10">
                 <a href="{% url 'budget_view' %}" class="flex items-center gap-2 group">
-                    <svg class="w-6 h-6 md:w-7 md:h-7 text-amber-400 group-hover:animate-bounce-slow" viewBox="0 0 32 32" fill="currentColor">
-                        <path d="M16 2C8.268 2 2 8.268 2 16s6.268 14 14 14 14-6.268 14-14S23.732 2 16 2zm0 4a2 2 0 012 2v.76A3.985 3.985 0 0120 8a4 4 0 010 8 3.985 3.985 0 01-2-.76V18h2a1 1 0 010 2h-2v2a1 1 0 01-2 0v-2h-2a1 1 0 010-2h2v-2.76A3.985 3.985 0 0112 16a4 4 0 014-4 2 2 0 100-4 2 2 0 00-2-2 1 1 0 010-2 4.002 4.002 0 013.874 2.76A2 2 0 0116 6zm0 2a2 2 0 100 4 2 2 0 000-4z"/>
-                    </svg>
+<img src="{% static 'img/logo.svg' %}" alt="Chele" class="w-7 h-7 md:w-8 md:h-8">
                     <span class="text-base md:text-lg font-bold text-white">Chele</span>
                 </a>
                 <button onclick="toggleSidebar()" class="text-gray-400 hover:text-white md:hidden p-1">✕</button>
