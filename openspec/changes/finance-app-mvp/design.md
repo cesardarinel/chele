@@ -294,6 +294,8 @@ aplicar_interes(tarjeta_o_prestamo)
 | Terminología | YNAB español: "Por asignar", "Actividad", "Disponible" | ActualBudget | Matching YNAB UX |
 | Idioma | 100% español hardcodeado en templates | Django i18n | MVP simple; post-MVP se puede migrar a i18n |
 | CSS Framework | Tailwind CSS | Bootstrap, vanilla | Tailwind moderno y fácil de mantener |
+| Formato moneda | Filtro `currency` personalizado (`.2f` + separador de miles) | `intcomma` + `floatformat` por separado | Filtro único disponible globalmente como builtin; usa `{:,.2f}` de Python para formateo consistente `$1,234.56` en toda la app |
+| Formato tasas | `floatformat:2` directo | Filtro `percentage` | Las tasas de interés se muestran como "8.00% anual" sin separador de miles, no son valores monetarios |
 
 ---
 
