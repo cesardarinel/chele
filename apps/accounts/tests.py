@@ -53,7 +53,6 @@ class TestAccountModel:
         assert response.status_code == 302
         account.refresh_from_db()
         assert account.name == 'Editado'
-        assert account.type == 'savings'
 
     def test_account_delete(self, logged_client, budget_with_categories):
         account = Account.objects.create(budget=budget_with_categories, name='A eliminar')

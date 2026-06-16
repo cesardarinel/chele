@@ -12,9 +12,9 @@ class TestSyncEngine:
         response = logged_client.post(reverse('sync_now'))
         assert response.status_code in (200, 302)
 
-    def test_sync_push(self, logged_client, budget_with_categories):
+    def test_sync_push(self, logged_client, user, budget_with_categories):
         SyncLog.objects.create(
-            budget=budget_with_categories, user=logged_client.user,
+            budget=budget_with_categories, user=user,
             entity_type='transaction', entity_id='00000000-0000-0000-0000-000000000001',
             action='pending', payload={'amount': 100},
         )
@@ -25,9 +25,9 @@ class TestSyncEngine:
         assert response.status_code == 200
         assert not SyncLog.objects.filter(action='pending').exists()
 
-    def test_sync_pull(self, logged_client, budget_with_categories):
+    def test_sync_pull(self, logged_client, user, budget_with_categories):
         SyncLog.objects.create(
-            budget=budget_with_categories, user=logged_client.user,
+            budget=budget_with_categories, user=user,
             entity_type='transaction', entity_id='00000000-0000-0000-0000-000000000002',
             action='synced', payload={'amount': 200},
         )

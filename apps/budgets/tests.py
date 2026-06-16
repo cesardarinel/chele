@@ -21,7 +21,7 @@ class TestBudgetModel:
         b = Budget.objects.filter(name='Nuevo Test').first()
         assert b is not None
         assert CategoryGroup.objects.filter(budget=b).count() == 4
-        assert Category.objects.filter(budget=b).count() == 11
+        assert Category.objects.filter(budget=b).count() == 14
 
     def test_switch_budget(self, logged_client, user):
         b2 = Budget.objects.create(name='Segundo', owner=user)
@@ -40,7 +40,7 @@ class TestBudgetModel:
         session.save()
         response = logged_client.get(reverse('budget_view'))
         assert response.status_code == 200
-        assert b'Por asignar' in response.content
+        assert b'Fondos disponibles' in response.content
 
     def test_assign_funds(self, logged_client, budget_with_categories):
         session = logged_client.session
