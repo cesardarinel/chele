@@ -24,7 +24,9 @@
                 <tr class="border-b border-chele-border hover:bg-chele-bg-tertiary/30 transition">
                     <td class="px-4 py-3 text-sm">{{ s.payee.name|default:'—' }}</td>
                     <td class="px-4 py-3 text-sm">{{ s.category.name|default:'—' }}</td>
-                    <td class="px-4 py-3 text-sm text-right font-medium">${{ s.amount|currency }}</td>
+                    <td class="px-4 py-3 text-sm text-right font-medium {% if s.direction == 'income' %}text-chele-success{% else %}text-chele-danger{% endif %}">
+                        {% if s.direction == 'income' %}+{% else %}-{% endif %}${{ s.amount|currency }}
+                    </td>
                     <td class="px-4 py-3 text-sm">{{ s.get_frequency_display }}</td>
                     <td class="px-4 py-3 text-sm {% if s.due_soon %}text-chele-danger font-semibold{% endif %}">{{ s.next_date|date:'d/m/Y' }}</td>
                     <td class="px-4 py-3 text-right"><a href="{% url 'schedule_edit' s.id %}" class="text-xs text-amber-400 hover:text-amber-300">Editar</a></td>

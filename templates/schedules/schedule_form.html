@@ -31,6 +31,19 @@
                 {% endfor %}
             </select>
         </div>
+        <div>
+            <label class="block text-sm font-medium text-chele-text mb-2">Dirección</label>
+            <div class="flex gap-4">
+                <label class="flex items-center gap-2 text-sm text-chele-text cursor-pointer">
+                    <input type="radio" name="direction" value="expense" {% if schedule.direction == 'expense' or not schedule %}checked{% endif %} class="text-red-500">
+                    <span class="text-chele-danger">Gasto</span>
+                </label>
+                <label class="flex items-center gap-2 text-sm text-chele-text cursor-pointer">
+                    <input type="radio" name="direction" value="income" {% if schedule.direction == 'income' %}checked{% endif %} class="text-chele-success">
+                    <span class="text-chele-success">Ingreso</span>
+                </label>
+            </div>
+        </div>
         <div class="grid grid-cols-2 gap-4">
             <div>
                 <label class="block text-sm font-medium text-chele-text mb-1">Monto</label>
