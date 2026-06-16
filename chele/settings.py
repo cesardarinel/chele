@@ -68,7 +68,7 @@ WSGI_APPLICATION = 'chele.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': BASE_DIR / 'db' / 'sqlite.db',
         'OPTIONS': {
             'init_command': 'PRAGMA journal_mode=WAL;',
         },
@@ -82,7 +82,7 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-LANGUAGE_CODE = 'es'
+LANGUAGE_CODE = 'en-US'
 TIME_ZONE = 'America/Argentina/Buenos_Aires'
 USE_I18N = False
 USE_TZ = True
