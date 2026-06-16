@@ -121,7 +121,7 @@
                         <svg class="w-3.5 h-3.5 md:w-4 md:h-4 shrink-0 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11m16-11v11M8 14v3m4-3v3m4-3v3"/></svg>
                         <span class="truncate flex-1 ml-1.5">{{ account.name }}</span>
                         <span class="text-[10px] md:text-xs shrink-0 ml-1 {% if account.balance >= 0 %}text-chele-success{% else %}text-chele-danger{% endif %}">
-                            ${{ account.balance|floatformat:2 }}
+                            ${{ account.balance|currency }}
                         </span>
                     </a>
                     {% endfor %}
@@ -129,14 +129,14 @@
                     <a href="{% url 'cc_detail' cc.id %}" class="flex items-center justify-between px-3 py-2 rounded text-xs md:text-sm text-gray-300 hover:bg-white/10 hover:text-white transition-all duration-150">
                         <svg class="w-4 h-4 shrink-0 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
                         <span class="truncate flex-1 ml-2">{{ cc.name }}</span>
-                        <span class="text-xs shrink-0 ml-1 text-chele-danger">${{ cc.balance|floatformat:0 }}</span>
+                        <span class="text-xs shrink-0 ml-1 text-chele-danger">${{ cc.balance|currency }}</span>
                     </a>
                     {% endfor %}
                     {% for loan in active_budget.loans.all %}
                     <a href="{% url 'loan_detail' loan.id %}" class="flex items-center justify-between px-3 py-2 rounded text-xs md:text-sm text-gray-300 hover:bg-white/10 hover:text-white transition-all duration-150">
                         <svg class="w-4 h-4 shrink-0 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                         <span class="truncate flex-1 ml-2">{{ loan.name }}</span>
-                        <span class="text-xs shrink-0 ml-1 text-chele-danger">${{ loan.remaining_balance|floatformat:0 }}</span>
+                        <span class="text-xs shrink-0 ml-1 text-chele-danger">${{ loan.remaining_balance|currency }}</span>
                     </a>
                     {% endfor %}
                     {% endif %}

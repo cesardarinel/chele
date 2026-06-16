@@ -22,10 +22,10 @@
                 {% for cat in group.categories %}
                 <tr class="border-b border-chele-border hover:bg-chele-bg-tertiary/30 transition">
                     <td class="px-4 py-2.5 text-sm text-chele-text">{{ cat.name }}</td>
-                    <td class="px-4 py-2.5 text-sm text-right">${{ cat.budgeted|floatformat:2 }}</td>
-                    <td class="px-4 py-2.5 text-sm text-right">${{ cat.spent|floatformat:2 }}</td>
+                    <td class="px-4 py-2.5 text-sm text-right">${{ cat.budgeted|currency }}</td>
+                    <td class="px-4 py-2.5 text-sm text-right">${{ cat.spent|currency }}</td>
                     <td class="px-4 py-2.5 text-sm text-right {% if cat.difference >= 0 %}text-chele-success{% else %}text-chele-danger{% endif %}">
-                        ${{ cat.difference|floatformat:2 }}
+                        ${{ cat.difference|currency }}
                     </td>
                 </tr>
                 {% endfor %}

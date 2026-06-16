@@ -18,10 +18,10 @@
                 {% for m in months %}
                 <tr class="border-b border-chele-border hover:bg-chele-bg-tertiary/30 transition">
                     <td class="px-4 py-3 text-sm">{{ m.month }}</td>
-                    <td class="px-4 py-3 text-sm text-right text-chele-success">${{ m.income|floatformat:2 }}</td>
-                    <td class="px-4 py-3 text-sm text-right text-chele-danger">${{ m.expenses|floatformat:2 }}</td>
+                    <td class="px-4 py-3 text-sm text-right text-chele-success">${{ m.income|currency }}</td>
+                    <td class="px-4 py-3 text-sm text-right text-chele-danger">${{ m.expenses|currency }}</td>
                     <td class="px-4 py-3 text-sm text-right {% if m.net >= 0 %}text-chele-success{% else %}text-chele-danger{% endif %}">
-                        ${{ m.net|floatformat:2 }}
+                        ${{ m.net|currency }}
                     </td>
                 </tr>
                 {% endfor %}

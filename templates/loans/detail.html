@@ -27,11 +27,11 @@
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         <div class="bg-chele-surface rounded-lg border border-chele-border p-4">
             <p class="text-xs text-chele-text-secondary uppercase">Saldo inicial</p>
-            <p class="text-lg font-bold text-chele-text">${{ loan.total_amount|floatformat:2 }}</p>
+            <p class="text-lg font-bold text-chele-text">${{ loan.total_amount|currency }}</p>
         </div>
         <div class="bg-chele-surface rounded-lg border border-chele-border p-4">
             <p class="text-xs text-chele-text-secondary uppercase">Saldo actual</p>
-            <p class="text-lg font-bold text-chele-danger">${{ loan.remaining_balance|floatformat:2 }}</p>
+            <p class="text-lg font-bold text-chele-danger">${{ loan.remaining_balance|currency }}</p>
         </div>
         <div class="bg-chele-surface rounded-lg border border-chele-border p-4">
             <p class="text-xs text-chele-text-secondary uppercase">Cuotas</p>
@@ -50,7 +50,7 @@
 
     {% if interes_calculado > 0 %}
     <div class="mb-6 p-4 bg-red-900/20 border border-red-900/30 rounded-lg text-sm text-chele-danger">
-        <strong>Interés acumulado:</strong> ${{ interes_calculado|floatformat:2 }} por atraso en el pago.
+        <strong>Interés acumulado:</strong> ${{ interes_calculado|currency }} por atraso en el pago.
     </div>
     {% endif %}
 
@@ -71,7 +71,7 @@
                 <tr class="border-b border-chele-border hover:bg-chele-bg-tertiary/50 transition {% if not inst.paid and forloop.counter0 == loan.paid_installments %}bg-amber-900/10 border-l-4 border-l-chele-primary{% endif %}">
                     <td class="px-4 py-3 font-medium">{{ inst.number }}</td>
                     <td class="px-4 py-3">{{ inst.due_date|date:'d/m/Y' }}</td>
-                    <td class="px-4 py-3 text-right font-medium">${{ inst.amount|floatformat:2 }}</td>
+                    <td class="px-4 py-3 text-right font-medium">${{ inst.amount|currency }}</td>
                     <td class="px-4 py-3 text-right">
                         {% if inst.paid %}
                         <span class="inline-flex items-center gap-1 text-chele-success font-medium">

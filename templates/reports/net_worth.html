@@ -6,15 +6,15 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div class="bg-chele-surface rounded-lg border border-chele-border p-4 md:p-6">
             <p class="text-xs md:text-sm text-chele-text-secondary">Activos</p>
-            <p class="text-xl md:text-2xl font-bold text-chele-success">${{ assets|floatformat:2 }}</p>
+            <p class="text-xl md:text-2xl font-bold text-chele-success">${{ assets|currency }}</p>
         </div>
         <div class="bg-chele-surface rounded-lg border border-chele-border p-4 md:p-6">
             <p class="text-xs md:text-sm text-chele-text-secondary">Pasivos</p>
-            <p class="text-xl md:text-2xl font-bold text-chele-danger">${{ liabilities|floatformat:2 }}</p>
+            <p class="text-xl md:text-2xl font-bold text-chele-danger">${{ liabilities|currency }}</p>
         </div>
         <div class="bg-chele-surface rounded-lg border border-chele-border p-4 md:p-6">
             <p class="text-xs md:text-sm text-chele-text-secondary">Patrimonio Neto</p>
-            <p class="text-xl md:text-2xl font-bold text-amber-400">${{ net_worth|floatformat:2 }}</p>
+            <p class="text-xl md:text-2xl font-bold text-amber-400">${{ net_worth|currency }}</p>
         </div>
     </div>
 </div>

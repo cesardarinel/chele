@@ -6,7 +6,7 @@
         <div>
             <h2 class="text-xl md:text-2xl font-bold text-chele-text">{{ account.name }}</h2>
             <p class="text-2xl md:text-3xl font-bold {% if account.balance >= 0 %}text-chele-success{% else %}text-chele-danger{% endif %}">
-                $ {{ account.balance|floatformat:2 }}
+                $ {{ account.balance|currency }}
             </p>
         </div>
         <div class="flex gap-2">
@@ -40,7 +40,7 @@
                     <td class="px-2 md:px-3 py-2 text-xs md:text-sm">{{ txn.payee.name|default:'—' }}</td>
                     <td class="px-2 md:px-3 py-2 text-xs md:text-sm hidden sm:table-cell">{{ txn.category.name|default:'—' }}</td>
                     <td class="px-2 md:px-3 py-2 text-xs md:text-sm text-right {% if txn.amount >= 0 %}text-chele-success{% else %}text-chele-danger{% endif %}">
-                        ${{ txn.amount|floatformat:2 }}
+                        ${{ txn.amount|currency }}
                     </td>
                 </tr>
                 {% empty %}

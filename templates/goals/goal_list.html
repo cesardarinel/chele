@@ -11,7 +11,7 @@
         <div class="bg-chele-surface rounded-lg border border-chele-border p-4 flex items-center justify-between gap-2">
             <div>
                 <p class="font-semibold text-sm text-chele-text">{{ goal.category.name }}</p>
-                <p class="text-xs text-chele-text-secondary">{{ goal.get_goal_type_display }} — ${{ goal.amount }}</p>
+                <p class="text-xs text-chele-text-secondary">{{ goal.get_goal_type_display }} — ${{ goal.amount|currency }}</p>
             </div>
             <div class="flex gap-3 shrink-0">
                 <a href="{% url 'goal_edit' goal.id %}" class="text-xs text-amber-400 hover:text-amber-300">Editar</a>

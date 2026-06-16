@@ -10,16 +10,16 @@
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         <div class="bg-chele-surface rounded-lg border border-chele-border p-4">
             <p class="text-xs text-chele-text-secondary uppercase">Saldo</p>
-            <p class="text-lg font-bold text-chele-danger">${{ card.balance|floatformat:2 }}</p>
+            <p class="text-lg font-bold text-chele-danger">${{ card.balance|currency }}</p>
         </div>
         <div class="bg-chele-surface rounded-lg border border-chele-border p-4">
             <p class="text-xs text-chele-text-secondary uppercase">Límite</p>
-            <p class="text-lg font-bold text-chele-text">${{ card.limit|floatformat:2 }}</p>
+            <p class="text-lg font-bold text-chele-text">${{ card.limit|currency }}</p>
         </div>
         <div class="bg-chele-surface rounded-lg border border-chele-border p-4">
             <p class="text-xs text-chele-text-secondary uppercase">Disponible</p>
             <p class="text-lg font-bold text-chele-text {% if card.limit|add:card.balance > 0 %}text-chele-success{% endif %}">
-                ${{ card.limit|add:card.balance|floatformat:2 }}
+                ${{ card.limit|add:card.balance|currency }}
             </p>
         </div>
         <div class="bg-chele-surface rounded-lg border border-chele-border p-4">
@@ -30,7 +30,7 @@
 
     {% if interes_calculado > 0 %}
     <div class="mb-6 p-4 bg-red-900/20 border border-red-900/30 rounded-lg text-sm text-chele-danger">
-        <strong>Interés acumulado:</strong> ${{ interes_calculado|floatformat:2 }} por saldo impago.
+        <strong>Interés acumulado:</strong> ${{ interes_calculado|currency }} por saldo impago.
         <a href="{% url 'cc_pay' %}" class="underline ml-2">Pagar ahora</a>
     </div>
     {% endif %}
@@ -44,7 +44,7 @@
                 <label class="block text-sm font-medium text-chele-text mb-1">Desde cuenta</label>
                 <select name="from_account_id" required class="w-full border border-chele-border rounded-lg px-3 py-2 text-sm bg-chele-bg text-chele-text">
                     {% for acct in card.budget.accounts.all %}
-                    <option value="{{ acct.id }}">{{ acct.name }} (${{ acct.balance|floatformat:2 }})</option>
+                    <option value="{{ acct.id }}">{{ acct.name }} (${{ acct.balance|currency }})</option>
                     {% endfor %}
                 </select>
             </div>

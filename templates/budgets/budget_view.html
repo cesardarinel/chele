@@ -58,25 +58,25 @@
                 <div class="text-right space-y-1.5">
                     <div class="flex justify-between text-sm">
                         <span class="text-gray-400">Fondos disponibles</span>
-                        <span class="font-semibold text-chele-text amount">${{ m.available_funds|floatformat:2 }}</span>
+                        <span class="font-semibold text-chele-text amount">${{ m.available_funds|currency }}</span>
                     </div>
                     <div class="flex justify-between text-sm">
                         <span class="text-gray-400">Sobregasto anterior</span>
-                        <span class="font-semibold amount {% if m.overspent_prev > 0 %}text-chele-danger{% else %}text-chele-text{% endif %}">{% if m.overspent_prev > 0 %}-{% endif %}${{ m.overspent_prev|floatformat:2 }}</span>
+                        <span class="font-semibold amount {% if m.overspent_prev > 0 %}text-chele-danger{% else %}text-chele-text{% endif %}">{% if m.overspent_prev > 0 %}-{% endif %}${{ m.overspent_prev|currency }}</span>
                     </div>
                     <div class="flex justify-between text-sm">
                         <span class="text-gray-400">Presupuestado</span>
-                        <span class="font-semibold text-chele-text amount">${{ m.total_budgeted|floatformat:2 }}</span>
+                        <span class="font-semibold text-chele-text amount">${{ m.total_budgeted|currency }}</span>
                     </div>
                     <div class="flex justify-between text-sm">
                         <span class="text-gray-400">Para el próximo mes</span>
-                        <span class="font-semibold amount {% if m.for_next_month > 0 %}text-chele-success{% else %}text-chele-text{% endif %}">${{ m.for_next_month|floatformat:2 }}</span>
+                        <span class="font-semibold amount {% if m.for_next_month > 0 %}text-chele-success{% else %}text-chele-text{% endif %}">${{ m.for_next_month|currency }}</span>
                     </div>
                 </div>
                 <div class="mt-3 pt-3 border-t border-chele-border text-right">
                     <span class="text-sm text-gray-400">A presupuestar:</span>
                     <div class="text-xl font-bold amount {% if m.for_next_month >= 0 %}text-chele-success{% else %}text-chele-danger{% endif %}">
-                        ${{ m.for_next_month|floatformat:2 }}
+                        ${{ m.for_next_month|currency }}
                     </div>
                 </div>
             </div>
@@ -130,10 +130,10 @@
                             </form>
                         </td>
                         <td class="px-2 py-3 text-right text-sm {% if cm.spent > 0 %}text-chele-danger{% else %}text-chele-success{% endif %}">
-                            {% if cm.spent > 0 %}-{% endif %}${{ cm.spent|floatformat:0 }}
+                            {% if cm.spent > 0 %}-{% endif %}${{ cm.spent|currency }}
                         </td>
                         <td class="px-2 py-3 text-right text-sm font-medium {% if cm.balance < 0 %}text-chele-danger{% else %}text-chele-success{% endif %}">
-                            ${{ cm.balance|floatformat:0 }}
+                            ${{ cm.balance|currency }}
                         </td>
                         {% endfor %}
                     </tr>
@@ -160,8 +160,8 @@
                         </td>
                         {% for cm in cat.months %}
                         <td class="px-2 py-3 text-right text-sm text-chele-success">—</td>
-                        <td class="px-2 py-3 text-right text-sm text-chele-success">${{ cm.spent|floatformat:0 }}</td>
-                        <td class="px-2 py-3 text-right text-sm font-medium text-chele-success">${{ cm.balance|floatformat:0 }}</td>
+                        <td class="px-2 py-3 text-right text-sm text-chele-success">${{ cm.spent|currency }}</td>
+                        <td class="px-2 py-3 text-right text-sm font-medium text-chele-success">${{ cm.balance|currency }}</td>
                         {% endfor %}
                     </tr>
                     {% endfor %}
