@@ -3,24 +3,24 @@
 {% block content %}
 <div class="px-4 md:px-6 py-5">
     <div class="flex items-center justify-between mb-6">
-        <h2 class="text-xl font-bold text-[#141A26]">Tarjetas de Crédito</h2>
+        <h2 class="text-xl font-bold text-chele-text">Tarjetas de Crédito</h2>
     </div>
     <div class="space-y-3">
         {% for card in cards %}
-        <a href="{% url 'cc_detail' card.id %}" class="block bg-white rounded-lg border border-gray-200 p-4 hover:shadow-sm transition">
+        <a href="{% url 'cc_detail' card.id %}" class="block bg-chele-surface rounded-lg border border-chele-border p-4 hover:shadow-sm transition">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="font-semibold text-gray-900">{{ card.name }}</p>
-                    <p class="text-xs text-gray-500">Límite: ${{ card.limit|floatformat:2 }}</p>
+                    <p class="font-semibold text-chele-text">{{ card.name }}</p>
+                    <p class="text-xs text-chele-text-secondary">Límite: ${{ card.limit|floatformat:2 }}</p>
                 </div>
                 <div class="text-right">
-                    <p class="text-sm font-bold text-[#EF4444]">${{ card.balance|floatformat:2 }}</p>
-                    <p class="text-xs text-gray-400">{{ card.interest_rate|floatformat:2 }}% anual</p>
+                    <p class="text-sm font-bold text-chele-danger">${{ card.balance|floatformat:2 }}</p>
+                    <p class="text-xs text-chele-text-muted">{{ card.interest_rate|floatformat:2 }}% anual</p>
                 </div>
             </div>
         </a>
         {% empty %}
-        <div class="text-center py-12 text-gray-400">
+        <div class="text-center py-12 text-chele-text-muted">
             <p class="text-4xl mb-2">🐷</p>
             <p class="text-sm">No hay tarjetas de crédito registradas.</p>
         </div>

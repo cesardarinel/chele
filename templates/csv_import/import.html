@@ -3,11 +3,11 @@
 {% block content %}
 <div class="px-4 md:px-6 py-5 max-w-lg mx-auto">
     <h2 class="text-lg md:text-xl font-bold text-chele-text mb-6">🐷 Importar transacciones</h2>
-    <form method="post" action="{% url 'csv_preview' %}" enctype="multipart/form-data" class="bg-white rounded-lg border border-chele-border p-4 md:p-6 space-y-4">
+    <form method="post" action="{% url 'csv_preview' %}" enctype="multipart/form-data" class="bg-chele-surface rounded-lg border border-chele-border p-4 md:p-6 space-y-4">
         {% csrf_token %}
         <div>
             <label class="block text-sm font-medium text-chele-text mb-1">Cuenta destino</label>
-            <select name="account_id" required class="w-full border border-chele-border rounded-lg px-3 py-2 text-sm">
+            <select name="account_id" required class="w-full border border-chele-border rounded-lg px-3 py-2 text-sm bg-chele-bg text-chele-text">
                 {% for account in active_budget.accounts.all %}
                 <option value="{{ account.id }}">{{ account.name }}</option>
                 {% endfor %}
@@ -20,19 +20,19 @@
         <div class="grid grid-cols-2 gap-4">
             <div>
                 <label class="block text-xs font-medium text-chele-text mb-1">Columna fecha</label>
-                <input type="text" name="date_col" value="date" class="w-full border border-chele-border rounded px-2 py-1.5 text-sm">
+                <input type="text" name="date_col" value="date" class="w-full border border-chele-border rounded px-2 py-1.5 text-sm bg-chele-bg text-chele-text">
             </div>
             <div>
                 <label class="block text-xs font-medium text-chele-text mb-1">Columna monto</label>
-                <input type="text" name="amount_col" value="amount" class="w-full border border-chele-border rounded px-2 py-1.5 text-sm">
+                <input type="text" name="amount_col" value="amount" class="w-full border border-chele-border rounded px-2 py-1.5 text-sm bg-chele-bg text-chele-text">
             </div>
             <div>
                 <label class="block text-xs font-medium text-chele-text mb-1">Columna beneficiario</label>
-                <input type="text" name="payee_col" value="payee" class="w-full border border-chele-border rounded px-2 py-1.5 text-sm">
+                <input type="text" name="payee_col" value="payee" class="w-full border border-chele-border rounded px-2 py-1.5 text-sm bg-chele-bg text-chele-text">
             </div>
             <div>
                 <label class="block text-xs font-medium text-chele-text mb-1">Columna notas</label>
-                <input type="text" name="notes_col" value="" class="w-full border border-chele-border rounded px-2 py-1.5 text-sm">
+                <input type="text" name="notes_col" value="" class="w-full border border-chele-border rounded px-2 py-1.5 text-sm bg-chele-bg text-chele-text">
             </div>
         </div>
         <button type="submit" class="btn-primary w-full text-center py-2.5">🐷 Vista previa</button>

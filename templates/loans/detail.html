@@ -5,70 +5,70 @@
     <div class="flex items-center justify-between mb-6">
         <div>
             <div class="flex items-center gap-2">
-                <h2 class="text-xl font-bold text-[#141A26]">{{ loan.name }}</h2>
+                <h2 class="text-xl font-bold text-chele-text">{{ loan.name }}</h2>
                 {% if loan.status == 'completed' %}
                 <span class="text-xs bg-chele-success/10 text-chele-success border border-chele-success/30 rounded px-2 py-0.5 font-medium">✓ Finalizado</span>
                 {% endif %}
             </div>
-            <p class="text-sm text-gray-500">{{ loan.get_type_display }}</p>
+            <p class="text-sm text-chele-text-secondary">{{ loan.get_type_display }}</p>
         </div>
         <div class="flex items-center gap-2">
             {% if loan.status == 'active' %}
-            <a href="{% url 'loan_edit' loan.id %}" class="text-sm text-chele-gold hover:text-chele-gold-dark border border-chele-gold rounded px-3 py-1">✎ Editar</a>
+            <a href="{% url 'loan_edit' loan.id %}" class="text-sm text-chele-primary hover:text-chele-primary-dark border border-chele-primary rounded px-3 py-1">✎ Editar</a>
             {% endif %}
             <form method="post" action="{% url 'loan_delete' loan.id %}" class="inline" onsubmit="return confirm('¿Eliminar préstamo {{ loan.name }}?')">
                 {% csrf_token %}
-                <button type="submit" class="text-sm text-chele-danger hover:text-red-700 border border-chele-danger rounded px-3 py-1">🗑️</button>
+                <button type="submit" class="text-sm text-chele-danger hover:text-red-400 border border-chele-danger rounded px-3 py-1">🗑️</button>
             </form>
-            <a href="{% url 'loan_list' %}" class="text-sm text-gray-400 hover:text-gray-600">← Volver</a>
+            <a href="{% url 'loan_list' %}" class="text-sm text-chele-text-muted hover:text-chele-text-secondary">← Volver</a>
         </div>
     </div>
 
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <div class="bg-white rounded-lg border border-gray-200 p-4">
-            <p class="text-xs text-gray-500 uppercase">Saldo inicial</p>
-            <p class="text-lg font-bold">${{ loan.total_amount|floatformat:2 }}</p>
+        <div class="bg-chele-surface rounded-lg border border-chele-border p-4">
+            <p class="text-xs text-chele-text-secondary uppercase">Saldo inicial</p>
+            <p class="text-lg font-bold text-chele-text">${{ loan.total_amount|floatformat:2 }}</p>
         </div>
-        <div class="bg-white rounded-lg border border-gray-200 p-4">
-            <p class="text-xs text-gray-500 uppercase">Saldo actual</p>
+        <div class="bg-chele-surface rounded-lg border border-chele-border p-4">
+            <p class="text-xs text-chele-text-secondary uppercase">Saldo actual</p>
             <p class="text-lg font-bold text-chele-danger">${{ loan.remaining_balance|floatformat:2 }}</p>
         </div>
-        <div class="bg-white rounded-lg border border-gray-200 p-4">
-            <p class="text-xs text-gray-500 uppercase">Cuotas</p>
-            <p class="text-lg font-bold">{{ loan.paid_installments }}/{{ loan.total_installments }}</p>
+        <div class="bg-chele-surface rounded-lg border border-chele-border p-4">
+            <p class="text-xs text-chele-text-secondary uppercase">Cuotas</p>
+            <p class="text-lg font-bold text-chele-text">{{ loan.paid_installments }}/{{ loan.total_installments }}</p>
         </div>
-        <div class="bg-white rounded-lg border border-gray-200 p-4">
-            <p class="text-xs text-gray-500 uppercase">Tasa anual</p>
-            <p class="text-lg font-bold">{{ loan.interest_rate|floatformat:2 }}%</p>
+        <div class="bg-chele-surface rounded-lg border border-chele-border p-4">
+            <p class="text-xs text-chele-text-secondary uppercase">Tasa anual</p>
+            <p class="text-lg font-bold text-chele-text">{{ loan.interest_rate|floatformat:2 }}%</p>
         </div>
     </div>
 
-    <div class="w-full bg-gray-200 rounded-full h-2.5 mb-2">
+    <div class="w-full bg-chele-bg-tertiary rounded-full h-2.5 mb-2">
         <div class="bg-chele-success h-2.5 rounded-full transition-all duration-500" style="width:{% widthratio loan.paid_installments loan.total_installments 100 %}%"></div>
     </div>
     <p class="text-xs text-chele-text-secondary mb-6">Progreso: {% widthratio loan.paid_installments loan.total_installments 100 %}% completado</p>
 
     {% if interes_calculado > 0 %}
-    <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">
+    <div class="mb-6 p-4 bg-red-900/20 border border-red-900/30 rounded-lg text-sm text-chele-danger">
         🐷 <strong>Interés acumulado:</strong> ${{ interes_calculado|floatformat:2 }} por atraso en el pago.
     </div>
     {% endif %}
 
-    <h3 class="font-semibold text-gray-900 mb-3">Cuotas</h3>
-    <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
+    <h3 class="font-semibold text-chele-text mb-3">Cuotas</h3>
+    <div class="bg-chele-surface rounded-lg border border-chele-border overflow-hidden">
         <div class="table-scroll">
         <table class="w-full min-w-[400px] text-sm">
             <thead>
-                <tr class="border-b bg-gray-50">
-                    <th class="px-4 py-3 text-left text-xs text-gray-500 uppercase">#</th>
-                    <th class="px-4 py-3 text-left text-xs text-gray-500 uppercase">Vencimiento</th>
-                    <th class="px-4 py-3 text-right text-xs text-gray-500 uppercase">Monto</th>
-                    <th class="px-4 py-3 text-right text-xs text-gray-500 uppercase">Estado</th>
+                <tr class="border-b border-chele-border bg-chele-bg-secondary">
+                    <th class="px-4 py-3 text-left text-xs text-chele-text-secondary uppercase">#</th>
+                    <th class="px-4 py-3 text-left text-xs text-chele-text-secondary uppercase">Vencimiento</th>
+                    <th class="px-4 py-3 text-right text-xs text-chele-text-secondary uppercase">Monto</th>
+                    <th class="px-4 py-3 text-right text-xs text-chele-text-secondary uppercase">Estado</th>
                 </tr>
             </thead>
             <tbody>
                 {% for inst in installments %}
-                <tr class="border-b border-gray-50 hover:bg-gray-50/50 transition {% if not inst.paid and forloop.counter0 == loan.paid_installments %}bg-amber-50/50 border-l-4 border-l-chele-gold{% endif %}">
+                <tr class="border-b border-chele-border hover:bg-chele-bg-tertiary/50 transition {% if not inst.paid and forloop.counter0 == loan.paid_installments %}bg-amber-900/10 border-l-4 border-l-chele-primary{% endif %}">
                     <td class="px-4 py-3 font-medium">{{ inst.number }}</td>
                     <td class="px-4 py-3">{{ inst.due_date|date:'d/m/Y' }}</td>
                     <td class="px-4 py-3 text-right font-medium">${{ inst.amount|floatformat:2 }}</td>
@@ -82,7 +82,7 @@
                         <form method="post" action="{% url 'loan_pay_installment' loan.id %}" class="inline">
                             {% csrf_token %}
                             <input type="hidden" name="installment_id" value="{{ inst.id }}">
-                            <button type="submit" class="inline-flex items-center gap-1 text-chele-gold hover:text-chele-gold-dark font-medium text-xs px-3 py-1 rounded border border-chele-gold/30 hover:bg-amber-50 transition">
+                            <button type="submit" class="inline-flex items-center gap-1 text-chele-primary hover:text-chele-primary-dark font-medium text-xs px-3 py-1 rounded border border-chele-primary/30 hover:bg-amber-900/20 transition">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
                                 Pagar ahora
                             </button>

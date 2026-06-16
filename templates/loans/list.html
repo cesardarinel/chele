@@ -3,23 +3,23 @@
 {% block content %}
 <div class="px-4 md:px-6 py-5">
     <div class="flex items-center justify-between mb-6">
-        <h2 class="text-xl font-bold text-[#141A26] flex items-center gap-2">🐷 Préstamos</h2>
-        <a href="{% url 'loan_create' %}" class="bg-[#2563EB] text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700">Nuevo préstamo</a>
+        <h2 class="text-xl font-bold text-chele-text flex items-center gap-2">🐷 Préstamos</h2>
+        <a href="{% url 'loan_create' %}" class="bg-chele-primary text-white px-4 py-2 rounded-lg text-sm hover:bg-chele-primary-dark">Nuevo préstamo</a>
     </div>
 
     {% if loans %}
     <h3 class="text-sm font-semibold text-chele-text mb-3">📋 Activos</h3>
     {% for loan in loans %}
     {% if loan.status == 'active' %}
-    <a href="{% url 'loan_detail' loan.id %}" class="block bg-white rounded-lg border border-gray-200 p-4 hover:shadow-sm transition mb-2">
+    <a href="{% url 'loan_detail' loan.id %}" class="block bg-chele-surface rounded-lg border border-chele-border p-4 hover:shadow-sm transition mb-2">
         <div class="flex items-center justify-between">
             <div>
-                <p class="font-semibold text-gray-900">{{ loan.name }}</p>
-                <p class="text-sm text-gray-500">{{ loan.get_type_display }} — {{ loan.paid_installments }}/{{ loan.total_installments }} cuotas</p>
+                <p class="font-semibold text-chele-text">{{ loan.name }}</p>
+                <p class="text-sm text-chele-text-secondary">{{ loan.get_type_display }} — {{ loan.paid_installments }}/{{ loan.total_installments }} cuotas</p>
             </div>
             <div class="text-right">
                 <p class="text-sm font-bold text-chele-danger">${{ loan.remaining_balance|floatformat:2 }}</p>
-                <p class="text-xs text-gray-400">{{ loan.interest_rate|floatformat:2 }}% anual</p>
+                <p class="text-xs text-chele-text-muted">{{ loan.interest_rate|floatformat:2 }}% anual</p>
             </div>
         </div>
     </a>
@@ -29,11 +29,11 @@
     {% for loan in loans %}
     {% if loan.status == 'completed' %}
     {% if forloop.first %}<h3 class="text-sm font-semibold text-chele-text mt-6 mb-3">✅ Historial</h3>{% endif %}
-    <a href="{% url 'loan_detail' loan.id %}" class="block bg-white rounded-lg border border-gray-200 p-4 hover:shadow-sm transition mb-2 opacity-60 hover:opacity-100">
+    <a href="{% url 'loan_detail' loan.id %}" class="block bg-chele-surface rounded-lg border border-chele-border p-4 hover:shadow-sm transition mb-2 opacity-60 hover:opacity-100">
         <div class="flex items-center justify-between">
             <div>
-                <p class="font-semibold text-gray-900">{{ loan.name }}</p>
-                <p class="text-sm text-gray-500">{{ loan.get_type_display }} — {{ loan.paid_installments }}/{{ loan.total_installments }} cuotas</p>
+                <p class="font-semibold text-chele-text">{{ loan.name }}</p>
+                <p class="text-sm text-chele-text-secondary">{{ loan.get_type_display }} — {{ loan.paid_installments }}/{{ loan.total_installments }} cuotas</p>
             </div>
             <div class="text-right">
                 <p class="text-sm font-bold text-chele-success">✓ Pagado</p>
@@ -43,7 +43,7 @@
     {% endif %}
     {% endfor %}
     {% else %}
-    <div class="text-center py-12 text-gray-400">
+    <div class="text-center py-12 text-chele-text-muted">
         <p class="text-4xl mb-2">🐷</p>
         <p class="text-sm">No hay préstamos registrados.</p>
     </div>

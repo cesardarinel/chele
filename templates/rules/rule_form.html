@@ -3,16 +3,16 @@
 {% block content %}
 <div class="px-4 md:px-6 py-5 max-w-lg mx-auto">
     <h2 class="text-lg md:text-xl font-bold text-chele-text mb-6">🐷 {% if rule %}Editar{% else %}Nueva{% endif %} regla</h2>
-    <form method="post" class="bg-white rounded-lg border border-chele-border p-4 md:p-6 space-y-4">
+    <form method="post" class="bg-chele-surface rounded-lg border border-chele-border p-4 md:p-6 space-y-4">
         {% csrf_token %}
         <div>
             <label class="block text-sm font-medium text-chele-text mb-1">Nombre</label>
-            <input type="text" name="name" value="{{ rule.name|default:'' }}" required class="w-full border border-chele-border rounded-lg px-3 py-2 text-sm">
+            <input type="text" name="name" value="{{ rule.name|default:'' }}" required class="w-full border border-chele-border rounded-lg px-3 py-2 text-sm bg-chele-bg text-chele-text">
         </div>
         <div class="grid grid-cols-3 gap-3">
             <div>
                 <label class="block text-xs font-medium text-chele-text mb-1">Campo</label>
-                <select name="condition_field" class="w-full border border-chele-border rounded px-2 py-2 text-sm">
+                <select name="condition_field" class="w-full border border-chele-border rounded px-2 py-2 text-sm bg-chele-bg text-chele-text">
                     <option value="payee">Beneficiario</option>
                     <option value="amount">Monto</option>
                     <option value="notes">Notas</option>
@@ -20,7 +20,7 @@
             </div>
             <div>
                 <label class="block text-xs font-medium text-chele-text mb-1">Operador</label>
-                <select name="condition_operator" class="w-full border border-chele-border rounded px-2 py-2 text-sm">
+                <select name="condition_operator" class="w-full border border-chele-border rounded px-2 py-2 text-sm bg-chele-bg text-chele-text">
                     <option value="contains">contiene</option>
                     <option value="equals">es igual a</option>
                     <option value="starts_with">empieza con</option>
@@ -28,12 +28,12 @@
             </div>
             <div>
                 <label class="block text-xs font-medium text-chele-text mb-1">Valor</label>
-                <input type="text" name="condition_value" value="{{ rule.condition_value|default:'' }}" required class="w-full border border-chele-border rounded px-2 py-2 text-sm">
+                <input type="text" name="condition_value" value="{{ rule.condition_value|default:'' }}" required class="w-full border border-chele-border rounded px-2 py-2 text-sm bg-chele-bg text-chele-text">
             </div>
         </div>
         <div>
             <label class="block text-sm font-medium text-chele-text mb-1">Asignar categoría</label>
-            <select name="action_category" class="w-full border border-chele-border rounded-lg px-3 py-2 text-sm">
+            <select name="action_category" class="w-full border border-chele-border rounded-lg px-3 py-2 text-sm bg-chele-bg text-chele-text">
                 <option value="">—</option>
                 {% for cat in active_budget.categories.all %}
                 <option value="{{ cat.id }}">{{ cat.name }}</option>
@@ -42,7 +42,7 @@
         </div>
         <div>
             <label class="block text-sm font-medium text-chele-text mb-1">Asignar beneficiario</label>
-            <select name="action_payee" class="w-full border border-chele-border rounded-lg px-3 py-2 text-sm">
+            <select name="action_payee" class="w-full border border-chele-border rounded-lg px-3 py-2 text-sm bg-chele-bg text-chele-text">
                 <option value="">—</option>
                 {% for p in active_budget.payees.all %}
                 <option value="{{ p.id }}">{{ p.name }}</option>
@@ -51,7 +51,7 @@
         </div>
         <div>
             <label class="block text-sm font-medium text-chele-text mb-1">Asignar notas</label>
-            <input type="text" name="action_notes" value="{{ rule.action_notes|default:'' }}" class="w-full border border-chele-border rounded-lg px-3 py-2 text-sm">
+            <input type="text" name="action_notes" value="{{ rule.action_notes|default:'' }}" class="w-full border border-chele-border rounded-lg px-3 py-2 text-sm bg-chele-bg text-chele-text">
         </div>
         <button type="submit" class="btn-primary w-full text-center py-2.5">🐷 Guardar regla</button>
     </form>

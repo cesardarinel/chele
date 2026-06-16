@@ -10,31 +10,31 @@
             </p>
         </div>
         <div class="flex gap-2">
-            <a href="{% url 'account_edit' account.id %}" class="px-3 py-2 bg-gray-200 rounded-lg text-xs md:text-sm hover:bg-gray-300">Editar</a>
-            <a href="{% url 'account_delete' account.id %}" class="px-3 py-2 bg-red-100 text-chele-danger rounded-lg text-xs md:text-sm hover:bg-red-200">Eliminar</a>
+            <a href="{% url 'account_edit' account.id %}" class="px-3 py-2 bg-chele-bg-tertiary text-chele-text rounded-lg text-xs md:text-sm hover:bg-chele-surface-hover">Editar</a>
+            <a href="{% url 'account_delete' account.id %}" class="px-3 py-2 bg-red-900/20 text-chele-danger rounded-lg text-xs md:text-sm hover:bg-red-900/30">Eliminar</a>
         </div>
     </div>
 
     <div class="flex flex-wrap gap-2 mb-4">
         <button onclick="openModal('txModal')" class="btn-primary text-sm">+ Añadir transacción</button>
-        <a href="{% url 'csv_import' %}?account={{ account.id }}" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm hover:bg-gray-300">📥 Importar CSV</a>
+        <a href="{% url 'csv_import' %}?account={{ account.id }}" class="px-4 py-2 bg-chele-bg-tertiary text-chele-text rounded-lg text-sm hover:bg-chele-surface-hover">📥 Importar CSV</a>
     </div>
 
-    <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
+    <div class="bg-chele-surface rounded-lg border border-chele-border overflow-hidden">
         <div class="table-scroll">
         <table class="w-full min-w-[400px]">
             <thead>
-                <tr class="border-b border-gray-200 bg-gray-50">
+                <tr class="border-b border-chele-border bg-chele-bg-secondary">
                     <th class="w-8 px-2 py-3"><input type="checkbox" id="selectAll"></th>
-                    <th class="text-left px-2 md:px-3 py-3 text-[10px] md:text-xs font-semibold text-gray-500 uppercase">Fecha</th>
-                    <th class="text-left px-2 md:px-3 py-3 text-[10px] md:text-xs font-semibold text-gray-500 uppercase">Beneficiario</th>
-                    <th class="text-left hidden sm:table-cell px-2 md:px-3 py-3 text-[10px] md:text-xs font-semibold text-gray-500 uppercase">Categoría</th>
-                    <th class="text-right px-2 md:px-3 py-3 text-[10px] md:text-xs font-semibold text-gray-500 uppercase">Monto</th>
+                    <th class="text-left px-2 md:px-3 py-3 text-[10px] md:text-xs font-semibold text-chele-text-secondary uppercase">Fecha</th>
+                    <th class="text-left px-2 md:px-3 py-3 text-[10px] md:text-xs font-semibold text-chele-text-secondary uppercase">Beneficiario</th>
+                    <th class="text-left hidden sm:table-cell px-2 md:px-3 py-3 text-[10px] md:text-xs font-semibold text-chele-text-secondary uppercase">Categoría</th>
+                    <th class="text-right px-2 md:px-3 py-3 text-[10px] md:text-xs font-semibold text-chele-text-secondary uppercase">Monto</th>
                 </tr>
             </thead>
             <tbody>
                 {% for txn in transactions %}
-                <tr class="border-b border-gray-50 hover:bg-gray-50/50 transition">
+                <tr class="border-b border-chele-border hover:bg-chele-bg-tertiary/50 transition">
                     <td class="px-2 py-2"><input type="checkbox" name="transaction_ids" value="{{ txn.id }}" class="row-checkbox"></td>
                     <td class="px-2 md:px-3 py-2 text-xs md:text-sm">{{ txn.date|date:'d/m/Y' }}</td>
                     <td class="px-2 md:px-3 py-2 text-xs md:text-sm">{{ txn.payee.name|default:'—' }}</td>
@@ -53,10 +53,10 @@
 </div>
 
 <div id="txModal" class="hidden fixed inset-0 bg-black/30 z-50 flex items-start justify-center pt-10 md:pt-20 overflow-y-auto" onclick="if(event.target===this)closeModal('txModal')">
-    <div class="bg-white rounded-xl shadow-xl w-full max-w-lg mx-4 mb-10">
-        <div class="flex items-center justify-between p-5 border-b border-gray-200">
+    <div class="bg-chele-surface rounded-xl shadow-xl w-full max-w-lg mx-4 mb-10">
+        <div class="flex items-center justify-between p-5 border-b border-chele-border">
             <h3 class="text-lg font-bold text-chele-text flex items-center gap-2">🐷 Nueva transacción</h3>
-            <button onclick="closeModal('txModal')" class="text-gray-400 hover:text-gray-600 text-2xl">✕</button>
+            <button onclick="closeModal('txModal')" class="text-chele-text-muted hover:text-chele-text-secondary text-2xl">✕</button>
         </div>
         <form method="post" action="{% url 'transaction_create' %}" class="p-5 space-y-4">
             {% csrf_token %}
@@ -64,34 +64,34 @@
                 <label class="block text-sm font-medium text-chele-text mb-1">Tipo</label>
                 <div class="flex gap-4">
                     <label class="flex items-center gap-2 text-sm cursor-pointer">
-                        <input type="radio" name="direction" value="expense" checked class="text-chele-gold">
+                        <input type="radio" name="direction" value="expense" checked class="text-chele-primary">
                         <span>💸 Gasto</span>
                     </label>
                     <label class="flex items-center gap-2 text-sm cursor-pointer">
-                        <input type="radio" name="direction" value="income" class="text-chele-gold">
+                        <input type="radio" name="direction" value="income" class="text-chele-primary">
                         <span>💰 Ingreso</span>
                     </label>
                 </div>
             </div>
             <div>
                 <label class="block text-sm font-medium text-chele-text mb-1">Cuenta</label>
-                <select name="account_id" required class="w-full border border-chele-border rounded-lg px-3 py-2 text-sm">
+                <select name="account_id" required class="w-full border border-chele-border rounded-lg px-3 py-2 text-sm bg-chele-bg text-chele-text">
                     <option value="{{ account.id }}" selected>{{ account.name }}</option>
                 </select>
             </div>
             <div class="grid grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-chele-text mb-1">Fecha</label>
-                    <input type="date" name="date" required class="w-full border border-chele-border rounded-lg px-3 py-2 text-sm">
+                    <input type="date" name="date" required class="w-full border border-chele-border rounded-lg px-3 py-2 text-sm bg-chele-bg text-chele-text">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-chele-text mb-1">Monto</label>
-                    <input type="number" step="0.01" name="amount" required class="w-full border border-chele-border rounded-lg px-3 py-2 text-sm" placeholder="0.00">
+                    <input type="number" step="0.01" name="amount" required class="w-full border border-chele-border rounded-lg px-3 py-2 text-sm bg-chele-bg text-chele-text" placeholder="0.00">
                 </div>
             </div>
             <div>
                 <label class="block text-sm font-medium text-chele-text mb-1">Beneficiario</label>
-                <select name="payee_id" class="w-full border border-chele-border rounded-lg px-3 py-2 text-sm">
+                <select name="payee_id" class="w-full border border-chele-border rounded-lg px-3 py-2 text-sm bg-chele-bg text-chele-text">
                     <option value="">—</option>
                     {% for p in account.budget.payees.all %}
                     <option value="{{ p.id }}">{{ p.name }}</option>
@@ -100,7 +100,7 @@
             </div>
             <div>
                 <label class="block text-sm font-medium text-chele-text mb-1">Categoría</label>
-                <select name="category_id" class="w-full border border-chele-border rounded-lg px-3 py-2 text-sm">
+                <select name="category_id" class="w-full border border-chele-border rounded-lg px-3 py-2 text-sm bg-chele-bg text-chele-text">
                     <option value="">—</option>
                     <optgroup label="💰 Ingresos">
                     {% for cat in account.budget.categories.all %}
@@ -120,10 +120,10 @@
             </div>
             <div>
                 <label class="block text-sm font-medium text-chele-text mb-1">Notas</label>
-                <textarea name="notes" rows="2" class="w-full border border-chele-border rounded-lg px-3 py-2 text-sm"></textarea>
+                <textarea name="notes" rows="2" class="w-full border border-chele-border rounded-lg px-3 py-2 text-sm bg-chele-bg text-chele-text"></textarea>
             </div>
             <div class="flex justify-end gap-3 pt-2">
-                <button type="button" onclick="closeModal('txModal')" class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800">Cancelar</button>
+                <button type="button" onclick="closeModal('txModal')" class="px-4 py-2 text-sm text-chele-text-secondary hover:text-chele-text">Cancelar</button>
                 <button type="submit" class="btn-primary px-6 py-2">🐷 Guardar</button>
             </div>
         </form>

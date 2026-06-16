@@ -3,11 +3,11 @@
 {% block content %}
 <div class="px-4 md:px-6 py-5 max-w-lg mx-auto">
     <h2 class="text-lg md:text-xl font-bold text-chele-text mb-6">🐷 Fusionar "{{ payee.name }}"</h2>
-    <form method="post" class="bg-white rounded-lg border border-chele-border p-4 md:p-6 space-y-4">
+    <form method="post" class="bg-chele-surface rounded-lg border border-chele-border p-4 md:p-6 space-y-4">
         {% csrf_token %}
         <div>
             <label class="block text-sm font-medium text-chele-text mb-1">Fusionar con</label>
-            <select name="merge_to" required class="w-full border border-chele-border rounded-lg px-3 py-2 text-sm">
+            <select name="merge_to" required class="w-full border border-chele-border rounded-lg px-3 py-2 text-sm bg-chele-bg text-chele-text">
                 {% for p in active_budget.payees.all %}
                 {% if p.id != payee.id %}
                 <option value="{{ p.id }}">{{ p.name }}</option>
