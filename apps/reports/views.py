@@ -17,7 +17,7 @@ def reports_dashboard(request):
 def net_worth_report(request):
     budget_id = request.session.get('active_budget_id')
     accounts = Account.objects.filter(budget_id=budget_id)
-    assets = accounts.filter(type__in=['checking', 'savings', 'cash']).aggregate(Sum('balance'))['balance__sum'] or 0
+    assets = accounts.aggregate(Sum('balance'))['balance__sum'] or 0
     liabilities = CreditCard.objects.filter(budget_id=budget_id).aggregate(Sum('balance'))['balance__sum'] or 0
     net_worth = assets - abs(liabilities)
     return render(request, 'reports/net_worth.html', {

@@ -24,7 +24,7 @@ def goal_create(request):
             goal_type=request.POST.get('goal_type'),
             amount=request.POST.get('amount'),
             target_date=request.POST.get('target_date') or None,
-            frequency=request.POST.get('frequency', 12),
+            frequency=int(request.POST.get('frequency', 12)),
         )
         _apply_goal(goal)
         messages.success(request, 'Meta creada.')
