@@ -13,7 +13,7 @@ services:
       - DEBUG=${DEBUG:-True}
       - WORKERS=${WORKERS:-3}
     volumes:
-      - ./db:/app/db
+      - sqlite_data:/app/db
       - static_volume:/app/staticfiles
     restart: unless-stopped
     security_opt:
@@ -31,5 +31,7 @@ services:
         max-file: "3"
 
 volumes:
+  sqlite_data:
+    name: chele_sqlite_data
   static_volume:
     name: chele_static_volume
