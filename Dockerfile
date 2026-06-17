@@ -40,6 +40,4 @@ RUN chmod +x $APP_HOME/entrypoint.sh \
 
 USER $APP_USER
 
-EXPOSE 8000
-
 ENTRYPOINT ["/app/entrypoint.sh"]
