@@ -8,6 +8,7 @@ from django.db.models import Sum
 from .models import Budget, BudgetMembership, CategoryGroup, Category, MonthlyBudget
 from apps.accounts.models import Account
 from apps.transactions.models import Transaction
+from apps.schedules.models import Schedule
 from apps.schedules.views import process_due_schedules
 
 
