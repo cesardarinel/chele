@@ -51,6 +51,13 @@ def budget_view(request):
             amount__gt=0,
         ).aggregate(Sum('amount'))['amount__sum'] or 0)
 
+        # Include scheduled income for this month (so user can distribute future income)
+        scheduled_income = float(Schedule.objects.filter(
+            budget=budget, is_active=True, direction='income',
+            next_date__month=vm['month'], next_date__year=vm['year'],
+        ).aggregate(Sum('amount'))['amount__sum'] or 0)
+        month_income += scheduled_income
+
         month_expenses = float(Transaction.objects.filter(
             budget=budget, date__month=vm['month'], date__year=vm['year'],
             amount__lt=0,
