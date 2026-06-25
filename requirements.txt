@@ -6,3 +6,5 @@ pillow
 whitenoise
 gunicorn
 python-dateutil
+pytest>=8.0
+pytest-django>=4.0
