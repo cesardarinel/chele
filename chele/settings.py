@@ -9,6 +9,11 @@ environ.Env.read_env(BASE_DIR / '.env')
 SECRET_KEY = env('SECRET_KEY', default='django-insecure-dev-key-change-in-production')
 DEBUG = env.bool('DEBUG', default=True)
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['*'])
+# TODO: ⚠️ TEMPORARY — Remove '*' before production.
+# Using '*' for CSRF_TRUSTED_ORIGINS bypasses origin validation
+# and is a security risk. Set explicit origins (e.g. https://budget.example.com)
+# or use env.list('CSRF_TRUSTED_ORIGINS', default=[]) once deployed.
+CSRF_TRUSTED_ORIGINS = ['*']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
