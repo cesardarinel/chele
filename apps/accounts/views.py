@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.db.models import Sum
 from .models import Account
 from apps.transactions.models import Transaction
+from apps.schedules.models import Schedule
 from apps.credit_cards.models import CreditCard
 from apps.loans.models import Loan
 
@@ -72,9 +73,11 @@ def account_detail(request, id):
     budget_id = request.session.get('active_budget_id')
     account = get_object_or_404(Account, id=id, budget_id=budget_id)
     transactions = Transaction.objects.filter(account=account).select_related('payee', 'category')
+    schedules = Schedule.objects.filter(account=account, is_active=True).order_by('next_date')
     return render(request, 'accounts/account_detail.html', {
         'account': account,
         'transactions': transactions,
+        'schedules': schedules,
     })
 
 
