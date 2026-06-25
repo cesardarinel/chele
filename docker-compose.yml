@@ -30,6 +30,32 @@ services:
         max-size: "10m"
         max-file: "3"
 
+  api:
+    build:
+      context: chele-api
+      dockerfile: Dockerfile
+    image: chele-api:latest
+    container_name: chele-api
+    ports:
+      - "${API_PORT:-8080}:8080"
+    env_file:
+      - .env
+    environment:
+      - DB_DRIVER=${DB_DRIVER:-sqlite}
+      - DATABASE_URL=/app/db/sqlite.db
+      - JWT_SECRET=${JWT_SECRET:-dev-secret-change-in-production}
+      - PORT=8080
+    volumes:
+      - sqlite_data:/app/db
+    restart: unless-stopped
+    depends_on:
+      - web
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
 volumes:
   sqlite_data:
     name: chele_sqlite_data
