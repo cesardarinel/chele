@@ -57,6 +57,11 @@ def transaction_create(request):
 @login_required
 def transaction_edit(request, id):
     txn = get_object_or_404(Transaction, id=id)
+    if request.method == 'GET':
+        return render(request, 'transactions/transaction_form.html', {
+            'transaction': txn,
+            'account_id': txn.account_id,
+        })
     if request.method == 'POST':
         old_amount = float(txn.amount)
         new_amount = float(request.POST.get('amount', old_amount))

@@ -1,19 +1,21 @@
 {% extends 'base.html' %}
-{% block title %}Nueva transacción{% endblock %}
+{% block title %}{% if transaction %}Editar transacción{% else %}Nueva transacción{% endif %}{% endblock %}
 {% block content %}
 <div class="px-4 md:px-6 py-5 max-w-lg mx-auto">
-    <h2 class="text-lg md:text-xl font-bold text-chele-text mb-6 flex items-center gap-2">Nueva transacción</h2>
-    <form method="post" class="bg-chele-surface rounded-lg border border-chele-border p-4 md:p-6 space-y-4">
+    <h2 class="text-lg md:text-xl font-bold text-chele-text mb-6 flex items-center gap-2">
+        {% if transaction %}✏️ Editar transacción{% else %}➕ Nueva transacción{% endif %}
+    </h2>
+    <form method="post" action="{% if transaction %}{% url 'transaction_edit' transaction.id %}{% else %}{% url 'transaction_create' %}{% endif %}" class="bg-chele-surface rounded-lg border border-chele-border p-4 md:p-6 space-y-4">
         {% csrf_token %}
         <div>
             <label class="block text-sm font-medium text-chele-text mb-1">Tipo</label>
             <div class="flex gap-4">
                 <label class="flex items-center gap-2 text-sm">
-                    <input type="radio" name="direction" value="expense" checked onchange="document.getElementById('amountInput').dataset.sign='-'">
+                    <input type="radio" name="direction" value="expense" {% if transaction and transaction.amount < 0 %}checked{% elif not transaction %}checked{% endif %} onchange="document.getElementById('amountInput').dataset.sign='-'">
                     <span>Gasto</span>
                 </label>
                 <label class="flex items-center gap-2 text-sm">
-                    <input type="radio" name="direction" value="income" onchange="document.getElementById('amountInput').dataset.sign='+'">
+                    <input type="radio" name="direction" value="income" {% if transaction and transaction.amount >= 0 %}checked{% endif %} onchange="document.getElementById('amountInput').dataset.sign='+'">
                     <span>Ingreso</span>
                 </label>
             </div>
@@ -22,24 +24,24 @@
             <label class="block text-sm font-medium text-chele-text mb-1">Cuenta</label>
             <select name="account_id" required class="w-full border border-chele-border rounded-lg px-3 py-2 text-sm bg-chele-bg text-chele-text">
                 {% for a in active_budget.accounts.all %}
-                <option value="{{ a.id }}" {% if request.GET.account == a.id|slugify %}selected{% endif %}>{{ a.name }}</option>
+                <option value="{{ a.id }}" {% if transaction and transaction.account_id == a.id %}selected{% elif account_id == a.id|slugify %}selected{% endif %}>{{ a.name }}</option>
                 {% endfor %}
             </select>
         </div>
         <div>
             <label class="block text-sm font-medium text-chele-text mb-1">Fecha</label>
-            <input type="date" name="date" required class="w-full border border-chele-border rounded-lg px-3 py-2 text-sm bg-chele-bg text-chele-text">
+            <input type="date" name="date" required value="{% if transaction %}{{ transaction.date|date:'Y-m-d' }}{% else %}{% now 'Y-m-d' %}{% endif %}" class="w-full border border-chele-border rounded-lg px-3 py-2 text-sm bg-chele-bg text-chele-text">
         </div>
         <div>
             <label class="block text-sm font-medium text-chele-text mb-1">Monto</label>
-            <input type="number" step="0.01" name="amount" id="amountInput" required class="w-full border border-chele-border rounded-lg px-3 py-2 text-sm bg-chele-bg text-chele-text" placeholder="0.00">
+            <input type="number" step="0.01" name="amount" id="amountInput" required value="{% if transaction %}{{ transaction.amount|floatformat:2 }}{% endif %}" class="w-full border border-chele-border rounded-lg px-3 py-2 text-sm bg-chele-bg text-chele-text" placeholder="0.00">
         </div>
         <div>
             <label class="block text-sm font-medium text-chele-text mb-1">Beneficiario</label>
             <select name="payee_id" class="w-full border border-chele-border rounded-lg px-3 py-2 text-sm bg-chele-bg text-chele-text">
                 <option value="">—</option>
                 {% for p in active_budget.payees.all %}
-                <option value="{{ p.id }}">{{ p.name }}</option>
+                <option value="{{ p.id }}" {% if transaction and transaction.payee_id == p.id %}selected{% endif %}>{{ p.name }}</option>
                 {% endfor %}
             </select>
         </div>
@@ -50,14 +52,14 @@
                 <optgroup label="💰 Ingresos">
                 {% for cat in active_budget.categories.all %}
                 {% if cat.group.is_income %}
-                <option value="{{ cat.id }}">{{ cat.name }}</option>
+                <option value="{{ cat.id }}" {% if transaction and transaction.category_id == cat.id %}selected{% endif %}>{{ cat.name }}</option>
                 {% endif %}
                 {% endfor %}
                 </optgroup>
                 <optgroup label="💸 Gastos">
                 {% for cat in active_budget.categories.all %}
                 {% if not cat.group.is_income %}
-                <option value="{{ cat.id }}">{{ cat.name }}</option>
+                <option value="{{ cat.id }}" {% if transaction and transaction.category_id == cat.id %}selected{% endif %}>{{ cat.name }}</option>
                 {% endif %}
                 {% endfor %}
                 </optgroup>
@@ -65,8 +67,9 @@
         </div>
         <div>
             <label class="block text-sm font-medium text-chele-text mb-1">Notas</label>
-            <textarea name="notes" rows="2" class="w-full border border-chele-border rounded-lg px-3 py-2 text-sm bg-chele-bg text-chele-text"></textarea>
+            <textarea name="notes" rows="2" class="w-full border border-chele-border rounded-lg px-3 py-2 text-sm bg-chele-bg text-chele-text">{% if transaction %}{{ transaction.notes }}{% endif %}</textarea>
         </div>
+        {% if not transaction %}
         <div>
             <label class="flex items-center gap-2 text-sm">
                 <input type="checkbox" name="is_transfer" onchange="document.getElementById('transferTarget').classList.toggle('hidden')">
@@ -82,7 +85,13 @@
                 {% endfor %}
             </select>
         </div>
-        <button type="submit" class="btn-primary w-full text-center py-2.5">Guardar transacción</button>
+        {% endif %}
+        <button type="submit" class="btn-primary w-full text-center py-2.5">
+            {% if transaction %}Guardar cambios{% else %}Guardar transacción{% endif %}
+        </button>
+        {% if transaction %}
+        <a href="{% url 'account_detail' transaction.account_id %}" class="block text-center text-sm text-chele-text-secondary hover:text-chele-text mt-2">Cancelar</a>
+        {% endif %}
     </form>
 </div>
 {% endblock %}

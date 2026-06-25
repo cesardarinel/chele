@@ -34,13 +34,18 @@
             </thead>
             <tbody>
                 {% for txn in transactions %}
-                <tr class="border-b border-chele-border hover:bg-chele-bg-tertiary/50 transition">
-                    <td class="px-2 py-2"><input type="checkbox" name="transaction_ids" value="{{ txn.id }}" class="row-checkbox"></td>
-                    <td class="px-2 md:px-3 py-2 text-xs md:text-sm">{{ txn.date|date:'d/m/Y' }}</td>
-                    <td class="px-2 md:px-3 py-2 text-xs md:text-sm">{{ txn.payee.name|default:'—' }}</td>
-                    <td class="px-2 md:px-3 py-2 text-xs md:text-sm hidden sm:table-cell">{{ txn.category.name|default:'—' }}</td>
-                    <td class="px-2 md:px-3 py-2 text-xs md:text-sm text-right {% if txn.amount >= 0 %}text-chele-success{% else %}text-chele-danger{% endif %}">
+                <tr class="border-b border-chele-border hover:bg-chele-bg-tertiary/50 transition group">
+                    <td class="px-1 md:px-2 py-2"><input type="checkbox" name="transaction_ids" value="{{ txn.id }}" class="row-checkbox"></td>
+                    <td class="px-1 md:px-3 py-2 text-xs md:text-sm">{{ txn.date|date:'d/m/Y' }}</td>
+                    <td class="px-1 md:px-3 py-2 text-xs md:text-sm">{{ txn.payee.name|default:'—' }}</td>
+                    <td class="px-1 md:px-3 py-2 text-xs md:text-sm hidden sm:table-cell">{{ txn.category.name|default:'—' }}</td>
+                    <td class="px-1 md:px-3 py-2 text-xs md:text-sm text-right {% if txn.amount >= 0 %}text-chele-success{% else %}text-chele-danger{% endif %} whitespace-nowrap">
                         ${{ txn.amount|currency }}
+                        <a href="{% url 'transaction_edit' txn.id %}" class="inline-flex ml-1 md:ml-2 text-chele-text-secondary hover:text-amber-400 opacity-0 group-hover:opacity-100 transition-opacity" title="Editar">✏️</a>
+                        <form method="post" action="{% url 'transaction_delete' txn.id %}" class="inline" onsubmit="return confirm('¿Eliminar transacción?')">
+                            {% csrf_token %}
+                            <button type="submit" class="text-chele-text-secondary hover:text-chele-danger opacity-0 group-hover:opacity-100 transition-opacity" title="Eliminar">🗑️</button>
+                        </form>
                     </td>
                 </tr>
                 {% empty %}
@@ -82,7 +87,7 @@
             <div class="grid grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-chele-text mb-1">Fecha</label>
-                    <input type="date" name="date" required class="w-full border border-chele-border rounded-lg px-3 py-2 text-sm bg-chele-bg text-chele-text">
+                    <input type="date" name="date" required value="{% now 'Y-m-d' %}" class="w-full border border-chele-border rounded-lg px-3 py-2 text-sm bg-chele-bg text-chele-text">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-chele-text mb-1">Monto</label>
