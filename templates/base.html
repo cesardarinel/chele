@@ -117,6 +117,7 @@
                             </a>
                         </div>
                     </div>
+                    <div class="hidden md:block">
                     {% if active_budget %}
                     {% for account in active_budget.accounts.all %}
                     <a href="{% url 'account_detail' account.id %}" class="flex items-center justify-between px-3 py-2 rounded text-xs md:text-sm text-gray-300 hover:bg-white/10 hover:text-white transition-all duration-150">
@@ -142,6 +143,7 @@
                     </a>
                     {% endfor %}
                     {% endif %}
+                    </div>
                 </div>
             </nav>
 
