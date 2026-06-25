@@ -181,65 +181,67 @@
         </div>
     </div>
 
-    <div id="editBudgetModal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-start justify-center pt-10 md:pt-20 overflow-y-auto" onclick="if(event.target===this)closeModal('editBudgetModal')">
-        <div class="bg-chele-surface rounded-xl shadow-xl w-full max-w-lg mx-4 mb-10">
-            <div class="flex items-center justify-between p-5 md:p-6 border-b border-chele-border">
-                <h3 class="text-lg font-bold text-chele-text flex items-center gap-2">Editar categorías</h3>
-                <button onclick="closeModal('editBudgetModal')" class="text-gray-400 hover:text-gray-300 text-2xl">✕</button>
+    <div id="editBudgetModal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-start justify-center pt-2 md:pt-10 overflow-y-auto" onclick="if(event.target===this)closeModal('editBudgetModal')">
+        <div class="bg-chele-surface rounded-xl shadow-xl w-full max-w-lg mx-2 md:mx-4 mb-4 md:mb-10">
+            <div class="flex items-center justify-between p-3 md:p-6 border-b border-chele-border">
+                <h3 class="text-sm md:text-lg font-bold text-chele-text flex items-center gap-2">Editar categorías</h3>
+                <button onclick="closeModal('editBudgetModal')" class="text-gray-400 hover:text-gray-300 text-xl md:text-2xl">✕</button>
             </div>
-            <div class="p-5 md:p-6 space-y-6">
-                <form method="post" action="{% url 'category_group_create' %}" class="flex items-center gap-2 bg-chele-bg-secondary rounded-lg p-3 border border-dashed border-chele-border">
+            <div class="p-3 md:p-6 space-y-4 md:space-y-6">
+                <form method="post" action="{% url 'category_group_create' %}" class="flex flex-col md:flex-row items-stretch md:items-center gap-2 bg-chele-bg-secondary rounded-lg p-3 border border-dashed border-chele-border">
                     {% csrf_token %}
                     <input type="text" name="name" placeholder="Nombre del nuevo grupo" required class="flex-1 bg-chele-bg border border-chele-border rounded px-3 py-2 text-sm text-chele-text">
                     <button type="submit" class="bg-chele-primary text-white px-4 py-2 rounded text-sm font-medium hover:bg-chele-primary-dark whitespace-nowrap">+ Grupo</button>
                 </form>
                 {% for group in groups %}
-                <div class="bg-chele-bg-secondary rounded-lg p-4">
-                    <div class="flex items-center justify-between mb-3">
-                        <h4 class="text-base font-bold text-chele-text">{{ group.group.name }}</h4>
+                <div class="bg-chele-bg-secondary rounded-lg p-3 md:p-4">
+                    <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                        <h4 class="text-sm md:text-base font-bold text-chele-text break-words max-w-[60%] md:max-w-none">{{ group.group.name }}</h4>
                         {% if not group.group.is_income %}
-                        <div class="flex items-center gap-2">
+                        <div class="flex items-center gap-1.5 md:gap-2 flex-shrink-0">
                             <button onclick="document.getElementById('ecg{{ forloop.counter }}').classList.toggle('hidden')"
-                                    class="inline-flex items-center gap-1.5 text-sm font-medium text-amber-400 hover:text-amber-300 bg-white/5 border border-amber-400/20 rounded-lg px-4 py-2">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                                Agregar
+                                    class="inline-flex items-center gap-1 text-xs md:text-sm font-medium text-amber-400 hover:text-amber-300 bg-white/5 border border-amber-400/20 rounded-lg px-2 md:px-4 py-1.5 md:py-2">
+                                <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                                <span class="hidden md:inline">Agregar</span>
                             </button>
                             <form method="post" action="{% url 'category_group_edit' group.group.id %}" class="inline-flex items-center gap-1">
                                 {% csrf_token %}
                                 <input type="text" name="name" value="{{ group.group.name }}" required
-                                       class="hidden bg-chele-bg border border-chele-border rounded px-2 py-0.5 text-sm w-32 text-chele-text group-edit-input" 
+                                       class="hidden bg-chele-bg border border-chele-border rounded px-2 py-0.5 text-xs md:text-sm w-24 md:w-32 text-chele-text group-edit-input" 
                                        onblur="this.closest('form').submit()">
                             </form>
                             <button onclick="var i=this.closest('div').querySelector('.group-edit-input');i.classList.toggle('hidden');i.focus()" 
-                                    class="text-xs text-amber-400 hover:text-amber-300">✏️</button>
+                                    class="text-xs md:text-sm text-amber-400 hover:text-amber-300 p-1">✏️</button>
                             <form method="post" action="{% url 'category_group_delete' group.group.id %}" class="inline" onsubmit="return confirm('¿Eliminar grupo {{ group.group.name }} y todas sus categorías?')">
                                 {% csrf_token %}
-                                <button type="submit" class="text-xs text-chele-danger hover:text-red-400">🗑️</button>
+                                <button type="submit" class="text-xs md:text-sm text-chele-danger hover:text-red-400 p-1">🗑️</button>
                             </form>
                         </div>
                         {% endif %}
                     </div>
-                    <form id="ecg{{ forloop.counter }}" method="post" action="{% url 'category_create' %}" class="hidden mb-3 flex items-center gap-2 bg-chele-bg-secondary rounded-lg border border-chele-border p-3">
+                    <form id="ecg{{ forloop.counter }}" method="post" action="{% url 'category_create' %}" class="hidden mb-3 flex flex-col md:flex-row items-stretch md:items-center gap-2 bg-chele-bg-secondary rounded-lg border border-chele-border p-3">
                         {% csrf_token %}
                         <input type="hidden" name="group_id" value="{{ group.group.id }}">
                         <input type="text" name="name" placeholder="Nombre de la nueva categoría" required class="flex-1 bg-chele-bg border border-chele-border rounded px-3 py-2 text-sm text-chele-text">
-                        <button type="submit" class="bg-chele-primary text-white px-4 py-2 rounded text-sm font-medium hover:bg-chele-primary-dark">Crear</button>
-                        <button type="button" onclick="this.closest('form').classList.add('hidden')" class="text-chele-danger text-lg px-2">✕</button>
+                        <div class="flex gap-2">
+                            <button type="submit" class="flex-1 md:flex-none bg-chele-primary text-white px-4 py-2 rounded text-sm font-medium hover:bg-chele-primary-dark">Crear</button>
+                            <button type="button" onclick="this.closest('form').classList.add('hidden')" class="text-chele-danger text-lg px-2">✕</button>
+                        </div>
                     </form>
                     <div class="space-y-1">
                         {% for cat in group.categories %}
-                        <div class="flex items-center justify-between py-2 px-3 rounded-lg bg-chele-bg border border-chele-border hover:border-chele-border-light">
-                            <span class="text-sm font-medium text-chele-text">{{ cat.category.name }}</span>
+                        <div class="flex flex-col md:flex-row md:items-center justify-between py-2 px-2 md:px-3 rounded-lg bg-chele-bg border border-chele-border hover:border-chele-border-light gap-1 md:gap-0">
+                            <span class="text-xs md:text-sm font-medium text-chele-text break-words">{{ cat.category.name }}</span>
                             {% if not group.group.is_income %}
-                            <div class="flex gap-2">
+                            <div class="flex items-center gap-1 md:gap-2 self-end md:self-auto">
                                 <form method="post" action="{% url 'category_edit' cat.category.id %}" class="flex items-center gap-1">
                                     {% csrf_token %}
-                                    <input type="text" name="name" value="{{ cat.category.name }}" required class="bg-chele-bg border border-chele-border rounded px-2 py-1 text-sm w-24 text-chele-text">
+                                    <input type="text" name="name" value="{{ cat.category.name }}" required class="bg-chele-bg border border-chele-border rounded px-1.5 md:px-2 py-1 text-xs md:text-sm w-16 md:w-24 text-chele-text">
                                 </form>
                                 <form method="post" action="{% url 'category_delete' cat.category.id %}" class="inline" onsubmit="return confirm('¿Eliminar {{ cat.category.name }}?')">
                                     {% csrf_token %}
                                     <button type="submit" class="text-chele-danger hover:text-red-400 p-1">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                        <svg class="w-3.5 h-3.5 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                                     </button>
                                 </form>
                             </div>
