@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% block title %}Resumen de cuentas{% endblock %}
+{% block content %}
+<div class="px-4 md:px-6 py-5 max-w-4xl mx-auto">
+    <div class="flex items-center justify-between mb-6">
+        <h2 class="text-xl md:text-2xl font-bold text-chele-text">Cuentas</h2>
+        <a href="{% url 'account_create' %}" class="inline-flex items-center gap-1.5 px-4 py-2 bg-chele-primary text-white rounded-lg text-sm font-medium hover:bg-chele-primary-dark">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            Nueva cuenta
+        </a>
+    </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
+        <div class="bg-chele-surface rounded-xl border border-chele-border p-4">
+            <p class="text-xs text-chele-text-secondary uppercase tracking-wider mb-1">En presupuesto</p>
+            <p class="text-xl font-bold text-chele-success">${{ total_on_budget|floatformat:2|intcomma }}</p>
+        </div>
+        <div class="bg-chele-surface rounded-xl border border-chele-border p-4">
+            <p class="text-xs text-chele-text-secondary uppercase tracking-wider mb-1">Fuera de presupuesto</p>
+            <p class="text-xl font-bold text-chele-text">${{ total_off_budget|floatformat:2|intcomma }}</p>
+        </div>
+        <div class="bg-chele-surface rounded-xl border border-chele-border p-4">
+            <p class="text-xs text-chele-text-secondary uppercase tracking-wider mb-1">Total disponible</p>
+            <p class="text-xl font-bold text-chele-success">${{ grand_total|floatformat:2|intcomma }}</p>
+        </div>
+        <div class="bg-chele-surface rounded-xl border border-chele-border p-4">
+            <p class="text-xs text-chele-text-secondary uppercase tracking-wider mb-1">Deuda total</p>
+            <p class="text-xl font-bold text-chele-danger">${{ total_debt|stringformat:'f'|cut:'-'|floatformat:2|intcomma }}</p>
+        </div>
+    </div>
+
+    <div class="space-y-6">
+        <div class="bg-chele-surface rounded-xl border border-chele-border overflow-hidden">
+            <div class="flex items-center justify-between px-5 py-4 border-b border-chele-border bg-chele-bg-secondary/50">
+                <h3 class="text-sm font-semibold text-chele-text uppercase tracking-wider flex items-center gap-2">
+                    <svg class="w-4 h-4 text-chele-success" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    En el presupuesto
+                </h3>
+                <span class="text-sm font-bold text-chele-success">${{ total_on_budget|floatformat:2|intcomma }}</span>
+            </div>
+            <div class="divide-y divide-chele-border">
+                {% for account in on_budget %}
+                <a href="{% url 'account_detail' account.id %}" class="flex items-center justify-between px-5 py-3 hover:bg-chele-bg-tertiary/30 transition">
+                    <div class="flex items-center gap-3 min-w-0">
+                        <svg class="w-4 h-4 shrink-0 text-chele-success" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11m16-11v11M8 14v3m4-3v3m4-3v3"/></svg>
+                        <span class="text-sm text-chele-text truncate">{{ account.name }}</span>
+                    </div>
+                    <span class="text-sm font-medium shrink-0 ml-2 {% if account.balance >= 0 %}text-chele-success{% else %}text-chele-danger{% endif %}">
+                        ${{ account.balance|floatformat:2|intcomma }}
+                    </span>
+                </a>
+                {% empty %}
+                <div class="px-5 py-8 text-center text-sm text-chele-text-secondary">
+                    No hay cuentas en el presupuesto.
+                    <a href="{% url 'account_create' %}" class="text-amber-400 hover:text-amber-300">Crear una</a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="bg-chele-surface rounded-xl border border-chele-border overflow-hidden">
+            <div class="flex items-center justify-between px-5 py-4 border-b border-chele-border bg-chele-bg-secondary/50">
+                <h3 class="text-sm font-semibold text-chele-text uppercase tracking-wider flex items-center gap-2">
+                    <svg class="w-4 h-4 text-chele-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+                    Fuera del presupuesto
+                </h3>
+                <span class="text-sm font-bold text-chele-text">${{ total_off_budget|floatformat:2|intcomma }}</span>
+            </div>
+            <div class="divide-y divide-chele-border">
+                {% for account in off_budget %}
+                <a href="{% url 'account_detail' account.id %}" class="flex items-center justify-between px-5 py-3 hover:bg-chele-bg-tertiary/30 transition">
+                    <div class="flex items-center gap-3 min-w-0">
+                        <svg class="w-4 h-4 shrink-0 text-chele-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+                        <span class="text-sm text-chele-text truncate">{{ account.name }}</span>
+                    </div>
+                    <span class="text-sm font-medium shrink-0 ml-2 {% if account.balance >= 0 %}text-chele-success{% else %}text-chele-danger{% endif %}">
+                        ${{ account.balance|floatformat:2|intcomma }}
+                    </span>
+                </a>
+                {% empty %}
+                <div class="px-5 py-8 text-center text-sm text-chele-text-secondary">
+                    No hay cuentas fuera del presupuesto.
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        {% if cc_debt_cards %}
+        <div class="bg-chele-surface rounded-xl border border-chele-border overflow-hidden">
+            <div class="flex items-center justify-between px-5 py-4 border-b border-chele-border bg-chele-bg-secondary/50">
+                <h3 class="text-sm font-semibold text-chele-text uppercase tracking-wider flex items-center gap-2">
+                    <svg class="w-4 h-4 text-chele-danger" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                    Deuda de tarjetas
+                </h3>
+                <span class="text-sm font-bold text-chele-danger">${{ total_cc_debt|stringformat:'f'|cut:'-'|floatformat:2|intcomma }}</span>
+            </div>
+            <div class="divide-y divide-chele-border">
+                {% for cc in cc_debt_cards %}
+                <a href="{% url 'cc_detail' cc.id %}" class="flex items-center justify-between px-5 py-3 hover:bg-chele-bg-tertiary/30 transition">
+                    <div class="flex items-center gap-3 min-w-0">
+                        <svg class="w-4 h-4 shrink-0 text-chele-danger" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                        <span class="text-sm text-chele-text truncate">{{ cc.name }}</span>
+                    </div>
+                    <span class="text-sm font-medium shrink-0 ml-2 text-chele-danger">-${{ cc.balance|stringformat:'f'|cut:'-'|floatformat:2|intcomma }}</span>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if loans %}
+        <div class="bg-chele-surface rounded-xl border border-chele-border overflow-hidden">
+            <div class="flex items-center justify-between px-5 py-4 border-b border-chele-border bg-chele-bg-secondary/50">
+                <h3 class="text-sm font-semibold text-chele-text uppercase tracking-wider flex items-center gap-2">
+                    <svg class="w-4 h-4 text-chele-danger" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    Préstamos
+                </h3>
+                <span class="text-sm font-bold text-chele-danger">${{ total_loan_debt|stringformat:'f'|cut:'-'|floatformat:2|intcomma }}</span>
+            </div>
+            <div class="divide-y divide-chele-border">
+                {% for loan in loans %}
+                <a href="{% url 'loan_detail' loan.id %}" class="flex items-center justify-between px-5 py-3 hover:bg-chele-bg-tertiary/30 transition">
+                    <div class="flex items-center gap-3 min-w-0">
+                        <svg class="w-4 h-4 shrink-0 text-chele-danger" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                        <div class="min-w-0">
+                            <span class="text-sm text-chele-text truncate block">{{ loan.name }}</span>
+                            <span class="text-[10px] text-chele-text-secondary">{{ loan.get_type_display }} · {{ loan.paid_installments }}/{{ loan.total_installments }} cuotas</span>
+                        </div>
+                    </div>
+                    <span class="text-sm font-medium shrink-0 ml-2 text-chele-danger">-${{ loan.remaining_balance|floatformat:2|intcomma }}</span>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

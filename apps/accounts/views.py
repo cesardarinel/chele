@@ -2,15 +2,46 @@ from datetime import date
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.db.models import Sum
 from .models import Account
 from apps.transactions.models import Transaction
+from apps.credit_cards.models import CreditCard
+from apps.loans.models import Loan
 
 
 @login_required
 def account_list(request):
     budget_id = request.session.get('active_budget_id')
     accounts = Account.objects.filter(budget_id=budget_id)
-    return render(request, 'accounts/account_list.html', {'accounts': accounts})
+    on_budget = accounts.filter(on_budget=True)
+    off_budget = accounts.filter(on_budget=False)
+
+    total_on_budget = on_budget.aggregate(Sum('balance'))['balance__sum'] or 0
+    total_off_budget = off_budget.aggregate(Sum('balance'))['balance__sum'] or 0
+    grand_total = total_on_budget + total_off_budget
+
+    credit_cards = CreditCard.objects.filter(budget_id=budget_id)
+    cc_debt_cards = [cc for cc in credit_cards if cc.balance < 0]
+    total_cc_debt = sum(cc.balance for cc in cc_debt_cards)
+
+    loans = Loan.objects.filter(budget_id=budget_id, status='active')
+    total_loan_debt = loans.aggregate(Sum('remaining_balance'))['remaining_balance__sum'] or 0
+    total_loan_debt = -total_loan_debt
+
+    total_debt = total_cc_debt + total_loan_debt
+
+    return render(request, 'accounts/account_list.html', {
+        'on_budget': on_budget,
+        'off_budget': off_budget,
+        'total_on_budget': total_on_budget,
+        'total_off_budget': total_off_budget,
+        'grand_total': grand_total,
+        'cc_debt_cards': cc_debt_cards,
+        'total_cc_debt': total_cc_debt,
+        'loans': loans,
+        'total_loan_debt': total_loan_debt,
+        'total_debt': total_debt,
+    })
 
 
 @login_required
