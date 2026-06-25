@@ -103,28 +103,6 @@
                 </a>
 
                 <div class="border-t border-white/10 my-3 pt-3">
-                    <div class="px-3 space-y-1 mb-3">
-                        <div class="flex items-center justify-between text-[10px] md:text-xs">
-                            <span class="text-gray-400">En presupuesto</span>
-                            <span class="font-semibold text-chele-success">${{ sidebar_total_on_budget|currency }}</span>
-                        </div>
-                        <div class="flex items-center justify-between text-[10px] md:text-xs">
-                            <span class="text-gray-400">Fuera de presupuesto</span>
-                            <span class="font-semibold text-chele-text">${{ sidebar_total_off_budget|currency }}</span>
-                        </div>
-                        <div class="flex items-center justify-between text-[10px] md:text-xs pt-1 border-t border-white/5">
-                            <span class="text-gray-300 font-medium">Disponible</span>
-                            <span class="font-semibold text-chele-success">${{ sidebar_grand_total|currency }}</span>
-                        </div>
-                        {% if sidebar_cc_debt or sidebar_loan_debt %}
-                        <div class="flex items-center justify-between text-[10px] md:text-xs">
-                            <span class="text-gray-400">Deuda</span>
-                            <span class="font-semibold text-chele-danger">${{ sidebar_total_debt|currency }}</span>
-                        </div>
-                        {% endif %}
-                    </div>
-                </div>
-                <div class="border-t border-white/10 my-3 pt-3">
                     <div class="px-3 mb-3">
                         <p class="text-xs md:text-sm text-gray-400 uppercase tracking-wider font-semibold mb-2">Finanzas</p>
                         <div class="flex flex-wrap gap-2">
