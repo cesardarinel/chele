@@ -206,6 +206,11 @@
         sidebar.classList.toggle('translate-x-0');
         overlay.classList.toggle('hidden');
     }
+    document.querySelectorAll('#sidebar a').forEach(a => {
+        a.addEventListener('click', () => {
+            if (window.innerWidth < 768) toggleSidebar();
+        });
+    });
     </script>
 </body>
 </html>
