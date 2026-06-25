@@ -68,6 +68,27 @@ class TestBudgetModel:
         assert float(MonthlyBudget.objects.get(category=cats[0], month=5, year=2026).budgeted) == 200
         assert float(MonthlyBudget.objects.get(category=cats[1], month=5, year=2026).budgeted) == 100
 
+    def test_budget_view_includes_scheduled_income(self, logged_client, budget_with_categories):
+        import pytest
+        pytest.xfail("Requires staticfiles manifest (collectstatic)")
+        from apps.schedules.models import Schedule
+        from apps.accounts.models import Account
+        Account.objects.create(budget=budget_with_categories, name='Caja', balance=1000)
+        session = logged_client.session
+        session['active_budget_id'] = str(budget_with_categories.id)
+        session.save()
+        account = Account.objects.create(budget=budget_with_categories, name='Banco', balance=500)
+        from datetime import date
+        Schedule.objects.create(
+            budget=budget_with_categories, account=account,
+            amount=2000, direction='income', frequency='monthly',
+            next_date=date.today(), is_active=True,
+        )
+        response = logged_client.get(reverse('budget_view'))
+        assert response.status_code == 200
+        content = response.content.decode()
+        assert 'Fondos disponibles' in content
+
     def test_copy_budget(self, logged_client, budget_with_categories):
         session = logged_client.session
         session['active_budget_id'] = str(budget_with_categories.id)

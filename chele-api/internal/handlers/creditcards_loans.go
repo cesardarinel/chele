@@ -107,8 +107,8 @@ func (h *CreditCardHandler) Pay(w http.ResponseWriter, r *http.Request) {
 
 	txnID := strings.ReplaceAll(uuid.New().String(), "-", "")
 	h.DB.Exec(
-		`INSERT INTO transactions_transaction (id,budget_id,account_id,date,amount,notes,created_at,updated_at)
-		 VALUES (?,?,?,date('now'),?,?,datetime('now'),datetime('now'))`,
+		`INSERT INTO transactions_transaction (id,budget_id,account_id,date,amount,notes,reconciled,cleared,created_at,updated_at)
+		 VALUES (?,?,?,date('now'),?,?,0,0,datetime('now'),datetime('now'))`,
 		txnID, card.BudgetID, req.AccountID, -req.Amount, "Pago TC: "+card.Name,
 	)
 
@@ -206,8 +206,8 @@ func (h *LoanHandler) PayInstallment(w http.ResponseWriter, r *http.Request) {
 	// Create transaction
 	txnID := strings.ReplaceAll(uuid.New().String(), "-", "")
 	h.DB.Exec(
-		`INSERT INTO transactions_transaction (id,budget_id,account_id,date,amount,notes,created_at,updated_at)
-		 VALUES (?,?,?,date('now'),?,?,datetime('now'),datetime('now'))`,
+		`INSERT INTO transactions_transaction (id,budget_id,account_id,date,amount,notes,reconciled,cleared,created_at,updated_at)
+		 VALUES (?,?,?,date('now'),?,?,0,0,datetime('now'),datetime('now'))`,
 		txnID, loan.BudgetID, req.AccountID, -inst.Amount, "Cuota: "+loan.Name,
 	)
 	h.DB.Exec("UPDATE accounts_account SET balance=balance-? WHERE id=?", inst.Amount, req.AccountID)

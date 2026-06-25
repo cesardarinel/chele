@@ -72,8 +72,8 @@ func (h *TransactionHandler) Create(w http.ResponseWriter, r *http.Request) {
 	id := strings.ReplaceAll(uuid.New().String(), "-", "")
 	_, err := h.DB.Exec(
 		`INSERT INTO transactions_transaction
-		 (id,budget_id,account_id,date,amount,payee_id,category_id,notes,created_at,updated_at)
-		 VALUES (?,?,?,?,?,?,?,?,datetime('now'),datetime('now'))`,
+		 (id,budget_id,account_id,date,amount,payee_id,category_id,notes,reconciled,cleared,created_at,updated_at)
+		 VALUES (?,?,?,?,?,?,?,?,0,0,datetime('now'),datetime('now'))`,
 		id, req.BudgetID, req.AccountID, req.Date, req.Amount, req.PayeeID, req.CategoryID, req.Notes,
 	)
 	if err != nil {

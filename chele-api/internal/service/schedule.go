@@ -50,8 +50,8 @@ func (s *ScheduleService) ProcessDue(budgetID string) (int, error) {
 		txnID := strings.ReplaceAll(uuid.New().String(), "-", "")
 		s.DB.Exec(
 			`INSERT INTO transactions_transaction
-			 (id,budget_id,account_id,date,amount,payee_id,category_id,notes,created_at,updated_at)
-			 VALUES (?,?,?,?,?,?,?,?,datetime('now'),datetime('now'))`,
+			 (id,budget_id,account_id,date,amount,payee_id,category_id,notes,reconciled,cleared,created_at,updated_at)
+			 VALUES (?,?,?,?,?,?,?,?,0,0,datetime('now'),datetime('now'))`,
 			txnID, sch.BudgetID, sch.AccountID, sch.NextDate, amount, sch.PayeeID, sch.CatID, "Programación",
 		)
 		s.DB.Exec("UPDATE accounts_account SET balance = balance + ? WHERE id = ?", amount, sch.AccountID)
