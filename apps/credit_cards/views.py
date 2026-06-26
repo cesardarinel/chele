@@ -4,6 +4,7 @@ from django.contrib import messages
 from .models import CreditCard, InterestCharge
 from apps.transactions.models import Transaction
 from apps.accounts.models import Account
+from apps.budgets.models import CategoryGroup, Category
 from core.interest import aplicar_interes
 from datetime import date
 
@@ -57,6 +58,21 @@ def cc_create(request):
             due_day=request.POST.get('due_day', 5),
             notes=request.POST.get('notes', ''),
         )
+
+        # Create Payment category for this credit card (for TC auto-move)
+        from django.utils.text import slugify
+        payment_group, _ = CategoryGroup.objects.get_or_create(
+            budget_id=budget_id, name='Pagos TC', is_income=False,
+            defaults={'sort_order': 99}
+        )
+        payment_cat_name = f'Pago {cc.name}'
+        if not Category.objects.filter(budget_id=budget_id, name=payment_cat_name).exists():
+            Category.objects.create(
+                budget_id=budget_id, group=payment_group,
+                name=payment_cat_name,
+                sort_order=0, notes=f'Categoría de pago para {cc.name}',
+            )
+
         messages.success(request, f'Tarjeta "{cc.name}" creada.')
         return redirect('cc_list')
     return render(request, 'credit_cards/form.html')

@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.db.models import Sum
 from .models import Transaction
 from apps.accounts.models import Account
 from apps.budgets.models import Category
@@ -31,6 +32,35 @@ def transaction_create(request):
         account = Account.objects.get(id=account_id)
         account.balance = float(account.balance) + amount
         account.save()
+
+        # TC auto-move: if transaction causes overspend, move to CC payment category
+        if txn.category_id and float(txn.amount) < 0:
+            from apps.budgets.models import Category, MonthlyBudget
+            budgeted = MonthlyBudget.objects.filter(
+                category_id=txn.category_id, month=txn.date.month, year=txn.date.year
+            ).aggregate(Sum('budgeted'))['budgeted__sum'] or 0
+            spent = abs(float(Transaction.objects.filter(
+                category_id=txn.category_id,
+                date__month=txn.date.month, date__year=txn.date.year,
+            ).aggregate(Sum('amount'))['amount__sum'] or 0))
+            if spent > float(budgeted):
+                overspent = spent - float(budgeted)
+                # Move available funds to first CC payment category
+                from apps.credit_cards.models import CreditCard
+                cc = CreditCard.objects.filter(budget_id=budget_id).first()
+                if cc:
+                    payment_cat = Category.objects.filter(
+                        budget_id=budget_id, name__startswith='Pago '
+                    ).first()
+                    if payment_cat and overspent > 0:
+                        available_to_move = min(overspent, float(budgeted))
+                        if available_to_move > 0:
+                            mb, _ = MonthlyBudget.objects.get_or_create(
+                                category_id=payment_cat.id,
+                                month=txn.date.month, year=txn.date.year
+                            )
+                            mb.budgeted = float(mb.budgeted) + available_to_move
+                            mb.save()
 
         if request.POST.get('is_transfer'):
             to_account_id = request.POST.get('to_account_id')
@@ -116,3 +146,30 @@ def transaction_bulk(request):
             transactions.update(category_id=category_id)
             messages.success(request, 'Categorías actualizadas.')
     return redirect(request.META.get('HTTP_REFERER', 'budget_view'))
+
+
+@login_required
+def review_uncategorized(request):
+    budget_id = request.session.get('active_budget_id')
+    from apps.budgets.models import Category
+    txn = Transaction.objects.filter(budget_id=budget_id, category__isnull=True).first()
+    if not txn:
+        messages.success(request, 'No hay transacciones sin categorizar.')
+        return redirect('budget_view')
+
+    if request.method == 'POST':
+        category_id = request.POST.get('category_id')
+        action = request.POST.get('action')
+        if action == 'categorize' and category_id:
+            txn.category_id = category_id
+            txn.save()
+            messages.success(request, 'Transacción categorizada.')
+        elif action == 'skip':
+            messages.info(request, 'Transacción omitida.')
+        return redirect('review_uncategorized')
+
+    categories = Category.objects.filter(budget_id=budget_id, is_hidden=False).select_related('group')
+    return render(request, 'transactions/review.html', {
+        'txn': txn,
+        'categories': categories,
+    })

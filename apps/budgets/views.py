@@ -126,6 +126,14 @@ def budget_view(request):
     if available_to_budget == 0 and total_balance > 0:
         available_to_budget = round(total_balance, 2)
 
+    # Auto-expire snooze for past months
+    from apps.goals.models import Goal as GoalModel
+    for g in GoalModel.objects.filter(snooze_month__isnull=False, snooze_year__isnull=False):
+        if g.snooze_year < year or (g.snooze_year == year and g.snooze_month < month):
+            g.snooze_month = None
+            g.snooze_year = None
+            g.save()
+
     # Ready to Assign
     ready_to_assign = round(max(0, total_balance - sum(
         float(MonthlyBudget.objects.filter(
@@ -141,9 +149,8 @@ def budget_view(request):
     total_underfunded = round(sum(u['deficit'] for u in underfunded_categories), 2)
 
     # Cost to be me
-    from apps.goals.models import Goal
     cost_to_be_me = 0
-    for g in Goal.objects.filter(category__budget=budget, is_completed=False).select_related('category'):
+    for g in GoalModel.objects.filter(category__budget=budget, is_completed=False).select_related('category'):
         cost_to_be_me += ts.calculate_underfunded(g) if g.goal_type in ('monthly', 'yearly', 'true_expense') else 0
     if cost_to_be_me == 0:
         cost_to_be_me = total_underfunded

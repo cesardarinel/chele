@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block title %}Revisar transacciones{% endblock %}
+{% block content %}
+<div class="px-4 md:px-6 py-5 max-w-lg mx-auto">
+    <div class="flex items-center gap-3 mb-6">
+        <a href="{% url 'budget_view' %}" class="text-gray-400 hover:text-gray-300">←</a>
+        <h2 class="text-lg md:text-xl font-bold text-chele-text">Revisar transacciones</h2>
+    </div>
+
+    {% if txn %}
+    <div class="bg-chele-surface rounded-lg border border-chele-border p-5">
+        <div class="text-center mb-6">
+            <div class="text-2xl font-bold mb-1 {% if txn.amount >= 0 %}text-chele-success{% else %}text-chele-danger{% endif %}">
+                ${{ txn.amount|currency }}
+            </div>
+            <div class="text-sm text-chele-text-secondary">{{ txn.date|date:'d/m/Y' }}</div>
+            <div class="text-sm text-chele-text mt-1">{{ txn.payee.name|default:'Sin beneficiario' }}</div>
+            {% if txn.notes %}
+            <div class="text-xs text-chele-text-secondary mt-1">{{ txn.notes }}</div>
+            {% endif %}
+        </div>
+
+        <form method="post" class="space-y-4">
+            {% csrf_token %}
+            <div>
+                <label class="block text-sm font-medium text-chele-text mb-1">Categoría</label>
+                <select name="category_id" class="w-full bg-chele-bg border border-chele-border rounded-lg px-3 py-2 text-sm text-chele-text">
+                    <option value="">— Sin categoría —</option>
+                    {% regroup categories by group as grouped_cats %}
+                    {% for group in grouped_cats %}
+                    <optgroup label="{{ group.grouper.name }}">
+                        {% for cat in group.list %}
+                        <option value="{{ cat.id }}">{{ cat.name }}</option>
+                        {% endfor %}
+                    </optgroup>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="flex gap-3">
+                <button type="submit" name="action" value="categorize" class="flex-1 bg-chele-primary text-white rounded-lg px-4 py-2.5 text-sm font-medium hover:bg-chele-primary-dark">
+                    Categorizar
+                </button>
+                <button type="submit" name="action" value="skip" class="flex-1 bg-chele-bg-tertiary text-chele-text rounded-lg px-4 py-2.5 text-sm hover:bg-chele-surface-hover">
+                    Omitir
+                </button>
+            </div>
+        </form>
+    </div>
+    {% else %}
+    <div class="bg-chele-surface rounded-lg border border-chele-border p-8 text-center">
+        <p class="text-chele-text-secondary text-sm">✅ No hay transacciones pendientes de revisión.</p>
+        <a href="{% url 'budget_view' %}" class="text-amber-400 hover:text-amber-300 text-sm mt-2 inline-block">Volver al presupuesto</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

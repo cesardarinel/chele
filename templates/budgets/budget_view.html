@@ -74,9 +74,9 @@
                 </span>
                 {% endif %}
                 {% if is_over_budget %}
-                <span class="text-[10px] md:text-xs text-chele-danger bg-chele-danger/10 rounded px-2 py-0.5" title="Tus metas superan tus ingresos esperados">
+                <a href="{% url 'budget_view' %}?editar=1" class="text-[10px] md:text-xs text-chele-danger bg-chele-danger/10 rounded px-2 py-0.5 hover:bg-chele-danger/20" title="Tus metas (${{ cost_to_be_me|currency }}) superan tus ingresos esperados (${{ expected_income|currency }}). Ajusta tus targets.">
                     ⚠️ Reality Check
-                </span>
+                </a>
                 {% endif %}
             </div>
         </div>

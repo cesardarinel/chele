@@ -223,7 +223,7 @@
                         {% if uncategorized_count %}
                         <div class="flex items-center justify-between text-xs text-chele-text-secondary">
                             <span>{{ uncategorized_count }} transacciones sin categorizar</span>
-                            <a href="{% url 'csv_import' %}" class="text-amber-400 hover:text-amber-300">Revisar</a>
+                            <a href="{% url 'review_uncategorized' %}" class="text-amber-400 hover:text-amber-300">Revisar</a>
                         </div>
                         {% endif %}
                         {% if uncovered_overspends %}
