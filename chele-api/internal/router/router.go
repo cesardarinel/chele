@@ -120,6 +120,24 @@ func New(db *sqlx.DB, cfg *config.Config) *chi.Mux {
 	r.With(authMw).Put("/api/rules/{id}", rule.Update)
 	r.With(authMw).Delete("/api/rules/{id}", rule.Delete)
 
+	// YNAB Engine endpoints
+	ynab := handlers.NewYNABHandler(db)
+	r.With(authMw).Get("/api/budgets/{id}/ready-to-assign", ynab.ReadyToAssign)
+	r.With(authMw).Post("/api/budgets/{id}/auto-assign", ynab.AutoAssign)
+	r.With(authMw).Post("/api/budgets/{id}/cover", ynab.Cover)
+	r.With(authMw).Get("/api/budgets/{id}/spotlight", ynab.Spotlight)
+	r.With(authMw).Get("/api/budgets/{id}/cost-to-be-me", ynab.CostToBeMe)
+	r.With(authMw).Get("/api/budgets/{id}/rollover", ynab.Rollover)
+	r.With(authMw).Get("/api/categories/{id}/inspector", ynab.Inspector)
+
+	// Targets
+	target := handlers.NewTargetHandler(db)
+	r.With(authMw).Get("/api/targets", target.List)
+	r.With(authMw).Post("/api/targets", target.Create)
+	r.With(authMw).Get("/api/targets/{id}", target.Get)
+	r.With(authMw).Put("/api/targets/{id}", target.Update)
+	r.With(authMw).Delete("/api/targets/{id}", target.Delete)
+
 	rpt := handlers.NewReportHandler(db)
 	r.With(authMw).Get("/api/reports/net-worth", rpt.NetWorth)
 	r.With(authMw).Get("/api/reports/cash-flow", rpt.CashFlow)

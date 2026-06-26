@@ -30,7 +30,7 @@ type dueSchedule struct {
 }
 
 func (s *ScheduleService) ProcessDue(budgetID string) (int, error) {
-	today := time.Now().Format("2006-01-02")
+	today := time.Now().UTC().Format("2006-01-02")
 	var due []dueSchedule
 	err := s.DB.Select(&due,
 		`SELECT id,account_id,budget_id,amount,direction,next_date,frequency,skip_weekends,payee_id,category_id

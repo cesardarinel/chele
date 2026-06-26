@@ -114,7 +114,7 @@ type Payee struct {
 	UpdatedAt time.Time  `db:"updated_at" json:"updated_at"`
 }
 
-// goals_goal
+// goals_goal (Target)
 type Goal struct {
 	ID          string     `db:"id" json:"id"`
 	CategoryID  string     `db:"category_id" json:"category_id"`
@@ -123,6 +123,9 @@ type Goal struct {
 	TargetDate  *string    `db:"target_date" json:"target_date"`
 	Frequency   int        `db:"frequency" json:"frequency"`
 	IsCompleted bool       `db:"is_completed" json:"is_completed"`
+	RefillUpTo  bool       `db:"refill_up_to" json:"refill_up_to"`
+	SnoozeMonth *int       `db:"snooze_month" json:"snooze_month"`
+	SnoozeYear  *int       `db:"snooze_year" json:"snooze_year"`
 	CreatedAt   time.Time  `db:"created_at" json:"created_at"`
 	UpdatedAt   time.Time  `db:"updated_at" json:"updated_at"`
 }

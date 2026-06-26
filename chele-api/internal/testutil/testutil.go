@@ -150,6 +150,20 @@ CREATE TABLE loans_loan (
 	created_at datetime NOT NULL,
 	updated_at datetime NOT NULL
 );
+CREATE TABLE goals_goal (
+	id char(32) NOT NULL PRIMARY KEY,
+	category_id char(32) NOT NULL REFERENCES budgets_category(id),
+	goal_type varchar(20) NOT NULL,
+	amount decimal NOT NULL,
+	target_date date NULL,
+	frequency integer NOT NULL,
+	is_completed bool NOT NULL,
+	refill_up_to bool NOT NULL,
+	snooze_month integer NULL,
+	snooze_year integer NULL,
+	created_at datetime NOT NULL,
+	updated_at datetime NOT NULL
+);
 CREATE TABLE loans_installment (
 	id char(32) NOT NULL PRIMARY KEY,
 	loan_id char(32) NOT NULL REFERENCES loans_loan(id),

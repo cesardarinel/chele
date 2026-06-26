@@ -125,6 +125,20 @@ def budget_view(request):
     if available_to_budget == 0 and total_balance > 0:
         available_to_budget = round(total_balance, 2)
 
+    # Ready to Assign
+    ready_to_assign = round(max(0, total_balance - sum(
+        float(MonthlyBudget.objects.filter(
+            category__budget=budget, month=month, year=year
+        ).aggregate(Sum('budgeted'))['budgeted__sum'] or 0)
+        for m in [month] for y in [year]
+    )), 2)
+
+    # Underfunded categories (Targets)
+    from apps.goals.services import TargetService
+    ts = TargetService(budget, month, year)
+    underfunded_categories = ts.list_underfunded()
+    total_underfunded = round(sum(u['deficit'] for u in underfunded_categories), 2)
+
     month_names = {1:'Ene',2:'Feb',3:'Mar',4:'Abr',5:'May',6:'Jun',
                    7:'Jul',8:'Ago',9:'Sep',10:'Oct',11:'Nov',12:'Dic'}
     for vm in visible_months:
@@ -154,11 +168,25 @@ def budget_view(request):
             has_activity = Transaction.objects.filter(
                 budget=budget, category=cat
             ).exists()
+
+            # Check underfunded/overspent status
+            balance = float(cat_months[0]['balance']) if cat_months else 0
+            is_overspent = balance < 0
+            underfunded_amt = 0
+            for uc in underfunded_categories:
+                if uc['category_id'] == str(cat.id):
+                    underfunded_amt = uc['deficit']
+                    break
+
             categories_data.append({
                 'category': cat,
                 'months': cat_months,
                 'is_income': group.is_income,
                 'can_delete': not has_activity,
+                'balance': balance,
+                'is_overspent': is_overspent,
+                'underfunded': underfunded_amt > 0,
+                'underfunded_amount': underfunded_amt,
             })
         budget_data.append({'group': group, 'categories': categories_data})
 
@@ -170,6 +198,9 @@ def budget_view(request):
         'total_balance': total_balance,
         'current_month': month,
         'current_year': year,
+        'ready_to_assign': ready_to_assign,
+        'underfunded_categories': underfunded_categories,
+        'total_underfunded': total_underfunded,
     })
 
 
@@ -253,6 +284,44 @@ def move_funds(request):
         from_mb.save()
         to_mb.save()
         messages.success(request, 'Fondos transferidos.')
+    return redirect('budget_view')
+
+
+@login_required
+def cover_overspending(request):
+    if request.method == 'POST':
+        budget_id = request.session.get('active_budget_id')
+        from_category_id = request.POST.get('from_category')
+        to_category_id = request.POST.get('to_category')
+        amount = float(request.POST.get('amount', 0))
+        month = int(request.POST.get('month'))
+        year = int(request.POST.get('year'))
+
+        # Validate source has enough available
+        budget = get_object_or_404(Budget, id=budget_id)
+        from apps.goals.services import TargetService
+        ts = TargetService(budget, month, year)
+        from_avail = None
+        try:
+            from_avail = ts.get_category_available(from_category_id)
+        except Exception:
+            from_avail = 0
+
+        if from_avail < amount:
+            messages.error(request, 'Fondos insuficientes en la categoría origen.')
+            return redirect('budget_view')
+
+        from_mb, _ = MonthlyBudget.objects.get_or_create(
+            category_id=from_category_id, month=month, year=year
+        )
+        to_mb, _ = MonthlyBudget.objects.get_or_create(
+            category_id=to_category_id, month=month, year=year
+        )
+        from_mb.budgeted = float(from_mb.budgeted) - amount
+        to_mb.budgeted = float(to_mb.budgeted) + amount
+        from_mb.save()
+        to_mb.save()
+        messages.success(request, 'Sobregasto cubierto correctamente.')
     return redirect('budget_view')
 
 

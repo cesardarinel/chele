@@ -6,6 +6,7 @@ from django.core.validators import MinValueValidator
 class Goal(models.Model):
     GOAL_TYPES = [
         ('monthly', 'Ahorro mensual'),
+        ('yearly', 'Ahorro anual'),
         ('target_balance', 'Saldo objetivo'),
         ('target_date', 'Objetivo con fecha'),
         ('true_expense', 'Gasto anual'),
@@ -17,6 +18,9 @@ class Goal(models.Model):
     target_date = models.DateField(null=True, blank=True, verbose_name='fecha objetivo')
     frequency = models.IntegerField(default=12, verbose_name='frecuencia (meses)')
     is_completed = models.BooleanField(default=False, verbose_name='completada')
+    refill_up_to = models.BooleanField(default=False, verbose_name='completar hasta (refill)')
+    snooze_month = models.IntegerField(null=True, blank=True, verbose_name='mes de pausa')
+    snooze_year = models.IntegerField(null=True, blank=True, verbose_name='año de pausa')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

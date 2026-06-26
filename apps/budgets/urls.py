@@ -13,6 +13,7 @@ urlpatterns = [
     path('grupos/<uuid:id>/eliminar/', views.category_group_delete, name='category_group_delete'),
     path('asignar/', views.assign_funds, name='assign_funds'),
     path('mover/', views.move_funds, name='move_funds'),
+    path('cubrir/', views.cover_overspending, name='cover_overspending'),
     path('reservar/', views.hold_for_next_month, name='hold_for_next_month'),
     path('copiar/', views.copy_budget, name='copy_budget'),
 ]
