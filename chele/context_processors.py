@@ -19,7 +19,8 @@ def active_budget(request):
         off_budget_qs = accounts.filter(on_budget=False)
         ctx['sidebar_on_budget'] = on_budget_qs
         ctx['sidebar_off_budget'] = off_budget_qs
-        ctx['sidebar_total_on_budget'] = on_budget_qs.aggregate(Sum('balance'))['balance__sum'] or 0
-        ctx['sidebar_total_off_budget'] = off_budget_qs.aggregate(Sum('balance'))['balance__sum'] or 0
+        ctx['sidebar_total_on_budget'] = onBudget = on_budget_qs.aggregate(Sum('balance'))['balance__sum'] or 0
+        ctx['sidebar_total_off_budget'] = offBudget = off_budget_qs.aggregate(Sum('balance'))['balance__sum'] or 0
+        ctx['sidebar_grand_total'] = onBudget + offBudget
 
     return ctx

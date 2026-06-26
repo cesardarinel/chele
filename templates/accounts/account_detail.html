@@ -42,7 +42,8 @@
     </div>
     {% endif %}
 
-    <div class="bg-chele-surface rounded-lg border border-chele-border overflow-hidden">
+    {# ---- DESKTOP TABLE ---- #}
+    <div class="hidden md:block bg-chele-surface rounded-lg border border-chele-border overflow-hidden">
         <div class="table-scroll">
         <table class="w-full min-w-[400px]">
             <thead>
@@ -76,6 +77,34 @@
             </tbody>
         </table>
         </div>
+    </div>
+
+    {# ---- MOBILE CARDS ---- #}
+    <div class="block md:hidden bg-chele-surface rounded-lg border border-chele-border divide-y divide-chele-border">
+        {% for txn in transactions %}
+        <div class="px-3 py-2.5 flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2 min-w-0">
+                <input type="checkbox" name="transaction_ids" value="{{ txn.id }}" class="row-checkbox shrink-0">
+                <div class="min-w-0">
+                    <div class="text-xs text-chele-text-secondary">{{ txn.date|date:'d/m' }}</div>
+                    <div class="text-xs md:text-sm truncate">{{ txn.payee.name|default:'—' }}</div>
+                    <div class="text-[10px] text-chele-text-secondary truncate hidden">{{ txn.category.name|default:'' }}</div>
+                </div>
+            </div>
+            <div class="flex items-center gap-1 shrink-0">
+                <span class="text-xs md:text-sm font-medium {% if txn.amount >= 0 %}text-chele-success{% else %}text-chele-danger{% endif %}">
+                    ${{ txn.amount|currency }}
+                </span>
+                <a href="{% url 'transaction_edit' txn.id %}" class="text-chele-text-secondary hover:text-amber-400 p-1" title="Editar">✏️</a>
+                <form method="post" action="{% url 'transaction_delete' txn.id %}" class="inline" onsubmit="return confirm('¿Eliminar transacción?')">
+                    {% csrf_token %}
+                    <button type="submit" class="text-chele-text-secondary hover:text-chele-danger p-1" title="Eliminar">🗑️</button>
+                </form>
+            </div>
+        </div>
+        {% empty %}
+        <div class="px-4 py-8 text-center text-sm text-chele-text-secondary">No hay transacciones aún.</div>
+        {% endfor %}
     </div>
 </div>
 

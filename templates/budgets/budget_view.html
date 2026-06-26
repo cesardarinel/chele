@@ -85,7 +85,8 @@
     </div>
 
     <div class="px-4 md:px-6 py-5">
-        <div class="bg-chele-surface rounded-lg border border-chele-border overflow-hidden">
+        {# ---- DESKTOP TABLE ---- #}
+        <div class="hidden md:block bg-chele-surface rounded-lg border border-chele-border overflow-hidden">
             <div class="table-scroll">
             <table class="w-full min-w-[700px]">
                 <thead>
@@ -170,6 +171,56 @@
                 </tbody>
             </table>
             </div>
+        </div>
+
+        {# ---- MOBILE CARDS ---- #}
+        <div class="block md:hidden space-y-4">
+            {% with active_month=months|first %}
+            {% for group in groups %}
+            <div class="bg-chele-surface rounded-lg border border-chele-border overflow-hidden">
+                <div class="px-3 py-2 bg-chele-bg-secondary/50 border-b border-chele-border">
+                    <h4 class="text-xs font-semibold text-chele-text-secondary uppercase {% if group.group.is_income %}text-chele-success{% endif %}">
+                        {% if group.group.is_income %}💰 {% endif %}{{ group.group.name }}
+                    </h4>
+                </div>
+                <div class="divide-y divide-chele-border">
+                    {% for cat in group.categories %}
+                    <div class="px-3 py-2.5">
+                        <div class="flex items-center justify-between mb-1.5">
+                            <span class="text-xs font-medium text-chele-text truncate max-w-[60%]">{{ cat.category.name }}</span>
+                            {% if cat.months.0.balance >= 0 %}
+                            <span class="text-xs font-semibold text-chele-success">${{ cat.months.0.balance|currency }}</span>
+                            {% else %}
+                            <span class="text-xs font-semibold text-chele-danger">${{ cat.months.0.balance|currency }}</span>
+                            {% endif %}
+                        </div>
+                        <div class="flex items-center justify-between gap-2">
+                            {% if not group.group.is_income %}
+                            <form method="post" action="{% url 'assign_funds' %}" class="flex items-center gap-1">
+                                {% csrf_token %}
+                                <input type="hidden" name="category_id" value="{{ cat.category.id }}">
+                                <input type="hidden" name="month" value="{{ current_month }}">
+                                <input type="hidden" name="year" value="{{ current_year }}">
+                                <input type="number" step="0.01" name="amount" value="{{ cat.months.0.budgeted|floatformat:2 }}"
+                                       class="w-16 text-xs text-right bg-chele-bg border border-chele-border rounded px-1 py-0.5 text-chele-text"
+                                       onchange="this.form.submit()">
+                            </form>
+                            {% else %}
+                            <span class="text-xs text-chele-text-secondary">—</span>
+                            {% endif %}
+                            <div class="flex items-center gap-2 text-[10px] text-chele-text-secondary">
+                                <span>Gasto:</span>
+                                <span class="{% if cat.months.0.spent > 0 %}text-chele-danger{% else %}text-chele-text-secondary{% endif %}">
+                                    {% if cat.months.0.spent > 0 %}-{% endif %}${{ cat.months.0.spent|currency }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+            {% endwith %}
         </div>
 
         <div class="mt-4 flex items-center gap-4 text-sm text-gray-400">
