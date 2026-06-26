@@ -189,10 +189,25 @@ def budget_view(request):
                     budget=budget, category=cat,
                     date__month=vm['month'], date__year=vm['year'],
                 ).aggregate(Sum('amount'))['amount__sum'] or 0
+
+                # Include rollover from previous month
+                prev_month = vm['month'] - 1
+                prev_year = vm['year']
+                if prev_month < 1:
+                    prev_month = 12
+                    prev_year -= 1
+                prev_pts = TargetService(budget, prev_month, prev_year)
+                rollover = prev_pts.get_category_available(str(cat.id))
+                if rollover < 0:
+                    rollover = 0
+
+                balance = float(mb.budgeted) + rollover - float(abs(spent) if spent < 0 else spent)
+
                 cat_months.append({
                     'budgeted': mb.budgeted,
                     'spent': abs(spent) if spent < 0 else spent,
-                    'balance': float(mb.budgeted) - float(abs(spent) if spent < 0 else spent),
+                    'balance': balance,
+                    'rollover': round(rollover, 2),
                     'month': vm['month'],
                     'year': vm['year'],
                 })
@@ -338,9 +353,17 @@ def assign_funds(request):
     if request.method == 'POST':
         budget_id = request.session.get('active_budget_id')
         category_id = request.POST.get('category_id')
-        amount = request.POST.get('amount')
+        amount = float(request.POST.get('amount', 0))
         month = int(request.POST.get('month'))
         year = int(request.POST.get('year'))
+
+        # Zero-sum validation
+        total_on_budget = float(Account.objects.filter(budget_id=budget_id, on_budget=True).aggregate(Sum('balance'))['balance__sum'] or 0)
+        if total_on_budget > 0:
+            total_assigned = float(MonthlyBudget.objects.filter(category__budget_id=budget_id, month=month, year=year).exclude(category_id=category_id).aggregate(Sum('budgeted'))['budgeted__sum'] or 0)
+            if total_assigned + amount > total_on_budget:
+                messages.error(request, f'No tienes suficientes fondos disponibles. Ready to Assign: ${total_on_budget - total_assigned:.2f}')
+                return redirect('budget_view')
 
         category = get_object_or_404(Category, id=category_id, budget_id=budget_id)
         mb, _ = MonthlyBudget.objects.get_or_create(category=category, month=month, year=year)

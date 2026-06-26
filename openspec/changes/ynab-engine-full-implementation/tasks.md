@@ -9,7 +9,7 @@
 
 - [x] 2.1 Implement ReadyToAssign calculation
 - [x] 2.2 Add Ready to Assign display in budget_view template
-- [ ] 2.3 Add zero-sum validation in `assign_funds` view
+- [x] 2.3 Add zero-sum validation in `assign_funds` view
 - [ ] 2.4 Update `move_funds` view to validate against Ready to Assign
 - [ ] 2.5 Add cache for Ready to Assign value
 
@@ -44,8 +44,8 @@
 ## 6. Cover Overspending
 
 - [x] 6.1 Implement Cover action POST `/presupuestos/cubrir/`
-- [ ] 6.2 Add Cover button in Spotlight
-- [ ] 6.3 Add Cover flow UI (source category selector)
+- [x] 6.2 Add Cover button in Spotlight
+- [x] 6.3 Add Cover flow UI (source category selector)
 - [x] 6.4 Implement atomic transfer
 - [x] 6.5 Add validation for insufficient funds
 
@@ -103,7 +103,7 @@
 - [x] 13.2 Create reorder endpoint
 - [x] 13.3 Implement sort_order update
 - [x] 13.4 Implement cross-group drag
-- [ ] 13.5 Enable multi-select
+- [x] 13.5 Enable multi-select (Ctrl+click)
 
 ## 14. Cost to Be Me & Reality Check
 
@@ -117,7 +117,7 @@
 
 - [x] 15.1 Implement monthly rollover calculation
 - [x] 15.2 Integrate rollover into budget_view context
-- [ ] 15.3 Negative rollover carries as RED
+- [x] 15.3 Negative rollover carries as RED
 - [x] 15.4 Refill up to reduces underfunded with rollover
 
 ## 16. Go API Endpoints

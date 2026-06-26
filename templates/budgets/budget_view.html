@@ -402,6 +402,36 @@
     </div>
 </div>
 
+{# ---- COVER MODAL ---- #}
+<div id="coverModal" class="hidden fixed inset-0 bg-black/50 z-[60] flex items-center justify-center" onclick="if(event.target===this)document.getElementById('coverModal').classList.add('hidden')">
+    <div class="bg-chele-surface rounded-xl shadow-xl w-full max-w-sm mx-4 p-5">
+        <h3 class="text-sm font-bold text-chele-text mb-4">Cubrir sobregasto</h3>
+        <form method="post" action="{% url 'cover_overspending' %}">
+            {% csrf_token %}
+            <input type="hidden" name="to_category" id="coverToCategory" value="">
+            <input type="hidden" name="month" value="{{ current_month }}">
+            <input type="hidden" name="year" value="{{ current_year }}">
+            <div class="mb-3">
+                <label class="block text-xs text-chele-text-secondary mb-1">Categoría origen</label>
+                <select name="from_category" required class="w-full bg-chele-bg border border-chele-border rounded-lg px-3 py-2 text-sm text-chele-text">
+                    <option value="">Seleccionar categoría</option>
+                    {% for g in groups %}{% for cat in g.categories %}
+                    <option value="{{ cat.category.id }}" {% if cat.balance <= 0 %}disabled{% endif %}>{{ cat.category.name }} {% if cat.balance > 0 %}(disponible: ${{ cat.balance|currency }}){% endif %}</option>
+                    {% endfor %}{% endfor %}
+                </select>
+            </div>
+            <div class="mb-4">
+                <label class="block text-xs text-chele-text-secondary mb-1">Monto</label>
+                <input type="number" step="0.01" name="amount" required class="w-full bg-chele-bg border border-chele-border rounded-lg px-3 py-2 text-sm text-chele-text" placeholder="0.00">
+            </div>
+            <div class="flex justify-end gap-3">
+                <button type="button" onclick="document.getElementById('coverModal').classList.add('hidden')" class="px-4 py-2 text-sm text-chele-text-secondary hover:text-chele-text">Cancelar</button>
+                <button type="submit" class="px-4 py-2 text-sm bg-chele-danger text-white rounded-lg hover:bg-chele-danger/80">Cubrir</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 {# ---- INSPECTOR OVERLAY ---- #}
 <div id="inspectorOverlay" class="hidden fixed inset-0 bg-black/30 z-50 md:z-40" onclick="closeInspector()"></div>
 
@@ -436,6 +466,24 @@ function closeInspector() {
     document.getElementById('inspectorPanel').classList.add('hidden');
     document.getElementById('inspectorOverlay').classList.add('hidden');
 }
+// Multi-select for batch operations
+document.addEventListener('click', function(e) {
+    if (e.ctrlKey || e.metaKey) {
+        var row = e.target.closest('tr');
+        if (row && row.classList.contains('cursor-pointer')) {
+            e.preventDefault();
+            row.classList.toggle('bg-chele-primary/10');
+            row.classList.toggle('selected');
+            var selected = document.querySelectorAll('.selected');
+            if (selected.length > 1) {
+                document.getElementById('batchActions')?.classList.remove('hidden');
+            } else {
+                document.getElementById('batchActions')?.classList.add('hidden');
+            }
+        }
+    }
+});
+
 function loadInspector(categoryId, categoryName, isOverspent, isUnderfunded) {
     closeInspector();
     var url = '{% url "category_inspector" 0 %}'.replace('0', categoryId) + '?mes={{ current_month }}&anio={{ current_year }}';
@@ -462,7 +510,7 @@ function loadInspector(categoryId, categoryName, isOverspent, isUnderfunded) {
         }
 
         if (data.overspent) {
-            html += '<div class="border-t border-chele-border pt-3"><button onclick="document.getElementById(\'coverModal\').classList.remove(\'hidden\')" class="w-full text-center bg-chele-danger/10 text-chele-danger border border-chele-danger/30 rounded-lg px-3 py-2 text-xs font-medium hover:bg-chele-danger/20">Cubrir sobregasto</button></div>';
+            html += '<div class="border-t border-chele-border pt-3"><button onclick="document.getElementById(\'coverToCategory\').value=\'' + data.category_id + '\';document.getElementById(\'coverModal\').classList.remove(\'hidden\')" class="w-full text-center bg-chele-danger/10 text-chele-danger border border-chele-danger/30 rounded-lg px-3 py-2 text-xs font-medium hover:bg-chele-danger/20">Cubrir sobregasto</button></div>';
         }
 
         html += '<div class="border-t border-chele-border pt-3 flex gap-2"><a href="/transacciones/crear/?account=" class="flex-1 text-center bg-chele-bg-tertiary text-chele-text rounded-lg px-3 py-2 text-xs font-medium hover:bg-chele-surface-hover">+ Transacción</a></div>';
