@@ -82,8 +82,9 @@
         </div>
     </div>
 
-    <div class="bg-chele-surface border-b border-chele-border">
-        <div class="flex px-4 md:px-6 py-4" style="min-width: 700px;">
+    {# ---- DESKTOP MONTHLY SUMMARY ---- #}
+    <div class="hidden md:block bg-chele-surface border-b border-chele-border">
+        <div class="flex px-4 md:px-6 py-4 overflow-x-auto">
             <div class="w-56 shrink-0"></div>
             {% for m in months %}
             <div class="flex-1 text-center border-l border-chele-border px-3 {% if m.active %}bg-white/5{% endif %}">
@@ -119,6 +120,38 @@
             </div>
             {% endfor %}
         </div>
+    </div>
+
+    {# ---- MOBILE SUMMARY CARD ---- #}
+    <div class="block md:hidden bg-chele-surface border-b border-chele-border px-4 py-3">
+        {% with active_month=months|first %}
+        <div class="flex items-center justify-between mb-2">
+            <span class="text-xs text-chele-text-secondary font-medium">{{ active_month.label }}</span>
+            <span class="text-lg font-bold {% if active_month.for_next_month >= 0 %}text-chele-success{% else %}text-chele-danger{% endif %}">
+                ${{ active_month.for_next_month|currency }}
+            </span>
+        </div>
+        <div class="grid grid-cols-2 gap-2 text-xs">
+            <div class="flex justify-between bg-chele-bg/50 rounded px-2 py-1.5">
+                <span class="text-chele-text-secondary">Disponible</span>
+                <span class="font-medium text-chele-text">${{ active_month.available_funds|currency }}</span>
+            </div>
+            <div class="flex justify-between bg-chele-bg/50 rounded px-2 py-1.5">
+                <span class="text-chele-text-secondary">Presupuestado</span>
+                <span class="font-medium text-chele-text">${{ active_month.total_budgeted|currency }}</span>
+            </div>
+            <div class="flex justify-between bg-chele-bg/50 rounded px-2 py-1.5">
+                <span class="text-chele-text-secondary">Gastado</span>
+                <span class="font-medium {% if active_month.month_spent > 0 %}text-chele-danger{% else %}text-chele-text-secondary{% endif %}">
+                    ${{ active_month.month_spent|currency }}
+                </span>
+            </div>
+            <div class="flex justify-between bg-chele-bg/50 rounded px-2 py-1.5">
+                <span class="text-chele-text-secondary">Ingresos</span>
+                <span class="font-medium text-chele-success">${{ active_month.month_income|currency }}</span>
+            </div>
+        </div>
+        {% endwith %}
     </div>
 
     <div class="px-4 md:px-6 py-5">

@@ -124,15 +124,18 @@
                         <span class="font-semibold text-chele-success">${{ sidebar_total_on_budget|currency }}</span>
                     </div>
                     {% for account in sidebar_on_budget %}
-                    <a href="{% url 'account_detail' account.id %}" class="flex items-center justify-between px-3 py-2 rounded text-xs md:text-sm text-gray-300 hover:bg-white/10 hover:text-white transition-all duration-150">
-                        <svg class="w-3.5 h-3.5 md:w-4 md:h-4 shrink-0 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11m16-11v11M8 14v3m4-3v3m4-3v3"/></svg>
-                        <span class="truncate flex-1 ml-1.5">{{ account.name }}</span>
-                        <span class="flex items-center gap-1 shrink-0 ml-1">
+                    <a href="{% url 'account_detail' account.id %}" class="flex items-center justify-between px-3 py-2.5 rounded text-xs md:text-sm text-gray-200 hover:bg-white/10 hover:text-white transition-all duration-150 border-b border-white/5">
+                        <div class="flex items-center gap-2 min-w-0 flex-1">
+                            <svg class="w-3.5 h-3.5 md:w-4 md:h-4 shrink-0 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11m16-11v11M8 14v3m4-3v3m4-3v3"/></svg>
+                            <span class="truncate flex-1">{{ account.name }}</span>
+                        </div>
+                        <div class="flex items-center gap-1.5 shrink-0 ml-2">
                             <span class="w-1.5 h-1.5 rounded-full {% if account.balance > 0 %}bg-chele-success{% elif account.balance == 0 %}bg-chele-text-secondary{% else %}bg-chele-danger{% endif %}"></span>
-                            <span class="text-[10px] md:text-xs {% if account.balance >= 0 %}text-chele-success{% else %}text-chele-danger{% endif %}">
+                            <span class="text-[10px] md:text-xs font-medium {% if account.balance >= 0 %}text-chele-success{% else %}text-chele-danger{% endif %}">
                                 ${{ account.balance|currency }}
                             </span>
-                        </span>
+                            <svg class="w-3 h-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        </div>
                     </a>
                     {% endfor %}
                     {% if sidebar_off_budget %}
