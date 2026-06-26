@@ -1,5 +1,6 @@
 import calendar
-from datetime import date, datetime
+import json
+from datetime import date, datetime, timedelta
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
@@ -244,6 +245,57 @@ def switch_budget(request):
         if Budget.objects.filter(id=budget_id, members=request.user).exists():
             request.session['active_budget_id'] = budget_id
     return redirect('budget_view')
+
+
+@login_required
+def category_inspector(request, id):
+    budget_id = request.session.get('active_budget_id')
+    cat = get_object_or_404(Category, id=id, budget_id=budget_id)
+    from datetime import date
+    today = date.today()
+    month = int(request.GET.get('mes', today.month))
+    year = int(request.GET.get('anio', today.year))
+
+    mb = MonthlyBudget.objects.filter(category=cat, month=month, year=year).first()
+    budgeted = float(mb.budgeted) if mb else 0
+
+    spent = abs(float(Transaction.objects.filter(
+        category=cat, date__month=month, date__year=year
+    ).aggregate(Sum('amount'))['amount__sum'] or 0))
+
+    available = budgeted - spent
+
+    from apps.goals.services import TargetService
+    ts = TargetService(cat.budget, month, year)
+    target_info = {}
+    goal = cat.goals.filter(is_completed=False).first()
+    if goal:
+        underfunded = ts.calculate_underfunded(goal)
+        target_info = {
+            'type': goal.goal_type,
+            'amount': float(goal.amount),
+            'refill_up_to': goal.refill_up_to,
+            'underfunded': round(underfunded, 2),
+        }
+
+    # 3-month average
+    from django.db.models import Avg
+    ninety_days_ago = date(today.year, today.month, 1) - timedelta(days=90)
+    avg_3m = Transaction.objects.filter(
+        category=cat,
+        date__gte=ninety_days_ago
+    ).aggregate(avg=Avg('amount'))['avg'] or 0
+
+    return HttpResponse(json.dumps({
+        'category_id': str(cat.id),
+        'category_name': cat.name,
+        'available': round(available, 2),
+        'assigned': round(budgeted, 2),
+        'activity': round(spent, 2),
+        'target': target_info,
+        'average_spending_3m': round(abs(float(avg_3m)), 2),
+        'overspent': available < -0.01,
+    }), content_type='application/json')
 
 
 @login_required

@@ -131,8 +131,9 @@
                         <td class="px-4 py-3 text-sm font-semibold text-chele-text-secondary sticky left-0 bg-chele-surface" colspan="100">{{ group.group.name }}</td>
                     </tr>
                     {% for cat in group.categories %}
-                    <tr class="border-b border-chele-border hover:bg-chele-bg-tertiary/30 transition group
-                        {% if cat.is_overspent %}bg-red-900/5{% elif cat.underfunded %}bg-amber-900/5{% endif %}">
+                    <tr class="border-b border-chele-border hover:bg-chele-bg-tertiary/30 transition group cursor-pointer"
+                        {% if cat.is_overspent %}bg-red-900/5{% elif cat.underfunded %}bg-amber-900/5{% endif %}
+                        onclick="loadInspector('{{ cat.category.id }}', '{{ cat.category.name|escapejs }}', {{ cat.is_overspent|lower }}, {{ cat.underfunded|lower }})">
                         <td class="px-4 py-3 text-sm text-chele-text sticky left-0 bg-chele-surface">
                             <div class="flex items-center gap-2">
                                 {% if cat.is_overspent %}
@@ -218,7 +219,7 @@
                 </div>
                 <div class="divide-y divide-chele-border">
                     {% for cat in group.categories %}
-                    <div class="px-3 py-2.5">
+                    <div class="px-3 py-2.5 cursor-pointer" onclick="loadInspector('{{ cat.category.id }}', '{{ cat.category.name|escapejs }}', {{ cat.is_overspent|lower }}, {{ cat.underfunded|lower }})">
                         <div class="flex items-center justify-between mb-1.5">
                             <div class="flex items-center gap-1.5 min-w-0">
                                 {% if cat.is_overspent %}
@@ -389,10 +390,76 @@
     </div>
 </div>
 
+{# ---- INSPECTOR OVERLAY ---- #}
+<div id="inspectorOverlay" class="hidden fixed inset-0 bg-black/30 z-50 md:z-40" onclick="closeInspector()"></div>
+
+{# ---- INSPECTOR PANEL (desktop: side drawer, mobile: bottom sheet) ---- #}
+<div id="inspectorPanel" class="hidden fixed bottom-0 md:top-0 right-0 z-50 w-full md:w-80 bg-chele-surface md:border-l border-chele-border shadow-xl rounded-t-xl md:rounded-none max-h-[75vh] md:max-h-full overflow-y-auto">
+    <div class="sticky top-0 bg-chele-surface border-b border-chele-border px-4 py-3 flex items-center justify-between md:rounded-none rounded-t-xl">
+        <div class="flex items-center gap-2">
+            <span id="inspectorDot" class="w-2.5 h-2.5 rounded-full bg-chele-success shrink-0"></span>
+            <h3 id="inspectorTitle" class="text-sm font-bold text-chele-text">Categoría</h3>
+        </div>
+        <button onclick="closeInspector()" class="text-gray-400 hover:text-gray-300 text-lg">✕</button>
+    </div>
+    <div id="inspectorContent" class="p-4 space-y-4 text-sm">
+        <p class="text-chele-text-secondary">Selecciona una categoría para ver detalles.</p>
+    </div>
+</div>
+
 <script>
 function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
 function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 if (window.location.search.includes('editar=1')) { openModal('editBudgetModal'); }
+
+function openInspector() {
+    if (window.innerWidth < 768) {
+        document.getElementById('inspectorPanel').classList.remove('hidden');
+    } else {
+        document.getElementById('inspectorPanel').classList.remove('hidden');
+        document.getElementById('inspectorOverlay').classList.remove('hidden');
+    }
+}
+function closeInspector() {
+    document.getElementById('inspectorPanel').classList.add('hidden');
+    document.getElementById('inspectorOverlay').classList.add('hidden');
+}
+function loadInspector(categoryId, categoryName, isOverspent, isUnderfunded) {
+    closeInspector();
+    var url = '{% url "category_inspector" 0 %}'.replace('0', categoryId) + '?mes={{ current_month }}&anio={{ current_year }}';
+    fetch(url).then(function(r) { return r.json(); }).then(function(data) {
+        var dot = document.getElementById('inspectorDot');
+        dot.className = 'w-2.5 h-2.5 rounded-full shrink-0 ' + (data.overspent ? 'bg-chele-danger' : (data.target && data.target.underfunded > 0 ? 'bg-chele-warning' : 'bg-chele-success'));
+
+        document.getElementById('inspectorTitle').textContent = data.category_name;
+        var html = '';
+
+        // Available balance
+        var availColor = data.available >= 0 ? 'text-chele-success' : 'text-chele-danger';
+        html += '<div class="flex items-center justify-between"><span class="text-chele-text-secondary">Disponible</span><span class="font-semibold ' + availColor + '">$' + data.available.toFixed(2) + '</span></div>';
+        html += '<div class="flex items-center justify-between"><span class="text-chele-text-secondary">Presupuestado</span><span class="font-semibold text-chele-text">$' + data.assigned.toFixed(2) + '</span></div>';
+        html += '<div class="flex items-center justify-between"><span class="text-chele-text-secondary">Actividad</span><span class="font-semibold ' + (data.activity > 0 ? 'text-chele-danger' : 'text-chele-success') + '">$' + data.activity.toFixed(2) + '</span></div>';
+        html += '<div class="flex items-center justify-between"><span class="text-chele-text-secondary">Promedio 3m</span><span class="font-semibold text-chele-text">$' + data.average_spending_3m.toFixed(2) + '</span></div>';
+
+        if (data.target && data.target.type) {
+            html += '<div class="border-t border-chele-border pt-3"><h4 class="text-xs font-semibold text-chele-text-secondary uppercase tracking-wider mb-2">Meta</h4>';
+            html += '<div class="flex items-center justify-between"><span class="text-chele-text-secondary">Tipo</span><span class="font-semibold text-chele-text">' + data.target.type + '</span></div>';
+            html += '<div class="flex items-center justify-between"><span class="text-chele-text-secondary">Monto</span><span class="font-semibold text-chele-text">$' + data.target.amount.toFixed(2) + '</span></div>';
+            html += '<div class="flex items-center justify-between"><span class="text-chele-text-secondary">Subfinanciado</span><span class="font-semibold ' + (data.target.underfunded > 0 ? 'text-chele-warning' : 'text-chele-success') + '">$' + data.target.underfunded.toFixed(2) + '</span></div>';
+            html += '</div>';
+        }
+
+        if (data.overspent) {
+            html += '<div class="border-t border-chele-border pt-3"><button onclick="document.getElementById(\'coverModal\').classList.remove(\'hidden\')" class="w-full text-center bg-chele-danger/10 text-chele-danger border border-chele-danger/30 rounded-lg px-3 py-2 text-xs font-medium hover:bg-chele-danger/20">Cubrir sobregasto</button></div>';
+        }
+
+        html += '<div class="border-t border-chele-border pt-3 flex gap-2"><a href="/transacciones/crear/?account=" class="flex-1 text-center bg-chele-bg-tertiary text-chele-text rounded-lg px-3 py-2 text-xs font-medium hover:bg-chele-surface-hover">+ Transacción</a></div>';
+
+        document.getElementById('inspectorContent').innerHTML = html;
+        openInspector();
+    });
+}
+
 function togglePrivate() {
     document.getElementById('budgetPage').classList.toggle('private-mode');
     const btn = document.getElementById('privateBtn');

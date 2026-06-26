@@ -11,6 +11,7 @@ urlpatterns = [
     path('grupos/crear/', views.category_group_create, name='category_group_create'),
     path('grupos/<uuid:id>/editar/', views.category_group_edit, name='category_group_edit'),
     path('grupos/<uuid:id>/eliminar/', views.category_group_delete, name='category_group_delete'),
+    path('categoria/<uuid:id>/inspector/', views.category_inspector, name='category_inspector'),
     path('asignar/', views.assign_funds, name='assign_funds'),
     path('mover/', views.move_funds, name='move_funds'),
     path('cubrir/', views.cover_overspending, name='cover_overspending'),
