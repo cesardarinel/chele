@@ -45,7 +45,7 @@
         </div>
     </div>
 
-    {# ---- Ready to Assign ---- #}
+    {# ---- Ready to Assign + Cost to be me ---- #}
     <div class="bg-chele-surface border-b border-chele-border px-4 md:px-6 py-3">
         <div class="flex flex-wrap items-center justify-between gap-3">
             <div class="flex items-center gap-3">
@@ -54,19 +54,31 @@
                     ${{ ready_to_assign|currency }}
                 </span>
             </div>
-            {% if underfunded_categories %}
-            <span class="text-xs text-amber-400 font-medium">{{ underfunded_categories|length }} subfinanciadas</span>
-            {% if total_underfunded > 0 and total_underfunded <= ready_to_assign %}
-            <form method="post" action="{% url 'auto_assign' %}" class="inline">
-                {% csrf_token %}
-                <input type="hidden" name="month" value="{{ current_month }}">
-                <input type="hidden" name="year" value="{{ current_year }}">
-                <button type="submit" class="text-xs bg-amber-400/10 text-amber-400 border border-amber-400/30 rounded px-2 py-1 hover:bg-amber-400/20">
-                    Auto-assign ${{ total_underfunded|currency }}
-                </button>
-            </form>
-            {% endif %}
-            {% endif %}
+            <div class="flex items-center gap-3 flex-wrap">
+                {% if underfunded_categories %}
+                <span class="text-xs text-amber-400 font-medium">{{ underfunded_categories|length }} subfinanciadas</span>
+                {% if total_underfunded > 0 and total_underfunded <= ready_to_assign %}
+                <form method="post" action="{% url 'auto_assign' %}" class="inline">
+                    {% csrf_token %}
+                    <input type="hidden" name="month" value="{{ current_month }}">
+                    <input type="hidden" name="year" value="{{ current_year }}">
+                    <button type="submit" class="text-xs bg-amber-400/10 text-amber-400 border border-amber-400/30 rounded px-2 py-1 hover:bg-amber-400/20">
+                        Auto-assign ${{ total_underfunded|currency }}
+                    </button>
+                </form>
+                {% endif %}
+                {% endif %}
+                {% if cost_to_be_me %}
+                <span class="text-[10px] md:text-xs text-chele-text-secondary border-l border-chele-border pl-3">
+                    Costo de vida: <strong class="text-chele-text">${{ cost_to_be_me|currency }}</strong>/mes
+                </span>
+                {% endif %}
+                {% if is_over_budget %}
+                <span class="text-[10px] md:text-xs text-chele-danger bg-chele-danger/10 rounded px-2 py-0.5" title="Tus metas superan tus ingresos esperados">
+                    ⚠️ Reality Check
+                </span>
+                {% endif %}
+            </div>
         </div>
     </div>
 
@@ -322,9 +334,9 @@
                             <button type="button" onclick="this.closest('form').classList.add('hidden')" class="text-chele-danger text-lg px-2">✕</button>
                         </div>
                     </form>
-                    <div class="space-y-1">
+                    <div class="space-y-1 sortable-categories" data-group-id="{{ group.group.id }}">
                         {% for cat in group.categories %}
-                        <div class="flex flex-col md:flex-row md:items-center justify-between py-2 px-2 md:px-3 rounded-lg bg-chele-bg border border-chele-border hover:border-chele-border-light gap-1 md:gap-0">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between py-2 px-2 md:px-3 rounded-lg bg-chele-bg border border-chele-border hover:border-chele-border-light gap-1 md:gap-0 category-item" data-cat-id="{{ cat.category.id }}">
                             <span class="text-xs md:text-sm font-medium text-chele-text break-words">{{ cat.category.name }}</span>
                             {% if not group.group.is_income %}
                             <div class="flex items-center gap-1 md:gap-2 self-end md:self-auto">
@@ -459,6 +471,41 @@ function loadInspector(categoryId, categoryName, isOverspent, isUnderfunded) {
         openInspector();
     });
 }
+
+function initDragDrop() {
+    if (typeof Sortable === 'undefined') {
+        var s = document.createElement('script');
+        s.src = 'https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js';
+        s.onload = function() {
+            document.querySelectorAll('.sortable-categories').forEach(function(el) {
+                new Sortable(el, {
+                    animation: 150,
+                    group: 'categories',
+                    onEnd: function() { saveCategoryOrder(); }
+                });
+            });
+        };
+        document.head.appendChild(s);
+    }
+}
+function saveCategoryOrder() {
+    var groups = document.querySelectorAll('.sortable-categories');
+    var order = [];
+    groups.forEach(function(group) {
+        var gid = group.dataset.groupId;
+        group.querySelectorAll('.category-item').forEach(function(item, idx) {
+            order.push({ id: item.dataset.catId, sort_order: idx, group_id: gid });
+        });
+    });
+    fetch('{% url "reorder_categories" %}', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}'},
+        body: JSON.stringify({ order: order })
+    });
+}
+document.addEventListener('DOMContentLoaded', function() {
+    initDragDrop();
+});
 
 function togglePrivate() {
     document.getElementById('budgetPage').classList.toggle('private-mode');

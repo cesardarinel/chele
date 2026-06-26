@@ -140,6 +140,37 @@ def budget_view(request):
     underfunded_categories = ts.list_underfunded()
     total_underfunded = round(sum(u['deficit'] for u in underfunded_categories), 2)
 
+    # Cost to be me
+    from apps.goals.models import Goal
+    cost_to_be_me = 0
+    for g in Goal.objects.filter(category__budget=budget, is_completed=False).select_related('category'):
+        cost_to_be_me += ts.calculate_underfunded(g) if g.goal_type in ('monthly', 'yearly', 'true_expense') else 0
+    if cost_to_be_me == 0:
+        cost_to_be_me = total_underfunded
+
+    # Expected Income (average last 3 months)
+    from django.db.models import Avg
+    expected_income = float(Transaction.objects.filter(
+        budget=budget, amount__gt=0,
+        date__gte=date(today.year, today.month, 1) - timedelta(days=90)
+    ).aggregate(avg=Avg('amount'))['avg'] or 0)
+
+    is_over_budget = cost_to_be_me > expected_income and expected_income > 0
+
+    # Rollover per category (previous month)
+    prev_month = month - 1
+    prev_year = year
+    if prev_month < 1:
+        prev_month = 12
+        prev_year -= 1
+    rollover_categories = []
+    from apps.budgets.models import Category as BCategory
+    for cat in BCategory.objects.filter(budget=budget, is_hidden=False):
+        pts = TargetService(budget, prev_month, prev_year)
+        avail = pts.get_category_available(str(cat.id))
+        if avail > 0.01:
+            rollover_categories.append({'category_id': str(cat.id), 'name': cat.name, 'balance': round(avail, 2)})
+
     month_names = {1:'Ene',2:'Feb',3:'Mar',4:'Abr',5:'May',6:'Jun',
                    7:'Jul',8:'Ago',9:'Sep',10:'Oct',11:'Nov',12:'Dic'}
     for vm in visible_months:
@@ -202,6 +233,10 @@ def budget_view(request):
         'ready_to_assign': ready_to_assign,
         'underfunded_categories': underfunded_categories,
         'total_underfunded': total_underfunded,
+        'cost_to_be_me': round(cost_to_be_me, 2),
+        'expected_income': round(expected_income, 2),
+        'is_over_budget': is_over_budget,
+        'rollover_categories': rollover_categories,
     })
 
 
@@ -312,6 +347,24 @@ def assign_funds(request):
         mb.budgeted = amount
         mb.save()
         messages.success(request, 'Fondos asignados correctamente.')
+    return redirect('budget_view')
+
+
+@login_required
+def reorder_categories(request):
+    if request.method == 'POST':
+        from django.http import JsonResponse
+        import json as j
+        data = j.loads(request.body)
+        order = data.get('order', [])
+        for item in order:
+            cid = item.get('id')
+            sort = item.get('sort_order', 0)
+            gid = item.get('group_id')
+            Category.objects.filter(id=cid).update(sort_order=sort)
+            if gid:
+                Category.objects.filter(id=cid).update(group_id=gid)
+        return JsonResponse({'status': 'ok'})
     return redirect('budget_view')
 
 
