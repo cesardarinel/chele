@@ -288,6 +288,42 @@ def move_funds(request):
 
 
 @login_required
+def auto_assign(request):
+    if request.method == 'POST':
+        budget_id = request.session.get('active_budget_id')
+        budget = get_object_or_404(Budget, id=budget_id)
+        month = int(request.POST.get('month', 0))
+        year = int(request.POST.get('year', 0))
+        if not month or not year:
+            messages.error(request, 'Mes y año requeridos.')
+            return redirect('budget_view')
+
+        from apps.goals.services import TargetService
+        ts = TargetService(budget, month, year)
+        underfunded = ts.list_underfunded()
+
+        total_on_budget = float(Account.objects.filter(budget=budget, on_budget=True).aggregate(Sum('balance'))['balance__sum'] or 0)
+        total_assigned = float(MonthlyBudget.objects.filter(category__budget=budget, month=month, year=year).aggregate(Sum('budgeted'))['budgeted__sum'] or 0)
+        available = max(0, total_on_budget - total_assigned)
+
+        assigned_count = 0
+        total_assigned_amt = 0.0
+        for u in underfunded:
+            if available <= 0:
+                break
+            amt = min(u['deficit'], available)
+            mb, _ = MonthlyBudget.objects.get_or_create(category_id=u['category_id'], month=month, year=year)
+            mb.budgeted = float(mb.budgeted) + amt
+            mb.save()
+            assigned_count += 1
+            total_assigned_amt += amt
+            available -= amt
+
+        messages.success(request, f'Fondos asignados: {assigned_count} categorías, ${total_assigned_amt:.2f}')
+    return redirect('budget_view')
+
+
+@login_required
 def cover_overspending(request):
     if request.method == 'POST':
         budget_id = request.session.get('active_budget_id')

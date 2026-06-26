@@ -14,6 +14,7 @@ urlpatterns = [
     path('asignar/', views.assign_funds, name='assign_funds'),
     path('mover/', views.move_funds, name='move_funds'),
     path('cubrir/', views.cover_overspending, name='cover_overspending'),
+    path('auto-asignar/', views.auto_assign, name='auto_assign'),
     path('reservar/', views.hold_for_next_month, name='hold_for_next_month'),
     path('copiar/', views.copy_budget, name='copy_budget'),
 ]

@@ -206,6 +206,39 @@
         {% endif %}
 
         <main class="flex-1 overflow-y-auto min-h-0 animate-fade-in">
+            {% if user.is_authenticated and active_budget %}
+            {% if uncategorized_count or uncovered_overspends or underfunded_count %}
+            <div class="px-3 md:px-6 pt-2 md:pt-3" id="spotlight">
+                <div class="bg-amber-900/10 border border-amber-500/20 rounded-lg px-3 md:px-4 py-2">
+                    <div class="flex items-center justify-between gap-2">
+                        <span class="text-xs font-semibold text-amber-400 uppercase tracking-wider">
+                            ⚠️ Spotlight · {{ uncategorized_count|default:0|add:uncovered_overspends|default:0|add:underfunded_count|default:0 }} pendientes
+                        </span>
+                        <button onclick="document.getElementById('spotlightContent').classList.toggle('hidden')" class="text-amber-400 hover:text-amber-300 text-xs">Ver</button>
+                    </div>
+                    <div id="spotlightContent" class="hidden mt-2 space-y-1.5">
+                        {% if uncategorized_count %}
+                        <div class="flex items-center justify-between text-xs text-chele-text-secondary">
+                            <span>{{ uncategorized_count }} transacciones sin categorizar</span>
+                            <a href="{% url 'csv_import' %}" class="text-amber-400 hover:text-amber-300">Revisar</a>
+                        </div>
+                        {% endif %}
+                        {% if uncovered_overspends %}
+                        {% for o in uncovered_overspends %}
+                        <div class="flex items-center justify-between text-xs">
+                            <span class="text-chele-danger">🔴 {{ o.name }}: -${{ o.amount|stringformat:'f'|cut:'-'|floatformat:2 }}</span>
+                            <a href="{% url 'budget_view' %}?cover={{ o.id }}" class="text-amber-400 hover:text-amber-300">Cubrir</a>
+                        </div>
+                        {% endfor %}
+                        {% endif %}
+                        {% if underfunded_count %}
+                        <div class="text-xs text-chele-text-secondary">{{ underfunded_count }} categorías subfinanciadas</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            {% endif %}
             {% if messages %}
             <div class="px-3 md:px-6 pt-2 md:pt-4">
             {% for message in messages %}
