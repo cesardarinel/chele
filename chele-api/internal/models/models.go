@@ -88,19 +88,20 @@ type Transaction struct {
 
 // schedules_schedule
 type Schedule struct {
-	ID           string    `db:"id" json:"id"`
-	BudgetID     string    `db:"budget_id" json:"budget_id"`
-	PayeeID      *string   `db:"payee_id" json:"payee_id"`
-	CategoryID   *string   `db:"category_id" json:"category_id"`
-	AccountID    string    `db:"account_id" json:"account_id"`
-	Amount       float64   `db:"amount" json:"amount"`
-	Frequency    string    `db:"frequency" json:"frequency"`
-	NextDate     string    `db:"next_date" json:"next_date"`
-	Notes        string    `db:"notes" json:"notes"`
-	SkipWeekends bool      `db:"skip_weekends" json:"skip_weekends"`
-	IsActive     bool      `db:"is_active" json:"is_active"`
-	Direction    string    `db:"direction" json:"direction"`
-	CreatedAt    time.Time `db:"created_at" json:"created_at"`
+	ID                string    `db:"id" json:"id"`
+	BudgetID          string    `db:"budget_id" json:"budget_id"`
+	PayeeID           *string   `db:"payee_id" json:"payee_id"`
+	CategoryID        *string   `db:"category_id" json:"category_id"`
+	AccountID         string    `db:"account_id" json:"account_id"`
+	Amount            float64   `db:"amount" json:"amount"`
+	Frequency         string    `db:"frequency" json:"frequency"`
+	NextDate          string    `db:"next_date" json:"next_date"`
+	Notes             string    `db:"notes" json:"notes"`
+	SkipWeekends      bool      `db:"skip_weekends" json:"skip_weekends"`
+	ApplyBeforeWeekend bool     `db:"apply_before_weekend" json:"apply_before_weekend"`
+	IsActive          bool      `db:"is_active" json:"is_active"`
+	Direction         string    `db:"direction" json:"direction"`
+	CreatedAt         time.Time `db:"created_at" json:"created_at"`
 	UpdatedAt    time.Time `db:"updated_at" json:"updated_at"`
 }
 

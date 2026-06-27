@@ -15,6 +15,22 @@ def _skip_weekend(d):
     return d
 
 
+def _apply_before_weekend(d):
+    if d.weekday() == 5:
+        return d - timedelta(days=1)
+    if d.weekday() == 6:
+        return d - timedelta(days=2)
+    return d
+
+
+def _adjust_weekend(date_val, skip_weekends, apply_before):
+    if apply_before:
+        return _apply_before_weekend(date_val)
+    if skip_weekends:
+        return _skip_weekend(date_val)
+    return date_val
+
+
 def _advance_date(schedule):
     next_date = schedule.next_date
     freqs = {
@@ -26,8 +42,7 @@ def _advance_date(schedule):
     }
     delta = freqs.get(schedule.frequency, timedelta(days=31))
     new_date = next_date + delta
-    if schedule.skip_weekends:
-        new_date = _skip_weekend(new_date)
+    new_date = _adjust_weekend(new_date, schedule.skip_weekends, schedule.apply_before_weekend)
     return new_date
 
 
@@ -36,7 +51,7 @@ def process_due_schedules(budget_id, budget):
     due = Schedule.objects.filter(budget_id=budget_id, is_active=True, next_date__lte=today)
     count = 0
     for s in due.select_related('account'):
-        actual_date = _skip_weekend(s.next_date) if s.skip_weekends else s.next_date
+        actual_date = _adjust_weekend(s.next_date, s.skip_weekends, s.apply_before_weekend)
         raw = float(s.amount)
         account = s.account
         if s.direction == 'income':
@@ -76,8 +91,9 @@ def schedule_create(request):
         next_date_str = request.POST.get('next_date')
         next_date = date.fromisoformat(next_date_str) if next_date_str else date.today()
         skip = request.POST.get('skip_weekends') == 'on'
-        if skip:
-            next_date = _skip_weekend(next_date)
+        before = request.POST.get('apply_before_weekend') == 'on'
+        if skip or before:
+            next_date = _adjust_weekend(next_date, skip, before)
         schedule = Schedule.objects.create(
             budget_id=budget_id,
             payee_id=request.POST.get('payee_id') or None,
@@ -88,6 +104,7 @@ def schedule_create(request):
             next_date=next_date,
             notes=request.POST.get('notes', ''),
             skip_weekends=skip,
+            apply_before_weekend=before,
             direction=request.POST.get('direction', 'expense'),
         )
         messages.success(request, 'Programación creada.')
@@ -104,6 +121,7 @@ def schedule_edit(request, id):
         schedule.next_date = request.POST.get('next_date')
         schedule.notes = request.POST.get('notes', '')
         schedule.skip_weekends = request.POST.get('skip_weekends') == 'on'
+        schedule.apply_before_weekend = request.POST.get('apply_before_weekend') == 'on'
         schedule.direction = request.POST.get('direction', 'expense')
         schedule.save()
         messages.success(request, 'Programación actualizada.')

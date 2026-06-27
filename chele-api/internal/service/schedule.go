@@ -17,23 +17,24 @@ func NewScheduleService(db *sqlx.DB) *ScheduleService {
 }
 
 type dueSchedule struct {
-	ID           string  `db:"id"`
-	AccountID    string  `db:"account_id"`
-	BudgetID     string  `db:"budget_id"`
-	Amount       float64 `db:"amount"`
-	Direction    string  `db:"direction"`
-	NextDate     string  `db:"next_date"`
-	Frequency    string  `db:"frequency"`
-	SkipWeekends bool    `db:"skip_weekends"`
-	PayeeID      *string `db:"payee_id"`
-	CatID        *string `db:"category_id"`
+	ID                 string  `db:"id"`
+	AccountID          string  `db:"account_id"`
+	BudgetID           string  `db:"budget_id"`
+	Amount             float64 `db:"amount"`
+	Direction          string  `db:"direction"`
+	NextDate           string  `db:"next_date"`
+	Frequency          string  `db:"frequency"`
+	SkipWeekends       bool    `db:"skip_weekends"`
+	ApplyBeforeWeekend bool    `db:"apply_before_weekend"`
+	PayeeID            *string `db:"payee_id"`
+	CatID              *string `db:"category_id"`
 }
 
 func (s *ScheduleService) ProcessDue(budgetID string) (int, error) {
 	today := time.Now().UTC().Format("2006-01-02")
 	var due []dueSchedule
 	err := s.DB.Select(&due,
-		`SELECT id,account_id,budget_id,amount,direction,next_date,frequency,skip_weekends,payee_id,category_id
+		`SELECT id,account_id,budget_id,amount,direction,next_date,frequency,skip_weekends,apply_before_weekend,payee_id,category_id
 		 FROM schedules_schedule WHERE budget_id=? AND is_active=1 AND next_date<=?`,
 		budgetID, today)
 	if err != nil {
@@ -47,22 +48,47 @@ func (s *ScheduleService) ProcessDue(budgetID string) (int, error) {
 			amount = -amount
 		}
 
+		actualDate := adjustDate(sch.NextDate, sch.SkipWeekends, sch.ApplyBeforeWeekend)
+
 		txnID := strings.ReplaceAll(uuid.New().String(), "-", "")
 		s.DB.Exec(
 			`INSERT INTO transactions_transaction
 			 (id,budget_id,account_id,date,amount,payee_id,category_id,notes,reconciled,cleared,created_at,updated_at)
 			 VALUES (?,?,?,?,?,?,?,?,0,0,datetime('now'),datetime('now'))`,
-			txnID, sch.BudgetID, sch.AccountID, sch.NextDate, amount, sch.PayeeID, sch.CatID, "Programación",
+			txnID, sch.BudgetID, sch.AccountID, actualDate, amount, sch.PayeeID, sch.CatID, "Programación",
 		)
 		s.DB.Exec("UPDATE accounts_account SET balance = balance + ? WHERE id = ?", amount, sch.AccountID)
-		newDate := AdvanceDate(sch.NextDate, sch.Frequency, sch.SkipWeekends)
+		newDate := AdvanceDate(sch.NextDate, sch.Frequency, sch.SkipWeekends, sch.ApplyBeforeWeekend)
 		s.DB.Exec("UPDATE schedules_schedule SET next_date = ? WHERE id = ?", newDate, sch.ID)
 		count++
 	}
 	return count, nil
 }
 
-func AdvanceDate(currentDate, frequency string, skipWeekends bool) string {
+func adjustDate(dateStr string, skipWeekends, applyBefore bool) string {
+	dt, err := time.Parse("2006-01-02", dateStr)
+	if err != nil {
+		return dateStr
+	}
+	if applyBefore {
+		if dt.Weekday() == time.Saturday {
+			dt = dt.AddDate(0, 0, -1)
+		}
+		if dt.Weekday() == time.Sunday {
+			dt = dt.AddDate(0, 0, -2)
+		}
+	} else if skipWeekends {
+		if dt.Weekday() == time.Saturday {
+			dt = dt.AddDate(0, 0, 2)
+		}
+		if dt.Weekday() == time.Sunday {
+			dt = dt.AddDate(0, 0, 1)
+		}
+	}
+	return dt.Format("2006-01-02")
+}
+
+func AdvanceDate(currentDate, frequency string, skipWeekends, applyBefore bool) string {
 	dt, err := time.Parse("2006-01-02", currentDate)
 	if err != nil {
 		return currentDate
@@ -79,7 +105,14 @@ func AdvanceDate(currentDate, frequency string, skipWeekends bool) string {
 	case "yearly":
 		dt = dt.AddDate(1, 0, 0)
 	}
-	if skipWeekends {
+	if applyBefore {
+		if dt.Weekday() == time.Saturday {
+			dt = dt.AddDate(0, 0, -1)
+		}
+		if dt.Weekday() == time.Sunday {
+			dt = dt.AddDate(0, 0, -2)
+		}
+	} else if skipWeekends {
 		for dt.Weekday() == time.Saturday {
 			dt = dt.AddDate(0, 0, 2)
 		}

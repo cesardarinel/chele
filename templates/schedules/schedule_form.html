@@ -68,13 +68,31 @@
             <label class="block text-sm font-medium text-chele-text mb-1">Notas</label>
             <textarea name="notes" rows="2" class="w-full border border-chele-border rounded-lg px-3 py-2 text-sm bg-chele-bg text-chele-text">{{ schedule.notes|default:'' }}</textarea>
         </div>
-        <div>
-            <label class="flex items-center gap-2 text-sm">
-                <input type="checkbox" name="skip_weekends" {% if schedule.skip_weekends %}checked{% endif %} class="text-amber-400">
-                <span>Saltar fines de semana (pasar al lunes siguiente)</span>
+        <div class="space-y-2">
+            <label class="block text-sm font-medium text-chele-text mb-1">Ajuste de fin de semana</label>
+            <label class="flex items-center gap-2 text-sm cursor-pointer bg-chele-bg rounded-lg px-3 py-2 border border-chele-border hover:border-chele-border-light">
+                <input type="radio" name="weekend_adjust" value="none" {% if not schedule.skip_weekends and not schedule.apply_before_weekend %}checked{% endif %} class="text-amber-400" onchange="toggleWeekend()">
+                <span>No ajustar</span>
+            </label>
+            <label class="flex items-center gap-2 text-sm cursor-pointer bg-chele-bg rounded-lg px-3 py-2 border border-chele-border hover:border-chele-border-light">
+                <input type="radio" name="weekend_adjust" value="after" {% if schedule.skip_weekends %}checked{% endif %} class="text-amber-400" onchange="toggleWeekend()">
+                <span>Pasar al <strong>lunes siguiente</strong> (si cae sábado/domingo)</span>
+            </label>
+            <label class="flex items-center gap-2 text-sm cursor-pointer bg-chele-bg rounded-lg px-3 py-2 border border-chele-border hover:border-chele-border-light">
+                <input type="radio" name="weekend_adjust" value="before" {% if schedule.apply_before_weekend %}checked{% endif %} class="text-amber-400" onchange="toggleWeekend()">
+                <span>Pasar al <strong>viernes anterior</strong> (si cae sábado/domingo)</span>
             </label>
         </div>
+        <input type="hidden" name="skip_weekends" id="skipWeekendsInput" value="{% if schedule.skip_weekends %}on{% endif %}">
+        <input type="hidden" name="apply_before_weekend" id="applyBeforeInput" value="{% if schedule.apply_before_weekend %}on{% endif %}">
         <button type="submit" class="btn-primary w-full text-center py-2.5">Guardar</button>
     </form>
 </div>
+<script>
+function toggleWeekend() {
+    var val = document.querySelector('input[name="weekend_adjust"]:checked').value;
+    document.getElementById('skipWeekendsInput').value = val === 'after' ? 'on' : '';
+    document.getElementById('applyBeforeInput').value = val === 'before' ? 'on' : '';
+}
+</script>
 {% endblock %}

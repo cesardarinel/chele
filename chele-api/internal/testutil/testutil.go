@@ -112,6 +112,7 @@ CREATE TABLE schedules_schedule (
 	next_date date NOT NULL,
 	notes text NOT NULL,
 	skip_weekends bool NOT NULL,
+	apply_before_weekend bool NOT NULL,
 	is_active bool NOT NULL,
 	direction varchar(10) NOT NULL,
 	created_at datetime NOT NULL,

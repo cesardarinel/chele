@@ -35,7 +35,7 @@ func TestProcessDue_CreatesTransaction(t *testing.T) {
 	acctID := insertAccount(db, budgetID)
 
 	schID := strings.ReplaceAll(uuid.New().String(), "-", "")
-	db.MustExec("INSERT INTO schedules_schedule (id,budget_id,account_id,amount,frequency,next_date,is_active,direction,notes,skip_weekends,created_at,updated_at) VALUES (?,?,?,200,'monthly',date('now'),1,'expense','',0,datetime('now'),datetime('now'))", schID, budgetID, acctID)
+	db.MustExec("INSERT INTO schedules_schedule (id,budget_id,account_id,amount,frequency,next_date,is_active,direction,notes,skip_weekends,apply_before_weekend,created_at,updated_at) VALUES (?,?,?,200,'monthly',date('now'),1,'expense','',0,0,datetime('now'),datetime('now'))", schID, budgetID, acctID)
 
 	count, err := svc.ProcessDue(budgetID)
 	if err != nil {
@@ -62,7 +62,7 @@ func TestProcessDue_OnlyDue(t *testing.T) {
 
 	futureDate := time.Now().AddDate(0, 0, 30).Format("2006-01-02")
 	schID := strings.ReplaceAll(uuid.New().String(), "-", "")
-	db.MustExec("INSERT INTO schedules_schedule (id,budget_id,account_id,amount,frequency,next_date,is_active,direction,notes,skip_weekends,created_at,updated_at) VALUES (?,?,?,200,'monthly',?,1,'expense','',0,datetime('now'),datetime('now'))", schID, budgetID, acctID, futureDate)
+	db.MustExec("INSERT INTO schedules_schedule (id,budget_id,account_id,amount,frequency,next_date,is_active,direction,notes,skip_weekends,apply_before_weekend,created_at,updated_at) VALUES (?,?,?,200,'monthly',?,1,'expense','',0,0,datetime('now'),datetime('now'))", schID, budgetID, acctID, futureDate)
 
 	count, err := svc.ProcessDue(budgetID)
 	if err != nil {
@@ -88,7 +88,7 @@ func TestAdvanceDate(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := AdvanceDate(tt.current, tt.freq, false)
+			got := AdvanceDate(tt.current, tt.freq, false, false)
 			if got != tt.want {
 				t.Errorf("got %s, want %s", got, tt.want)
 			}
