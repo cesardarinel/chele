@@ -42,14 +42,12 @@ services:
       - .env
     environment:
       - DB_DRIVER=${DB_DRIVER:-sqlite}
-      - DATABASE_URL=/app/db/sqlite.db
+      - DATABASE_URL=${DATABASE_URL:-/app/db/sqlite.db}
       - JWT_SECRET=${JWT_SECRET:-dev-secret-change-in-production}
-      - PORT=8080
+      - PORT=${API_PORT:-8080}
     volumes:
       - sqlite_data:/app/db
     restart: unless-stopped
-    depends_on:
-      - web
     logging:
       driver: "json-file"
       options:

@@ -5,7 +5,7 @@ import (
 	"log"
 
 	"github.com/jmoiron/sqlx"
-	_ "github.com/mattn/go-sqlite3"
+	_ "modernc.org/sqlite"
 	_ "github.com/jackc/pgx/v5/stdlib"
 )
 
@@ -13,7 +13,7 @@ func Connect(driver, dsn string) *sqlx.DB {
 	var d string
 	switch driver {
 	case "sqlite":
-		d = "sqlite3"
+		d = "sqlite"
 	case "postgres":
 		d = "pgx"
 	default:
