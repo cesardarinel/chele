@@ -274,7 +274,7 @@
                                 {% else %}
                                 <span class="w-2 h-2 rounded-full bg-chele-success shrink-0"></span>
                                 {% endif %}
-                                <span class="text-xs font-medium text-chele-text truncate max-w-[60%]">{{ cat.category.name }}</span>
+                                <span class="text-xs font-medium text-chele-text truncate max-w-[50%] md:max-w-none">{{ cat.category.name }}</span>
                             </div>
                             {% if cat.months.0.balance >= 0 %}
                             <span class="text-xs font-semibold text-chele-success">${{ cat.months.0.balance|currency }}</span>
@@ -290,7 +290,7 @@
                                 <input type="hidden" name="month" value="{{ current_month }}">
                                 <input type="hidden" name="year" value="{{ current_year }}">
                                 <input type="number" step="0.01" name="amount" value="{{ cat.months.0.budgeted|floatformat:2 }}"
-                                       class="w-16 text-xs text-right bg-chele-bg border border-chele-border rounded px-1 py-0.5 text-chele-text"
+                                        class="w-20 md:w-16 text-xs text-right bg-chele-bg border border-chele-border rounded px-1 py-0.5 text-chele-text"
                                        onchange="this.form.submit()">
                             </form>
                             {% else %}
