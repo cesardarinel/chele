@@ -49,7 +49,7 @@
     <div class="bg-chele-surface border-b border-chele-border px-4 md:px-6 py-3">
         <div class="flex flex-wrap items-center justify-between gap-3">
             <div class="flex items-center gap-3">
-                <span class="text-xs md:text-sm text-chele-text-secondary uppercase tracking-wider font-semibold">Ready to Assign</span>
+                <span class="text-xs md:text-sm text-chele-text-secondary uppercase tracking-wider font-semibold">Por asignar</span>
                 <span class="text-lg md:text-xl font-bold {% if ready_to_assign >= 0 %}text-chele-success{% else %}text-chele-danger{% endif %}">
                     ${{ ready_to_assign|currency }}
                 </span>
@@ -63,7 +63,7 @@
                     <input type="hidden" name="month" value="{{ current_month }}">
                     <input type="hidden" name="year" value="{{ current_year }}">
                     <button type="submit" class="text-xs bg-amber-400/10 text-amber-400 border border-amber-400/30 rounded px-2 py-1 hover:bg-amber-400/20">
-                        Auto-assign ${{ total_underfunded|currency }}
+                        Auto-asignar ${{ total_underfunded|currency }}
                     </button>
                 </form>
                 {% endif %}
@@ -75,7 +75,7 @@
                 {% endif %}
                 {% if is_over_budget %}
                 <a href="{% url 'budget_view' %}?editar=1" class="text-[10px] md:text-xs text-chele-danger bg-chele-danger/10 rounded px-2 py-0.5 hover:bg-chele-danger/20" title="Tus metas (${{ cost_to_be_me|currency }}) superan tus ingresos esperados (${{ expected_income|currency }}). Ajusta tus targets.">
-                    ⚠️ Reality Check
+                    ⚠️ Verificación
                 </a>
                 {% endif %}
             </div>
