@@ -519,7 +519,7 @@ document.addEventListener('click', function(e) {
 
 function loadInspector(categoryId, categoryName, isOverspent, isUnderfunded) {
     closeInspector();
-    var url = '{% url "category_inspector" 0 %}'.replace('0', categoryId) + '?mes={{ current_month }}&anio={{ current_year }}';
+    var url = '{% url "category_inspector" "00000000-0000-0000-0000-000000000000" %}'.replace('00000000-0000-0000-0000-000000000000', categoryId) + '?mes={{ current_month }}&anio={{ current_year }}';
     fetch(url).then(function(r) { return r.json(); }).then(function(data) {
         var dot = document.getElementById('inspectorDot');
         dot.className = 'w-2.5 h-2.5 rounded-full shrink-0 ' + (data.overspent ? 'bg-chele-danger' : (data.target && data.target.underfunded > 0 ? 'bg-chele-warning' : 'bg-chele-success'));
