@@ -52,11 +52,11 @@
             <div>
                 <label class="block text-sm font-medium text-chele-text mb-1">Frecuencia</label>
                 <select name="frequency" class="w-full border border-chele-border rounded-lg px-3 py-2 text-sm bg-chele-bg text-chele-text">
-                    <option value="weekly">Semanal</option>
-                    <option value="biweekly">Quincenal</option>
-                    <option value="monthly">Mensual</option>
-                    <option value="quarterly">Trimestral</option>
-                    <option value="yearly">Anual</option>
+                    <option value="weekly" {% if schedule.frequency == 'weekly' %}selected{% endif %}>Semanal</option>
+                    <option value="biweekly" {% if schedule.frequency == 'biweekly' %}selected{% endif %}>Quincenal</option>
+                    <option value="monthly" {% if schedule.frequency == 'monthly' %}selected{% endif %}>Mensual</option>
+                    <option value="quarterly" {% if schedule.frequency == 'quarterly' %}selected{% endif %}>Trimestral</option>
+                    <option value="yearly" {% if schedule.frequency == 'yearly' %}selected{% endif %}>Anual</option>
                 </select>
             </div>
         </div>
@@ -90,9 +90,11 @@
 </div>
 <script>
 function toggleWeekend() {
-    var val = document.querySelector('input[name="weekend_adjust"]:checked').value;
-    document.getElementById('skipWeekendsInput').value = val === 'after' ? 'on' : '';
-    document.getElementById('applyBeforeInput').value = val === 'before' ? 'on' : '';
+    var sel = document.querySelector('input[name="weekend_adjust"]:checked');
+    if (!sel) return;
+    document.getElementById('skipWeekendsInput').value = sel.value === 'after' ? 'on' : '';
+    document.getElementById('applyBeforeInput').value = sel.value === 'before' ? 'on' : '';
 }
+document.addEventListener('DOMContentLoaded', toggleWeekend);
 </script>
 {% endblock %}
