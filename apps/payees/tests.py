@@ -40,3 +40,13 @@ class TestPayees:
         session.save()
         response = logged_client.post(reverse('payee_merge', args=[p1.id]), {'merge_to': p2.id})
         assert response.status_code == 302
+
+    def test_payee_model_str(self, budget_with_categories):
+        payee = Payee.objects.create(budget=budget_with_categories, name='Test Payee')
+        assert str(payee) == 'Test Payee'
+
+    def test_payee_ordering(self, budget_with_categories):
+        Payee.objects.create(budget=budget_with_categories, name='Zeta')
+        Payee.objects.create(budget=budget_with_categories, name='Alpha')
+        names = [p.name for p in Payee.objects.filter(budget=budget_with_categories)]
+        assert names == ['Alpha', 'Zeta']

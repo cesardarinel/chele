@@ -168,6 +168,52 @@ func TestRollover(t *testing.T) {
 	}
 }
 
+func TestHoldForNextMonth(t *testing.T) {
+	h, budgetID, _, _ := setupYNABTest(t)
+
+	body := `{"amount":500,"month":6,"year":2026}`
+	req := httptest.NewRequest("POST", "/api/budgets/"+budgetID+"/hold", strings.NewReader(body))
+	req.Header.Set("Content-Type", "application/json")
+	req = withChiURLParams(req, map[string]string{"id": budgetID})
+	w := httptest.NewRecorder()
+	h.HoldForNextMonth(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected 200, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+func TestCopyBudget(t *testing.T) {
+	h, budgetID, catID, _ := setupYNABTest(t)
+	// Insert a budget from previous month
+	h.DB.Exec("INSERT INTO budgets_monthlybudget (id,category_id,month,year,budgeted,created_at,updated_at) VALUES (?,?,5,2026,500,datetime('now'),datetime('now'))", newUUID(), catID)
+
+	body := `{"to_month":6,"to_year":2026}`
+	req := httptest.NewRequest("POST", "/api/budgets/"+budgetID+"/copy-budget", strings.NewReader(body))
+	req.Header.Set("Content-Type", "application/json")
+	req = withChiURLParams(req, map[string]string{"id": budgetID})
+	w := httptest.NewRecorder()
+	h.CopyBudget(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected 200, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+func TestReorderCategories(t *testing.T) {
+	h, budgetID, catID, _ := setupYNABTest(t)
+	body := `{"budget_id":"` + budgetID + `","order":[{"id":"` + catID + `","sort_order":5,"group_id":""}]}`
+	req := httptest.NewRequest("POST", "/api/budgets/"+budgetID+"/reorder-categories", strings.NewReader(body))
+	req.Header.Set("Content-Type", "application/json")
+	req = withChiURLParams(req, map[string]string{"id": budgetID})
+	w := httptest.NewRecorder()
+	h.ReorderCategories(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected 200, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
 func TestAutoAssign(t *testing.T) {
 	h, budgetID, catID, _ := setupYNABTest(t)
 	h.DB.Exec("INSERT INTO goals_goal (id,category_id,goal_type,amount,frequency,is_completed,refill_up_to,created_at,updated_at) VALUES (?,?,'monthly',100,12,0,0,datetime('now'),datetime('now'))", strings.ReplaceAll(uuid.New().String(), "-", ""), catID)

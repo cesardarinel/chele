@@ -345,3 +345,110 @@ func (h *YNABHandler) Rollover(w http.ResponseWriter, r *http.Request) {
 
 	jsonOK(w, map[string]interface{}{"categories": result})
 }
+
+// ---- Hold for Next Month ----
+
+func (h *YNABHandler) HoldForNextMonth(w http.ResponseWriter, r *http.Request) {
+	budgetID := chi.URLParam(r, "id")
+	var req struct {
+		Amount float64 `json:"amount"`
+		Month  int     `json:"month"`
+		Year   int     `json:"year"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		jsonError(w, "invalid request", http.StatusBadRequest)
+		return
+	}
+
+	// Create a MonthlyBudget record flagged for next month
+	// We use the same category assignment but with month+1
+	nextMonth := req.Month + 1
+	nextYear := req.Year
+	if nextMonth > 12 {
+		nextMonth = 1
+		nextYear++
+	}
+
+	// Assign to "To Budget" categories (income) or create a held category
+	h.DB.Exec(
+		`UPDATE budgets_monthlybudget SET budgeted=budgeted+?
+		 WHERE category_id IN (SELECT id FROM budgets_category WHERE budget_id=? AND is_income=1)
+		 AND month=? AND year=?`,
+		req.Amount, budgetID, nextMonth, nextYear,
+	)
+
+	jsonOK(w, map[string]string{"status": "held"})
+}
+
+// ---- Copy Budget from Previous Month ----
+
+func (h *YNABHandler) CopyBudget(w http.ResponseWriter, r *http.Request) {
+	budgetID := chi.URLParam(r, "id")
+	var req struct {
+		ToMonth int `json:"to_month"`
+		ToYear  int `json:"to_year"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		jsonError(w, "invalid request", http.StatusBadRequest)
+		return
+	}
+
+	fromMonth := req.ToMonth - 1
+	fromYear := req.ToYear
+	if fromMonth < 1 {
+		fromMonth = 12
+		fromYear--
+	}
+
+	type catBudget struct {
+		CategoryID string  `db:"category_id"`
+		Budgeted   float64 `db:"budgeted"`
+	}
+	var rows []catBudget
+	h.DB.Select(&rows,
+		`SELECT category_id, budgeted FROM budgets_monthlybudget
+		 WHERE category_id IN (SELECT id FROM budgets_category WHERE budget_id=?)
+		 AND month=? AND year=?`,
+		budgetID, fromMonth, fromYear)
+
+	for _, r := range rows {
+		var count int
+		h.DB.Get(&count,
+			"SELECT COUNT(*) FROM budgets_monthlybudget WHERE category_id=? AND month=? AND year=?",
+			r.CategoryID, req.ToMonth, req.ToYear)
+		if count > 0 {
+			h.DB.Exec(
+				"UPDATE budgets_monthlybudget SET budgeted=? WHERE category_id=? AND month=? AND year=?",
+				r.Budgeted, r.CategoryID, req.ToMonth, req.ToYear)
+		} else {
+			h.DB.Exec(
+				`INSERT INTO budgets_monthlybudget (id,category_id,month,year,budgeted,created_at,updated_at)
+				 VALUES (?,?,?,?,?,datetime('now'),datetime('now'))`,
+				newUUID(), r.CategoryID, req.ToMonth, req.ToYear, r.Budgeted)
+		}
+	}
+
+	jsonOK(w, map[string]string{"status": "copied"})
+}
+
+// ---- Reorder Categories ----
+
+func (h *YNABHandler) ReorderCategories(w http.ResponseWriter, r *http.Request) {
+	var req struct {
+		BudgetID string `json:"budget_id"`
+		Order    []struct {
+			ID        string `json:"id"`
+			SortOrder int    `json:"sort_order"`
+			GroupID   string `json:"group_id"`
+		} `json:"order"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		jsonError(w, "invalid request", http.StatusBadRequest)
+		return
+	}
+	for _, item := range req.Order {
+		h.DB.Exec("UPDATE budgets_category SET sort_order=?, group_id=? WHERE id=?",
+			item.SortOrder, item.GroupID, item.ID)
+	}
+	jsonOK(w, map[string]string{"status": "reordered"})
+}

@@ -20,6 +20,9 @@ func New(db *sqlx.DB, cfg *config.Config) *chi.Mux {
 	r.Use(middleware.CORS)
 	authMw := middleware.JWTAuth(cfg.JWTSecert)
 
+	// Public API reference (no auth required — for LLM consumption)
+	r.Get("/api/reference", handlers.APIRefHandler)
+
 	auth := handlers.NewAuthHandler(db, cfg.JWTSecert)
 	r.Post("/api/auth/login", auth.Login)
 	r.Post("/api/auth/register", auth.Register)
@@ -128,6 +131,9 @@ func New(db *sqlx.DB, cfg *config.Config) *chi.Mux {
 	r.With(authMw).Get("/api/budgets/{id}/spotlight", ynab.Spotlight)
 	r.With(authMw).Get("/api/budgets/{id}/cost-to-be-me", ynab.CostToBeMe)
 	r.With(authMw).Get("/api/budgets/{id}/rollover", ynab.Rollover)
+	r.With(authMw).Post("/api/budgets/{id}/hold", ynab.HoldForNextMonth)
+	r.With(authMw).Post("/api/budgets/{id}/copy-budget", ynab.CopyBudget)
+	r.With(authMw).Post("/api/budgets/{id}/reorder-categories", ynab.ReorderCategories)
 	r.With(authMw).Get("/api/categories/{id}/inspector", ynab.Inspector)
 
 	// Targets
