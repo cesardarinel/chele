@@ -3,12 +3,17 @@ import json
 from datetime import date, datetime, timedelta
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
+from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.contrib import messages
-from django.db.models import Sum
+from django.db.models import Sum, Avg
+from django.http import JsonResponse
 from .models import Budget, BudgetMembership, CategoryGroup, Category, MonthlyBudget
 from apps.accounts.models import Account
 from apps.transactions.models import Transaction
+from apps.goals.models import Goal as GoalModel
+from apps.goals.services import TargetService
 from apps.schedules.models import Schedule
 from apps.schedules.views import process_due_schedules
 
@@ -127,7 +132,6 @@ def budget_view(request):
         available_to_budget = round(total_balance, 2)
 
     # Auto-expire snooze for past months
-    from apps.goals.models import Goal as GoalModel
     for g in GoalModel.objects.filter(snooze_month__isnull=False, snooze_year__isnull=False):
         if g.snooze_year < year or (g.snooze_year == year and g.snooze_month < month):
             g.snooze_month = None
@@ -143,7 +147,6 @@ def budget_view(request):
     )), 2)
 
     # Underfunded categories (Targets)
-    from apps.goals.services import TargetService
     ts = TargetService(budget, month, year)
     underfunded_categories = ts.list_underfunded()
     total_underfunded = round(sum(u['deficit'] for u in underfunded_categories), 2)
@@ -156,7 +159,6 @@ def budget_view(request):
         cost_to_be_me = total_underfunded
 
     # Expected Income (average last 3 months)
-    from django.db.models import Avg
     expected_income = float(Transaction.objects.filter(
         budget=budget, amount__gt=0,
         date__gte=date(today.year, today.month, 1) - timedelta(days=90)
@@ -171,8 +173,7 @@ def budget_view(request):
         prev_month = 12
         prev_year -= 1
     rollover_categories = []
-    from apps.budgets.models import Category as BCategory
-    for cat in BCategory.objects.filter(budget=budget, is_hidden=False):
+    for cat in Category.objects.filter(budget=budget, is_hidden=False):
         pts = TargetService(budget, prev_month, prev_year)
         avail = pts.get_category_available(str(cat.id))
         if avail > 0.01:
@@ -308,7 +309,6 @@ def switch_budget(request):
 def category_inspector(request, id):
     budget_id = request.session.get('active_budget_id')
     cat = get_object_or_404(Category, id=id, budget_id=budget_id)
-    from datetime import date
     today = date.today()
     month = int(request.GET.get('mes', today.month))
     year = int(request.GET.get('anio', today.year))
@@ -322,7 +322,6 @@ def category_inspector(request, id):
 
     available = budgeted - spent
 
-    from apps.goals.services import TargetService
     ts = TargetService(cat.budget, month, year)
     target_info = {}
     goal = cat.goals.filter(is_completed=False).first()
@@ -336,7 +335,6 @@ def category_inspector(request, id):
         }
 
     # 3-month average
-    from django.db.models import Avg
     ninety_days_ago = date(today.year, today.month, 1) - timedelta(days=90)
     avg_3m = Transaction.objects.filter(
         category=cat,
@@ -383,9 +381,7 @@ def assign_funds(request):
 @login_required
 def reorder_categories(request):
     if request.method == 'POST':
-        from django.http import JsonResponse
-        import json as j
-        data = j.loads(request.body)
+        data = json.loads(request.body)
         order = data.get('order', [])
         for item in order:
             cid = item.get('id')
@@ -433,7 +429,6 @@ def auto_assign(request):
             messages.error(request, 'Mes y año requeridos.')
             return redirect('budget_view')
 
-        from apps.goals.services import TargetService
         ts = TargetService(budget, month, year)
         underfunded = ts.list_underfunded()
 
@@ -470,7 +465,6 @@ def cover_overspending(request):
 
         # Validate source has enough available
         budget = get_object_or_404(Budget, id=budget_id)
-        from apps.goals.services import TargetService
         ts = TargetService(budget, month, year)
         from_avail = None
         try:
@@ -614,7 +608,6 @@ def category_group_delete(request, id):
 
 def register(request):
     if request.method == 'POST':
-        from django.contrib.auth.models import User
         email = request.POST.get('email')
         password = request.POST.get('password')
         name = request.POST.get('name')
@@ -624,7 +617,6 @@ def register(request):
         user = User.objects.create_user(username=email, email=email, password=password)
         user.first_name = name
         user.save()
-        from django.contrib.auth import login
         login(request, user)
         return redirect('budget_create')
     return render(request, 'registration/register.html')

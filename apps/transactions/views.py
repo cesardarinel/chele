@@ -4,7 +4,8 @@ from django.contrib import messages
 from django.db.models import Sum
 from .models import Transaction
 from apps.accounts.models import Account
-from apps.budgets.models import Category
+from apps.budgets.models import Category, MonthlyBudget
+from apps.credit_cards.models import CreditCard
 
 
 @login_required
@@ -35,7 +36,6 @@ def transaction_create(request):
 
         # TC auto-move: if transaction causes overspend, move to CC payment category
         if txn.category_id and float(txn.amount) < 0:
-            from apps.budgets.models import Category, MonthlyBudget
             budgeted = MonthlyBudget.objects.filter(
                 category_id=txn.category_id, month=txn.date.month, year=txn.date.year
             ).aggregate(Sum('budgeted'))['budgeted__sum'] or 0
@@ -46,7 +46,6 @@ def transaction_create(request):
             if spent > float(budgeted):
                 overspent = spent - float(budgeted)
                 # Move available funds to first CC payment category
-                from apps.credit_cards.models import CreditCard
                 cc = CreditCard.objects.filter(budget_id=budget_id).first()
                 if cc:
                     payment_cat = Category.objects.filter(
@@ -151,7 +150,6 @@ def transaction_bulk(request):
 @login_required
 def review_uncategorized(request):
     budget_id = request.session.get('active_budget_id')
-    from apps.budgets.models import Category
     txn = Transaction.objects.filter(budget_id=budget_id, category__isnull=True).first()
     if not txn:
         messages.success(request, 'No hay transacciones sin categorizar.')

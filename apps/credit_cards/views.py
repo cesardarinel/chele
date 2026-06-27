@@ -7,6 +7,7 @@ from apps.accounts.models import Account
 from apps.budgets.models import CategoryGroup, Category
 from core.interest import aplicar_interes
 from datetime import date
+from django.utils.text import slugify
 
 
 @login_required
@@ -60,7 +61,6 @@ def cc_create(request):
         )
 
         # Create Payment category for this credit card (for TC auto-move)
-        from django.utils.text import slugify
         payment_group, _ = CategoryGroup.objects.get_or_create(
             budget_id=budget_id, name='Pagos TC', is_income=False,
             defaults={'sort_order': 99}

@@ -1,8 +1,8 @@
 from datetime import date
-from django.db.models import Sum, Count
-from django.db.models import Q
-from apps.budgets.models import Budget, MonthlyBudget
+from django.db.models import Sum
+from apps.budgets.models import Budget, Category, MonthlyBudget
 from apps.transactions.models import Transaction
+from apps.goals.services import TargetService
 
 
 def active_budget(request):
@@ -33,7 +33,6 @@ def active_budget(request):
         ).count()
 
         # Overspent categories (cash)
-        from apps.budgets.models import Category
         overspends = []
         for cat in Category.objects.filter(budget=active, is_hidden=False):
             budgeted = MonthlyBudget.objects.filter(category=cat, month=today.month, year=today.year).aggregate(Sum('budgeted'))['budgeted__sum'] or 0
@@ -43,7 +42,6 @@ def active_budget(request):
                 overspends.append({'id': str(cat.id), 'name': cat.name, 'amount': abs(avail)})
         ctx['uncovered_overspends'] = overspends
 
-        from apps.goals.services import TargetService
         ts = TargetService(active, today.month, today.year)
         underfunded = ts.list_underfunded()
         ctx['underfunded_count'] = len(underfunded)
