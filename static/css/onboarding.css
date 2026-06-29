@@ -1,20 +1,21 @@
-.onboarding-highlight {
+.chele-guide-highlight {
     position: relative;
     z-index: 110 !important;
-    animation: onboardingPulse 2s ease-in-out infinite;
+    animation: cheleGuidePulse 2s ease-in-out infinite;
     box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.5);
     border-radius: 0.375rem;
+    pointer-events: auto !important;
 }
 
-@keyframes onboardingPulse {
+@keyframes cheleGuidePulse {
     0%, 100% { box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.3); }
     50% { box-shadow: 0 0 0 6px rgba(251, 191, 36, 0.6); }
 }
 
-#onboardingOverlay {
+#cheleGuideOverlay {
     pointer-events: all;
 }
 
-#onboardingOverlay * {
+#cheleGuideOverlay * {
     pointer-events: auto;
 }

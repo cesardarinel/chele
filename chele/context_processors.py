@@ -47,17 +47,14 @@ def active_budget(request):
         underfunded = ts.list_underfunded()
         ctx['underfunded_count'] = len(underfunded)
 
-    # Onboarding state
-    onboarding_step = 7
-    onboarding_active = False
+    # Guidance system (state-based)
+    guidance_active = False
     if request.user.is_authenticated:
         try:
             profile = request.user.onboarding
-            onboarding_step = profile.step
-            onboarding_active = profile.step < 7
+            guidance_active = profile.step < 7
         except OnboardingProfile.DoesNotExist:
-            pass
-    ctx['onboarding_step'] = onboarding_step
-    ctx['onboarding_active'] = onboarding_active
+            guidance_active = True
+    ctx['guidance_active'] = guidance_active
 
     return ctx

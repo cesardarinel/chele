@@ -55,7 +55,7 @@
     <link rel="stylesheet" href="{% static 'css/onboarding.css' %}">
     <link rel="icon" href="{% static 'img/logo.svg' %}">
 </head>
-<body class="bg-chele-bg text-chele-text" data-onboarding-step="{{ onboarding_step }}" data-onboarding-active="{{ onboarding_active|yesno:'True,False' }}">
+<body class="bg-chele-bg text-chele-text">
     <div class="h-screen overflow-hidden flex flex-col md:flex-row" id="app">
         {% if user.is_authenticated %}
 
@@ -327,7 +327,7 @@
         }
     });
     </script>
-{% if onboarding_active %}
+{% if user.is_authenticated %}
     {% include 'onboarding/overlay.html' %}
     <script src="{% static 'js/onboarding.js' %}"></script>
 {% endif %}
