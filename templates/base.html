@@ -212,12 +212,14 @@
 
         <main class="flex-1 overflow-y-auto min-h-0 animate-fade-in pb-16 md:pb-0">
             {% if user.is_authenticated and active_budget %}
-            {% if uncategorized_count or uncovered_overspends or underfunded_count %}
+            {% with uncat=uncategorized_count|default:0 under=underfunded_count|default:0 overs=uncovered_overspends|length %}
+            {% with alert_count=uncat|add:under|add:overs %}
+            {% if user.is_authenticated and active_budget and alert_count > 0 %}
             <div class="px-3 md:px-6 pt-2 md:pt-3" id="spotlight">
                 <div class="bg-amber-900/10 border border-amber-500/20 rounded-lg px-3 md:px-4 py-2">
                     <div class="flex items-center justify-between gap-2">
                         <span class="text-xs font-semibold text-amber-400 uppercase tracking-wider">
-                            ⚠️ Alertas · {{ uncategorized_count|default:0|add:uncovered_overspends|default:0|add:underfunded_count|default:0 }} pendientes
+                            ⚠️ Alertas · {{ alert_count }} pendientes
                         </span>
                         <button onclick="document.getElementById('spotlightContent').classList.toggle('hidden')" class="text-amber-400 hover:text-amber-300 text-xs">Ver</button>
                     </div>
@@ -243,6 +245,8 @@
                 </div>
             </div>
             {% endif %}
+            {% endwith %}
+            {% endwith %}
             {% endif %}
             {% if messages %}
             <div class="px-3 md:px-6 pt-2 md:pt-4">

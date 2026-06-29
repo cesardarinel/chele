@@ -33,9 +33,15 @@
                     <span class="truncate">{{ s.payee.name|default:'—' }}</span>
                     <span class="hidden md:inline text-chele-text-secondary text-[10px]">{{ s.get_frequency_display }}</span>
                 </div>
-                <span class="shrink-0 ml-2 font-medium {% if s.direction == 'income' %}text-chele-success{% else %}text-chele-danger{% endif %}">
-                    {% if s.direction == 'income' %}+{% else %}-{% endif %}${{ s.amount|currency }}
-                </span>
+                <div class="flex items-center gap-2 shrink-0 ml-2">
+                    <span class="font-medium {% if s.direction == 'income' %}text-chele-success{% else %}text-chele-danger{% endif %}">
+                        {% if s.direction == 'income' %}+{% else %}-{% endif %}${{ s.amount|currency }}
+                    </span>
+                    <form method="post" action="{% url 'schedule_apply_now' s.id %}" class="inline">
+                        {% csrf_token %}
+                        <button type="submit" class="text-[10px] text-amber-400 hover:text-amber-300 bg-amber-400/10 rounded px-1.5 py-0.5">Aplicar ahora</button>
+                    </form>
+                </div>
             </div>
             {% endfor %}
         </div>

@@ -130,6 +130,32 @@ def schedule_edit(request, id):
 
 
 @login_required
+def schedule_apply_now(request, id):
+    schedule = get_object_or_404(Schedule, id=id)
+    if request.method == 'POST':
+        actual_date = _adjust_weekend(date.today(), schedule.skip_weekends, schedule.apply_before_weekend)
+        raw = float(schedule.amount)
+        account = schedule.account
+        if schedule.direction == 'income':
+            amount = abs(raw)
+            account.balance = float(account.balance) + amount
+        else:
+            amount = -abs(raw)
+            account.balance = float(account.balance) - abs(raw)
+        Transaction.objects.create(
+            budget_id=schedule.budget_id, account=account,
+            date=actual_date, amount=amount,
+            payee=schedule.payee, category=schedule.category,
+            notes=schedule.notes or '',
+        )
+        account.save()
+        schedule.next_date = _advance_date(schedule)
+        schedule.save()
+        messages.success(request, f'Programación "{schedule.payee.name if schedule.payee else "—"}" aplicada.')
+    return redirect(request.META.get('HTTP_REFERER', 'schedules_list'))
+
+
+@login_required
 def schedule_delete(request, id):
     schedule = get_object_or_404(Schedule, id=id)
     if request.method == 'POST':
