@@ -73,6 +73,27 @@ func TestParseDjangoHash(t *testing.T) {
 	}
 }
 
+func TestCheckDjangoPassword_RealDjango1200kHash(t *testing.T) {
+	// Django-generated hash with 1,200,000 iterations (Django 6.x default)
+	// Password: "mypass123"
+	djangoHash := "pbkdf2_sha256$1200000$lqUx2EJCCxAIDmmQNBKeYJ$xL5tPwpUe2dVrbQd7WZKBgh1Mc8SMaqWg9ST/O3tyTQ="
+	if !CheckDjangoPassword("mypass123", djangoHash) {
+		t.Error("expected Django hash with 1.2M iterations to validate correctly")
+	}
+	// Wrong password should fail
+	if CheckDjangoPassword("wrongpass", djangoHash) {
+		t.Error("expected wrong password to not match Django hash")
+	}
+}
+
+func TestCheckDjangoPassword_Django720kHash(t *testing.T) {
+	// Django also accepts 720,000 iterations (older Django default)
+	hash := MakeDjangoPassword("testpass123")
+	if !CheckDjangoPassword("testpass123", hash) {
+		t.Error("expected Go-generated hash to validate")
+	}
+}
+
 func TestParseDjangoHash_InvalidParts(t *testing.T) {
 	_, err := ParseDjangoHash("only-two$parts")
 	if err == nil {

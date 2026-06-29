@@ -45,7 +45,17 @@ func CheckDjangoPassword(password, encoded string) bool {
 	switch dh.Algorithm {
 	case "pbkdf2_sha256":
 		dk := pbkdf2.Key([]byte(password), []byte(dh.Salt), dh.Iterations, 32, sha256.New)
-		return hex.EncodeToString(dk) == dh.Hash
+		// Django stores hash in base64, Go-generated hashes use hex
+		computedHex := hex.EncodeToString(dk)
+		if computedHex == dh.Hash {
+			return true
+		}
+		// Django uses base64 with padding (StdEncoding)
+		if base64.StdEncoding.EncodeToString(dk) == dh.Hash {
+			return true
+		}
+		// Fallback: base64 without padding
+		return base64.RawStdEncoding.EncodeToString(dk) == dh.Hash
 	default:
 		return false
 	}
