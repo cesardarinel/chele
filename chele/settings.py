@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'apps.sync_engine',
     'apps.credit_cards',
     'apps.loans',
+    'apps.onboarding',
 ]
 
 MIDDLEWARE = [
@@ -46,6 +47,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'apps.onboarding.middleware.OnboardingMiddleware',
 ]
 
 ROOT_URLCONF = 'chele.urls'

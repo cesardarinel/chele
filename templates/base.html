@@ -52,9 +52,10 @@
     }
     </script>
     <link rel="stylesheet" href="{% static 'css/chele.css' %}">
+    <link rel="stylesheet" href="{% static 'css/onboarding.css' %}">
     <link rel="icon" href="{% static 'img/logo.svg' %}">
 </head>
-<body class="bg-chele-bg text-chele-text">
+<body class="bg-chele-bg text-chele-text" data-onboarding-step="{{ onboarding_step }}" data-onboarding-active="{{ onboarding_active|yesno:'True,False' }}">
     <div class="h-screen overflow-hidden flex flex-col md:flex-row" id="app">
         {% if user.is_authenticated %}
 
@@ -326,5 +327,9 @@
         }
     });
     </script>
+{% if onboarding_active %}
+    {% include 'onboarding/overlay.html' %}
+    <script src="{% static 'js/onboarding.js' %}"></script>
+{% endif %}
 </body>
 </html>

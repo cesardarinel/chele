@@ -1,0 +1,20 @@
+.onboarding-highlight {
+    position: relative;
+    z-index: 110 !important;
+    animation: onboardingPulse 2s ease-in-out infinite;
+    box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.5);
+    border-radius: 0.375rem;
+}
+
+@keyframes onboardingPulse {
+    0%, 100% { box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.3); }
+    50% { box-shadow: 0 0 0 6px rgba(251, 191, 36, 0.6); }
+}
+
+#onboardingOverlay {
+    pointer-events: all;
+}
+
+#onboardingOverlay * {
+    pointer-events: auto;
+}

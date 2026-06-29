@@ -3,6 +3,7 @@ from django.db.models import Sum
 from apps.budgets.models import Budget, Category, MonthlyBudget
 from apps.transactions.models import Transaction
 from apps.goals.services import TargetService
+from apps.onboarding.models import OnboardingProfile
 
 
 def active_budget(request):
@@ -45,5 +46,18 @@ def active_budget(request):
         ts = TargetService(active, today.month, today.year)
         underfunded = ts.list_underfunded()
         ctx['underfunded_count'] = len(underfunded)
+
+    # Onboarding state
+    onboarding_step = 7
+    onboarding_active = False
+    if request.user.is_authenticated:
+        try:
+            profile = request.user.onboarding
+            onboarding_step = profile.step
+            onboarding_active = profile.step < 7
+        except OnboardingProfile.DoesNotExist:
+            pass
+    ctx['onboarding_step'] = onboarding_step
+    ctx['onboarding_active'] = onboarding_active
 
     return ctx

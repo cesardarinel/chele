@@ -17,6 +17,7 @@ urlpatterns = [
     path('reglas/', include('apps.rules.urls')),
     path('configuracion/', include('apps.settings_app.urls')),
     path('sync/', include('apps.sync_engine.urls')),
+    path('onboarding/', include('apps.onboarding.urls')),
     path('tc/', include('apps.credit_cards.urls')),
     path('prestamos/', include('apps.loans.urls')),
     path('registro/', include('apps.budgets.urls_registration')),
