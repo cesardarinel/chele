@@ -55,13 +55,15 @@ def get_or_create_profile(user):
         return OnboardingProfile.objects.create(user=user, step=0)
 
 
-def _get_active_condition(budget, user, step):
+def _get_active_condition(budget, user, step, dismissed=None):
     """Return the first condition that needs attention, or None."""
-    # Step 0 = not started → show welcome
+    if dismissed is None:
+        dismissed = []
     if step == 0:
         return 'welcome'
-    # After onboarding (step >= 7), check conditions by priority
     for c in CONDITIONS:
+        if c['id'] in dismissed:
+            continue
         if c['check'](budget, user):
             return c['id']
     return None
@@ -81,7 +83,8 @@ def onboarding_state(request):
         try:
             budget = Budget.objects.get(id=budget_id, members=request.user)
             rta = _get_rta(budget)
-            condition_id = _get_active_condition(budget, request.user, profile.step)
+            dismissed = request.session.get('dismissed_conditions', [])
+            condition_id = _get_active_condition(budget, request.user, profile.step, dismissed)
             if condition_id:
                 for c in CONDITIONS:
                     if c['id'] == condition_id:
@@ -116,4 +119,12 @@ def dismiss_condition(request):
     if profile.step == 0:
         profile.step = 1
         profile.save()
+    import json
+    body = json.loads(request.body) if request.body else {}
+    condition_id = body.get('condition')
+    if condition_id:
+        dismissed = request.session.get('dismissed_conditions', [])
+        if condition_id not in dismissed:
+            dismissed.append(condition_id)
+        request.session['dismissed_conditions'] = dismissed
     return JsonResponse({'status': 'dismissed'})

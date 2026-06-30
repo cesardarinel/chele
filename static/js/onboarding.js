@@ -64,7 +64,7 @@ var cheleGuide = {
 
         var self = this;
         this.nextBtn.onclick = function() { self.doAction(); };
-        this.dismissBtn.onclick = function() { self.hide(); };
+        this.dismissBtn.onclick = function() { self.dismiss(); };
 
         this.poll();
         this.pollInterval = setInterval(function() { self.poll(); }, 4000);
@@ -115,10 +115,23 @@ var cheleGuide = {
         this.active = true;
     },
 
+    dismiss: function() {
+        var self = this;
+        fetch('/onboarding/descartar/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': this.csrf() },
+            body: JSON.stringify({ condition: this.condition })
+        }).then(function() { self.hide(); });
+    },
+
     hide: function() {
         this.overlay.style.display = 'none';
         this.clearHighlight();
         this.active = false;
+        if (this.pollInterval) {
+            clearInterval(this.pollInterval);
+            this.pollInterval = null;
+        }
     },
 
     doAction: function() {
@@ -129,7 +142,7 @@ var cheleGuide = {
             fetch('/onboarding/avanzar/', { method: 'POST', headers: { 'X-CSRFToken': this.csrf() } })
             .then(function() { self.hide(); });
         } else {
-            this.hide();
+            this.dismiss();
         }
     },
 

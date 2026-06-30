@@ -114,11 +114,37 @@ func (h *TransactionHandler) Update(w http.ResponseWriter, r *http.Request) {
 	if old.AccountID != nil {
 		h.Balance.Reverse(*old.AccountID, old.Amount)
 	}
-	h.DB.Exec(
-		`UPDATE transactions_transaction SET date=?,amount=?,payee_id=?,category_id=?,notes=?,updated_at=datetime('now')
-		 WHERE id=?`,
-		req.Date, newAmt, req.PayeeID, req.CategoryID, req.Notes, id,
-	)
+
+	query := "UPDATE transactions_transaction SET updated_at=datetime('now')"
+	var args []interface{}
+	if req.Date != nil {
+		query += ", date=?"
+		args = append(args, *req.Date)
+	}
+	if req.Amount != nil || req.Direction != nil {
+		query += ", amount=?"
+		args = append(args, newAmt)
+	}
+	if req.PayeeID != nil {
+		query += ", payee_id=?"
+		args = append(args, *req.PayeeID)
+	}
+	if req.CategoryID != nil {
+		query += ", category_id=?"
+		args = append(args, *req.CategoryID)
+	}
+	if req.Notes != nil {
+		query += ", notes=?"
+		args = append(args, *req.Notes)
+	}
+	query += " WHERE id=?"
+	args = append(args, id)
+	_, err := h.DB.Exec(query, args...)
+	if err != nil {
+		jsonError(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	if req.AccountID != nil {
 		h.Balance.Apply(*req.AccountID, newAmt)
 	} else if old.AccountID != nil {

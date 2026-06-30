@@ -54,8 +54,14 @@ func (h *CategoryHandler) UpdateGroup(w http.ResponseWriter, r *http.Request) {
 
 func (h *CategoryHandler) DeleteGroup(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
-	h.DB.Exec("DELETE FROM budgets_category WHERE group_id=?", id)
-	h.DB.Exec("DELETE FROM budgets_categorygroup WHERE id=?", id)
+	if _, err := h.DB.Exec("DELETE FROM budgets_category WHERE group_id=?", id); err != nil {
+		jsonError(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	if _, err := h.DB.Exec("DELETE FROM budgets_categorygroup WHERE id=?", id); err != nil {
+		jsonError(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	jsonOK(w, map[string]string{"status": "deleted"})
 }
 
@@ -78,11 +84,15 @@ func (h *CategoryHandler) Create(w http.ResponseWriter, r *http.Request) {
 	}
 	json.NewDecoder(r.Body).Decode(&req)
 	id := strings.ReplaceAll(uuid.New().String(), "-", "")
-	h.DB.Exec(
+	_, err := h.DB.Exec(
 		`INSERT INTO budgets_category (id,budget_id,group_id,name,sort_order,is_hidden,notes,created_at,updated_at)
 		 VALUES (?,?,?,?,0,0,'',datetime('now'),datetime('now'))`,
 		id, req.BudgetID, req.GroupID, req.Name,
 	)
+	if err != nil {
+		jsonError(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	writeJSON(w, http.StatusCreated, map[string]string{"id": id})
 }
 
